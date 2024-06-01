@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDB82BFD1A92007A3B60 /* iESApp.swift */; };
-		F668DDBB2BFD1A92007A3B60 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDBA2BFD1A92007A3B60 /* ContentView.swift */; };
-		F668DDBD2BFD1A92007A3B60 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDBC2BFD1A92007A3B60 /* Item.swift */; };
 		F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */; };
 		F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */; };
 		F668DDCD2BFD1A94007A3B60 /* iESTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDCC2BFD1A94007A3B60 /* iESTests.swift */; };
@@ -37,8 +35,6 @@
 /* Begin PBXFileReference section */
 		F668DDB52BFD1A92007A3B60 /* iES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F668DDB82BFD1A92007A3B60 /* iESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESApp.swift; sourceTree = "<group>"; };
-		F668DDBA2BFD1A92007A3B60 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F668DDBC2BFD1A92007A3B60 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F668DDC02BFD1A94007A3B60 /* iES.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iES.entitlements; sourceTree = "<group>"; };
 		F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -98,8 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				F668DDB82BFD1A92007A3B60 /* iESApp.swift */,
-				F668DDBA2BFD1A92007A3B60 /* ContentView.swift */,
-				F668DDBC2BFD1A92007A3B60 /* Item.swift */,
 				F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */,
 				F668DDC02BFD1A94007A3B60 /* iES.entitlements */,
 				F668DDC12BFD1A94007A3B60 /* Preview Content */,
@@ -262,8 +256,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F668DDBB2BFD1A92007A3B60 /* ContentView.swift in Sources */,
-				F668DDBD2BFD1A92007A3B60 /* Item.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
