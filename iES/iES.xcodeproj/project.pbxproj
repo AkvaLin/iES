@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F65308652C0B0746009C886C /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308642C0B0746009C886C /* CPU.swift */; };
+		F65308672C0B266C009C886C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308662C0B266C009C886C /* Extensions.swift */; };
 		F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDB82BFD1A92007A3B60 /* iESApp.swift */; };
 		F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */; };
 		F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F65308642C0B0746009C886C /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
+		F65308662C0B266C009C886C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F668DDB52BFD1A92007A3B60 /* iES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F668DDB82BFD1A92007A3B60 /* iESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESApp.swift; sourceTree = "<group>"; };
 		F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -70,6 +74,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F65308602C0B0729009C886C /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				F65308612C0B0734009C886C /* Emulator */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		F65308612C0B0734009C886C /* Emulator */ = {
+			isa = PBXGroup;
+			children = (
+				F65308642C0B0746009C886C /* CPU.swift */,
+				F65308662C0B266C009C886C /* Extensions.swift */,
+			);
+			path = Emulator;
+			sourceTree = "<group>";
+		};
 		F668DDAC2BFD1A92007A3B60 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +114,7 @@
 		F668DDB72BFD1A92007A3B60 /* iES */ = {
 			isa = PBXGroup;
 			children = (
+				F65308602C0B0729009C886C /* Modules */,
 				F668DDB82BFD1A92007A3B60 /* iESApp.swift */,
 				F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */,
 				F668DDC02BFD1A94007A3B60 /* iES.entitlements */,
@@ -257,6 +279,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
+				F65308652C0B0746009C886C /* CPU.swift in Sources */,
+				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
