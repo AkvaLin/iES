@@ -18,7 +18,7 @@ final class CPUTests: XCTestCase {
         let address: UInt16 = 0x0000
         let value: UInt8 = 0x05
         cpu.ram[Int(address % 0x0800)] = value
-        cpu.lda(addres: address)
+        cpu.lda(address: address)
         
         XCTAssertEqual(value, cpu.a)
         XCTAssertFalse(cpu.z)
@@ -26,7 +26,7 @@ final class CPUTests: XCTestCase {
         
         let secondValue: UInt8 = 0x00
         cpu.ram[Int(address % 0x0800)] = secondValue
-        cpu.lda(addres: address)
+        cpu.lda(address: address)
         
         XCTAssertEqual(secondValue, cpu.a)
         XCTAssertTrue(cpu.z)
@@ -34,7 +34,7 @@ final class CPUTests: XCTestCase {
         
         let thirdValue: UInt8 = 0xFF
         cpu.ram[Int(address % 0x0800)] = thirdValue
-        cpu.lda(addres: address)
+        cpu.lda(address: address)
         
         XCTAssertEqual(thirdValue, cpu.a)
         XCTAssertFalse(cpu.z)
