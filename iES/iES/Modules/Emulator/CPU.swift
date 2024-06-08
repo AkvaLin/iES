@@ -138,6 +138,12 @@ extension CPU {
     
     // MARK: A,X,Y registers
     
+    /// DEX - Decrement X Register
+    private mutating func dex() {
+        x &-= 1
+        setZN(value: x)
+    }
+    
     /// LDA - Load accumulator
     private mutating func lda(address: UInt16) {
         a = read(address: address)
