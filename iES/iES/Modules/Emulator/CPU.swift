@@ -144,6 +144,18 @@ extension CPU {
         setZN(value: a)
     }
     
+    /// TAX - Transfer Accumulator to X
+    private mutating func tax() {
+        x = a
+        setZN(value: x)
+    }
+    
+    /// TAY - Transfer Accumulator to Y
+    private mutating func tay() {
+        y = a
+        setZN(value: y)
+    }
+    
     // MARK: status register
     
     // MARK: stack related
