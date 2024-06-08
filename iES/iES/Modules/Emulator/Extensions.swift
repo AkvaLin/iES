@@ -10,8 +10,7 @@ import Foundation
 extension UInt8
 {
     /// Returns an array of booleans
-    var littleEndianBitArray: [Bool]
-    {
+    var littleEndianBitArray: [Bool] {
         let lE = self.littleEndian
         var retValue: [Bool] = [Bool].init(repeating: false, count: 8)
         
@@ -28,8 +27,7 @@ extension UInt8
     }
     
     /// Returns a UInt8 value from an array of 8 boolean values
-    init(fromLittleEndianBitArray aLittleEndianBitArray: [Bool])
-    {
+    init(fromLittleEndianBitArray aLittleEndianBitArray: [Bool]) {
         var retValue: UInt8 = 0
         if aLittleEndianBitArray.count == 8
         {
