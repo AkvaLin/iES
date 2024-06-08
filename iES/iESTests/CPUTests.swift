@@ -22,6 +22,26 @@ final class CPUTests: XCTestCase {
         cpu = nil
     }
     
+    func testSetZ() {
+        cpu.setZ(value: 0)
+        
+        XCTAssertTrue(cpu.z)
+        
+        cpu.setZ(value: 0x05)
+        
+        XCTAssertFalse(cpu.z)
+    }
+    
+    func testSetN() {
+        cpu.setN(value: 0xFF)
+        
+        XCTAssertTrue(cpu.n)
+        
+        cpu.setN(value: 0x00)
+        
+        XCTAssertFalse(cpu.n)
+    }
+    
     func testLDA() {
         let address: UInt16 = 0x0000
         let value: UInt8 = 0x05
@@ -33,28 +53,6 @@ final class CPUTests: XCTestCase {
         XCTAssertFalse(cpu.n)
     }
     
-    func testLDAZero() {
-        let address: UInt16 = 0x0000
-        let secondValue: UInt8 = 0x00
-        cpu.ram[Int(address % 0x0800)] = secondValue
-        cpu.lda(address: address)
-        
-        XCTAssertEqual(secondValue, cpu.a)
-        XCTAssertTrue(cpu.z)
-        XCTAssertFalse(cpu.n)
-    }
-    
-    func testLDANegative() {
-        let address: UInt16 = 0x0000
-        let thirdValue: UInt8 = 0xFF
-        cpu.ram[Int(address % 0x0800)] = thirdValue
-        cpu.lda(address: address)
-        
-        XCTAssertEqual(thirdValue, cpu.a)
-        XCTAssertFalse(cpu.z)
-        XCTAssertTrue(cpu.n)
-    }
-    
     func testTAX() {
         let address: UInt16 = 0x0000
         let value: UInt8 = 0x05
@@ -64,6 +62,8 @@ final class CPUTests: XCTestCase {
         cpu.tax()
         
         XCTAssertEqual(cpu.a, cpu.x)
+        XCTAssertFalse(cpu.z)
+        XCTAssertFalse(cpu.n)
     }
     
     func testTAY() {
@@ -75,5 +75,7 @@ final class CPUTests: XCTestCase {
         cpu.tay()
         
         XCTAssertEqual(cpu.a, cpu.y)
+        XCTAssertFalse(cpu.z)
+        XCTAssertFalse(cpu.n)
     }
 }
