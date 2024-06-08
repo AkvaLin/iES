@@ -144,6 +144,18 @@ extension MockedCPU {
         setZN(value: a)
     }
     
+    /// TAX - Transfer Accumulator to X
+    public mutating func tax() {
+        x = a
+        setZN(value: x)
+    }
+    
+    /// TAY - Transfer Accumulator to Y
+    public mutating func tay() {
+        y = a
+        setZN(value: y)
+    }
+    
     // MARK: status register
     
     // MARK: stack related

@@ -54,4 +54,26 @@ final class CPUTests: XCTestCase {
         XCTAssertFalse(cpu.z)
         XCTAssertTrue(cpu.n)
     }
+    
+    func testTAX() {
+        let address: UInt16 = 0x0000
+        let value: UInt8 = 0x05
+        cpu.ram[Int(address % 0x0800)] = value
+        cpu.lda(address: address)
+        
+        cpu.tax()
+        
+        XCTAssertEqual(cpu.a, cpu.x)
+    }
+    
+    func testTAY() {
+        let address: UInt16 = 0x0000
+        let value: UInt8 = 0x05
+        cpu.ram[Int(address % 0x0800)] = value
+        cpu.lda(address: address)
+        
+        cpu.tay()
+        
+        XCTAssertEqual(cpu.a, cpu.y)
+    }
 }
