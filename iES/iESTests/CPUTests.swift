@@ -78,4 +78,30 @@ final class CPUTests: XCTestCase {
         XCTAssertFalse(cpu.z)
         XCTAssertFalse(cpu.n)
     }
+    
+    func testDEX() {
+        let address: UInt16 = 0x0000
+        let value: UInt8 = 0x01
+        cpu.ram[Int(address % 0x0800)] = value
+        cpu.ldx(address: address)
+        
+        cpu.dex()
+        
+        XCTAssertEqual(cpu.x, 0x00)
+        XCTAssertTrue(cpu.z)
+        XCTAssertFalse(cpu.n)
+    }
+    
+    func testDEXOverflow() {
+        let address: UInt16 = 0x0000
+        let value: UInt8 = 0x00
+        cpu.ram[Int(address % 0x0800)] = value
+        cpu.ldx(address: address)
+        
+        cpu.dex()
+        
+        XCTAssertEqual(cpu.x, UInt8.max)
+        XCTAssertFalse(cpu.z)
+        XCTAssertTrue(cpu.n)
+    }
 }

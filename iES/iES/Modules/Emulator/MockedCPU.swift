@@ -138,10 +138,28 @@ extension MockedCPU {
     
     // MARK: A,X,Y registers
     
+    /// DEX - Decrement X Register
+    public mutating func dex() {
+        x &-= 1
+        setZN(value: x)
+    }
+    
     /// LDA - Load accumulator
     public mutating func lda(address: UInt16) {
         a = read(address: address)
         setZN(value: a)
+    }
+    
+    /// LDX - Load X Register
+    public mutating func ldx(address: UInt16) {
+        x = read(address: address)
+        setZN(value: x)
+    }
+    
+    /// LDY - Load Y Register
+    public mutating func ldy(address: UInt16) {
+        y = read(address: address)
+        setZN(value: y)
     }
     
     /// TAX - Transfer Accumulator to X
