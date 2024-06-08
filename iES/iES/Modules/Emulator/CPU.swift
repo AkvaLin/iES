@@ -144,6 +144,24 @@ extension CPU {
         setZN(value: x)
     }
     
+    /// DEY - Decrement Y Register
+    private mutating func dey() {
+        y &-= 1
+        setZN(value: y)
+    }
+    
+    /// INX - Increment X Register
+    private mutating func inx() {
+        x &+= 1
+        setZN(value: x)
+    }
+    
+    /// INY - Increment Y Register
+    private mutating func iny() {
+        y &+= 1
+        setZN(value: y)
+    }
+    
     /// LDA - Load accumulator
     private mutating func lda(address: UInt16) {
         a = read(address: address)
