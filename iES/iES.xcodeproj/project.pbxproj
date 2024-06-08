@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F6228A062C14EC570042F578 /* CPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A052C14EC570042F578 /* CPUTests.swift */; };
+		F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A072C14FA860042F578 /* MockedCPU.swift */; };
 		F65308652C0B0746009C886C /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308642C0B0746009C886C /* CPU.swift */; };
 		F65308672C0B266C009C886C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308662C0B266C009C886C /* Extensions.swift */; };
 		F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDB82BFD1A92007A3B60 /* iESApp.swift */; };
 		F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */; };
 		F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */; };
-		F668DDCD2BFD1A94007A3B60 /* iESTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDCC2BFD1A94007A3B60 /* iESTests.swift */; };
 		F668DDD72BFD1A94007A3B60 /* iESUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD62BFD1A94007A3B60 /* iESUITests.swift */; };
 		F668DDD92BFD1A94007A3B60 /* iESUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F6228A052C14EC570042F578 /* CPUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUTests.swift; sourceTree = "<group>"; };
+		F6228A072C14FA860042F578 /* MockedCPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedCPU.swift; sourceTree = "<group>"; };
 		F65308642C0B0746009C886C /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		F65308662C0B266C009C886C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F668DDB52BFD1A92007A3B60 /* iES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iES.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,7 +46,6 @@
 		F668DDC02BFD1A94007A3B60 /* iES.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iES.entitlements; sourceTree = "<group>"; };
 		F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F668DDC82BFD1A94007A3B60 /* iESTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iESTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F668DDCC2BFD1A94007A3B60 /* iESTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESTests.swift; sourceTree = "<group>"; };
 		F668DDD22BFD1A94007A3B60 /* iESUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iESUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F668DDD62BFD1A94007A3B60 /* iESUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITests.swift; sourceTree = "<group>"; };
 		F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				F65308642C0B0746009C886C /* CPU.swift */,
+				F6228A072C14FA860042F578 /* MockedCPU.swift */,
 				F65308662C0B266C009C886C /* Extensions.swift */,
 			);
 			path = Emulator;
@@ -134,7 +137,7 @@
 		F668DDCB2BFD1A94007A3B60 /* iESTests */ = {
 			isa = PBXGroup;
 			children = (
-				F668DDCC2BFD1A94007A3B60 /* iESTests.swift */,
+				F6228A052C14EC570042F578 /* CPUTests.swift */,
 			);
 			path = iESTests;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
+				F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */,
 				F65308652C0B0746009C886C /* CPU.swift in Sources */,
 				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
 			);
@@ -288,7 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F668DDCD2BFD1A94007A3B60 /* iESTests.swift in Sources */,
+				F6228A062C14EC570042F578 /* CPUTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,74 +1,74 @@
 //
-//  CPU.swift
+//  MockedCPU.swift
 //  iES
 //
-//  Created by Никита Пивоваров on 01.06.2024.
+//  Created by Никита Пивоваров on 08.06.2024.
 //
 
 import Foundation
 
-struct CPU {
+struct MockedCPU {
     
-    private var ram: [UInt8] = Array(repeating: 0, count: 2048)
+    public var ram: [UInt8] = Array(repeating: 0, count: 2048)
     
     /// number of cycles
-    private(set) var cycles: UInt64 = 0
+    public var cycles: UInt64 = 0
     
     /// program counter
-    private var pc: UInt16 = 0
+    public var pc: UInt16 = 0
     
     /// stack pointer
-    private var sp: UInt8 = 0
+    public var sp: UInt8 = 0
     
     // MARK: Registers
     
     /// accumulator
-    private var a: UInt8 = 0
+    public var a: UInt8 = 0
     
     /// x register
-    private var x: UInt8 = 0
+    public var x: UInt8 = 0
     
     /// y register
-    private var y: UInt8 = 0
+    public var y: UInt8 = 0
     
     // MARK: Flags (processor status)
     
     /// carry flag
-    private var c: Bool = false
+    public var c: Bool = false
     
     /// zero flag
-    private var z: Bool = false
+    public var z: Bool = false
     
     /// interrupt disable flag
-    private var i: Bool = false
+    public var i: Bool = false
     
     /// decimal mode flag
-    private var d: Bool = false
+    public var d: Bool = false
     
     /// break command flag
-    private var b: Bool = false
+    public var b: Bool = false
     
     /// unused flag
-    private var u: Bool = false
+    public var u: Bool = false
     
     /// overflow flag
-    private var v: Bool = false
+    public var v: Bool = false
     
     /// negative flag
-    private var n: Bool = false
+    public var n: Bool = false
 }
 
 // MARK: - Flag operations
 
-extension CPU {
+extension MockedCPU {
     /// returns a UInt8 with flag bits arranged as c,z,i,d,b,u,v,n
-    private func flags() -> UInt8 {
+    public func flags() -> UInt8 {
         let flagByte: UInt8 = UInt8.init(fromLittleEndianBitArray: [self.c, self.z, self.i, self.d, self.b, self.u, self.v, self.n])
         return flagByte
     }
     
     /// sets processor status with bits arranged as c,z,i,d,b,u,v,n
-    private mutating func set(flags: UInt8) {
+    public mutating func set(flags: UInt8) {
         let bits = flags.littleEndianBitArray
         self.c = bits[0]
         self.z = bits[1]
@@ -81,25 +81,25 @@ extension CPU {
     }
     
     /// sets the zero flag if the argument is zero
-    private mutating func setZ(value: UInt8) {
+    public mutating func setZ(value: UInt8) {
         self.z = (value == 0) ? true : false
     }
     
     /// sets the negative flag if the argument is negative
-    private mutating func setN(value: UInt8) {
+    public mutating func setN(value: UInt8) {
         self.n = (value & 0x80 != 0) ? true : false
     }
     
-    private mutating func setZN(value: UInt8) {
+    public mutating func setZN(value: UInt8) {
         setZ(value: value)
         setN(value: value)
     }
 }
 
 // MARK: - Memory
-extension CPU {
+extension MockedCPU {
     
-    private mutating func read(address: UInt16) -> UInt8
+    public mutating func read(address: UInt16) -> UInt8
     {
         switch address {
         case 0x0000 ..< 0x2000:
@@ -132,14 +132,14 @@ extension CPU {
 }
 
 // MARK: - 6502 functions
-extension CPU {
+extension MockedCPU {
     
     // MARK: arithmetic & logic
     
     // MARK: A,X,Y registers
     
     /// LDA - Load accumulator
-    private mutating func lda(address: UInt16) {
+    public mutating func lda(address: UInt16) {
         a = read(address: address)
         setZN(value: a)
     }
