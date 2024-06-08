@@ -144,6 +144,18 @@ extension CPU {
         setZN(value: a)
     }
     
+    /// LDX - Load X Register
+    private mutating func ldx(address: UInt16) {
+        x = read(address: address)
+        setZN(value: x)
+    }
+    
+    /// LDY - Load Y Register
+    private mutating func ldy(address: UInt16) {
+        y = read(address: address)
+        setZN(value: y)
+    }
+    
     /// TAX - Transfer Accumulator to X
     private mutating func tax() {
         x = a
