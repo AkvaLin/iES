@@ -94,6 +94,17 @@ extension CPU {
         setZ(value: value)
         setN(value: value)
     }
+    
+    /**
+     compares two values and sets zero, negative and carry flags
+     - parameter firstValue: the main value that will be compared
+     - parameter secondValue: the value to be compared with
+     */
+    private mutating func compare(firstValue: UInt8, secondValue: UInt8)
+    {
+        self.setZN(value: firstValue &- secondValue)
+        self.c = firstValue >= secondValue ? true : false
+    }
 }
 
 // MARK: - Memory
@@ -147,6 +158,20 @@ extension CPU {
     // MARK: - arithmetic & logic
     
     // MARK: - A,X,Y registers
+    
+    // MARK: Logical instructions
+    
+    /// CPX - Compare X Register
+    private mutating func cpx(address: UInt16) {
+        let value = read(address: address)
+        compare(firstValue: x, secondValue: value)
+    }
+    
+    /// CPY - Compare Y Register
+    private mutating func cpy(address: UInt16) {
+        let value = read(address: address)
+        compare(firstValue: y, secondValue: value)
+    }
     
     // MARK: Increment and decrement operations
     
