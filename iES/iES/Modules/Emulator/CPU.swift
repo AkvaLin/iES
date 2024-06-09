@@ -144,9 +144,11 @@ extension CPU {
 // MARK: - 6502 functions
 extension CPU {
     
-    // MARK: arithmetic & logic
+    // MARK: - arithmetic & logic
     
-    // MARK: A,X,Y registers
+    // MARK: - A,X,Y registers
+    
+    // MARK: Increment and decrement operations
     
     /// DEX - Decrement X Register
     private mutating func dex() {
@@ -172,6 +174,8 @@ extension CPU {
         setZN(value: y)
     }
     
+    // MARK: Load instructions
+    
     /// LDA - Load accumulator
     private mutating func lda(address: UInt16) {
         a = read(address: address)
@@ -190,6 +194,8 @@ extension CPU {
         setZN(value: y)
     }
     
+    // MARK: Store instructions
+    
     /// STA - Store Accumulator
     private mutating func sta(address: UInt16) {
         write(address: address, value: a)
@@ -205,6 +211,8 @@ extension CPU {
         write(address: address, value: y)
     }
     
+    // MARK: Transfer instructions
+    
     /// TAX - Transfer Accumulator to X
     private mutating func tax() {
         x = a
@@ -217,11 +225,11 @@ extension CPU {
         setZN(value: y)
     }
     
-    // MARK: status register
+    // MARK: - status register
     
-    // MARK: stack related
+    // MARK: - stack related
     
-    // MARK: control flow
+    // MARK: - control flow
     
-    // MARK: interrupts
+    // MARK: - interrupts
 }
