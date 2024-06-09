@@ -129,6 +129,16 @@ extension CPU {
             return 0
         }
     }
+    
+    private mutating func write(address: UInt16, value: UInt8) {
+        switch address {
+        case 0x0000 ..< 0x2000:
+            ram[Int(address % 0x0800)] = value
+            // TODO: other cases
+        default:
+            break
+        }
+    }
 }
 
 // MARK: - 6502 functions
@@ -178,6 +188,21 @@ extension CPU {
     private mutating func ldy(address: UInt16) {
         y = read(address: address)
         setZN(value: y)
+    }
+    
+    /// STA - Store Accumulator
+    private mutating func sta(address: UInt16) {
+        write(address: address, value: a)
+    }
+    
+    /// STX - Store X Register
+    private mutating func stx(address: UInt16) {
+        write(address: address, value: x)
+    }
+    
+    /// STY - Store Y Register
+    private mutating func sty(address: UInt16) {
+        write(address: address, value: y)
     }
     
     /// TAX - Transfer Accumulator to X
