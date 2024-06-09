@@ -225,6 +225,25 @@ extension CPU {
         setZN(value: y)
     }
     
+    private mutating func tsx() {
+        x = sp
+        setZN(value: x)
+    }
+    
+    private mutating func txa() {
+        a = x
+        setZN(value: a)
+    }
+    
+    private mutating func txs() {
+        sp = x
+    }
+    
+    private mutating func tya() {
+        a = y
+        setZN(value: a)
+    }
+    
     // MARK: - status register
     
     // MARK: - stack related
