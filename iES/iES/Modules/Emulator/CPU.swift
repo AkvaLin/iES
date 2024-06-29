@@ -155,6 +155,9 @@ extension CPU {
 // MARK: - 6502 functions
 extension CPU {
     
+    /// NOP - No Operation
+    private mutating func nop() { }
+    
     // MARK: - arithmetic & logic
     
     /// ADC - Add with Carry
