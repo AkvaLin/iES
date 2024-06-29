@@ -408,6 +408,41 @@ extension CPU {
     
     // MARK: - status register
     
+    /// CLC - Clear Carry Flag
+    private mutating func clc() {
+        c = false
+    }
+    
+    /// CLD - Clear Decimal Mode
+    private mutating func cld() {
+        d = false
+    }
+    
+    /// CLI - Clear Interrupt Disable
+    private mutating func  cli() {
+        i = false
+    }
+    
+    /// CLV - Clear Overflow Flag
+    private mutating func  clv() {
+        v = false
+    }
+    
+    /// SEC - Set Carry Flag
+    private mutating func sec() {
+        c = true
+    }
+    
+    /// SED - Set Decimal Flag
+    private mutating func sed() {
+        d = true
+    }
+    
+    /// SEI - Set Interrupt Disable
+    private mutating func sei() {
+        i = true
+    }
+    
     // MARK: - stack related
     
     // MARK: - control flow
