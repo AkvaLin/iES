@@ -157,19 +157,156 @@ extension CPU {
     
     // MARK: - arithmetic & logic
     
+    /// ADC - Add with Carry
+    private mutating func adc(stepData: StepData) {
+        let a = a
+        let b = read(address: stepData.address)
+        let c: UInt8 = c ? 1 : 0
+        self.a = a &+ b &+ c
+        self.setZN(value: self.a)
+        self.c = Int(a) + Int(b) + Int(c) > 0xFF
+        self.v = ((a ^ b) & 0x80) == 0 && ((a ^ self.a) & 0x80) != 0
+    }
+    
+    /// AND - Logical AND
+    private mutating func and(stepData: StepData) {
+        a = a & read(address: stepData.address)
+        setZN(value: a)
+    }
+    
+    /// ASL - Arithmetic Shift Left
+    private mutating func asl(stepData: StepData) {
+        if stepData.mode == .accumulator
+        {
+            c = ((a >> 7) & 1) == 1
+            a <<= 1
+            setZN(value: a)
+        }
+        else
+        {
+            var value = read(address: stepData.address)
+            c = ((value >> 7) & 1) == 1
+            value <<= 1
+            write(address: stepData.address, value: value)
+            setZN(value: value)
+        }
+    }
+    
+    /// BIT - Bit Test
+    private mutating func bit(stepData: StepData) {
+        let value = read(address: stepData.address)
+        v = ((value >> 6) & 1) == 1
+        setZ(value: value & a)
+        setN(value: value)
+    }
+    
+    /// CMP - Compare
+    private mutating func cmp(stepData: StepData) {
+        let value = read(address: stepData.address)
+        compare(firstValue: a, secondValue: value)
+    }
+    
+    /// DEC - Decrement Memory
+    private mutating func dec(stepData: StepData) {
+        let value = read(address: stepData.address) &- 1
+        write(address: stepData.address, value: value)
+        setZN(value: value)
+    }
+    
+    /// EOR - Exclusive OR
+    private mutating func eor(stepData: StepData) {
+        a = a ^ read(address: stepData.address)
+        setZN(value: a)
+    }
+    
+    /// LSR - Logical Shift Right
+    private mutating func lsr(stepData: StepData) {
+        if stepData.mode == .accumulator
+        {
+            c = (a & 1) == 1
+            a >>= 1
+            setZN(value: a)
+        }
+        else
+        {
+            var value = read(address: stepData.address)
+            c = (value & 1) == 1
+            value >>= 1
+            write(address: stepData.address, value: value)
+            setZN(value: value)
+        }
+    }
+    
+    /// ORA - Logical Inclusive OR
+    private mutating func ora(stepData: StepData) {
+        a = a | read(address: stepData.address)
+        setZN(value: a)
+    }
+    
+    /// ROL - Rotate Left
+    private mutating func rol(stepData: StepData) {
+        if stepData.mode == .accumulator
+        {
+            let c: UInt8 = self.c ? 1 : 0
+            self.c = ((self.a >> 7) & 1) == 1
+            self.a = (self.a << 1) | c
+            self.setZN(value: self.a)
+        }
+        else
+        {
+            let c: UInt8 = self.c ? 1 : 0
+            var value = self.read(address: stepData.address)
+            self.c = ((value >> 7) & 1) == 1
+            value = (value << 1) | c
+            self.write(address: stepData.address, value: value)
+            self.setZN(value: value)
+        }
+    }
+    
+    /// ROR - Rotate Right
+    private mutating func ror(stepData: StepData) {
+        if stepData.mode == .accumulator
+        {
+            let c: UInt8 = self.c ? 1 : 0
+            self.c = (self.a & 1) == 1
+            self.a = (self.a >> 1) | (c << 7)
+            self.setZN(value: self.a)
+        }
+        else
+        {
+            let c: UInt8 = self.c ? 1 : 0
+            var value = self.read(address: stepData.address)
+            self.c = (value & 1) == 1
+            value = (value >> 1) | (c << 7)
+            self.write(address: stepData.address, value: value)
+            self.setZN(value: value)
+        }
+    }
+    
+    /// SBC - Subtract with Carry
+    private mutating func sbc(stepData: StepData) {
+        let a: UInt8 = self.a
+        let b: UInt8 = self.read(address: stepData.address)
+        let c: UInt8 = self.c ? 1 : 0
+        self.a = a &- b &- (1 - c)
+        self.setZN(value: self.a)
+        self.c = Int(a) - Int(b) - Int(1 - c) >= 0
+        self.v = ((a ^ b) & 0x80) != 0 && ((a ^ self.a) & 0x80) != 0
+    }
+    
     // MARK: - A,X,Y registers
     
     // MARK: Logical instructions
     
     /// CPX - Compare X Register
-    private mutating func cpx(address: UInt16) {
-        let value = read(address: address)
+    private mutating func cpx(stepData: StepData) {
+        let value = read(address: stepData.address)
         compare(firstValue: x, secondValue: value)
     }
     
     /// CPY - Compare Y Register
-    private mutating func cpy(address: UInt16) {
-        let value = read(address: address)
+    private mutating func cpy(stepData: StepData) {
+        let value = read(address: stepData.address)
         compare(firstValue: y, secondValue: value)
     }
     
@@ -202,38 +339,38 @@ extension CPU {
     // MARK: Load instructions
     
     /// LDA - Load accumulator
-    private mutating func lda(address: UInt16) {
-        a = read(address: address)
+    private mutating func lda(stepData: StepData) {
+        a = read(address: stepData.address)
         setZN(value: a)
     }
     
     /// LDX - Load X Register
-    private mutating func ldx(address: UInt16) {
-        x = read(address: address)
+    private mutating func ldx(stepData: StepData) {
+        x = read(address: stepData.address)
         setZN(value: x)
     }
     
     /// LDY - Load Y Register
-    private mutating func ldy(address: UInt16) {
-        y = read(address: address)
+    private mutating func ldy(stepData: StepData) {
+        y = read(address: stepData.address)
         setZN(value: y)
     }
     
     // MARK: Store instructions
     
     /// STA - Store Accumulator
-    private mutating func sta(address: UInt16) {
-        write(address: address, value: a)
+    private mutating func sta(stepData: StepData) {
+        write(address: stepData.address, value: a)
     }
     
     /// STX - Store X Register
-    private mutating func stx(address: UInt16) {
-        write(address: address, value: x)
+    private mutating func stx(stepData: StepData) {
+        write(address: stepData.address, value: x)
     }
     
     /// STY - Store Y Register
-    private mutating func sty(address: UInt16) {
-        write(address: address, value: y)
+    private mutating func sty(stepData: StepData) {
+        write(address: stepData.address, value: y)
     }
     
     // MARK: Transfer instructions
@@ -276,4 +413,60 @@ extension CPU {
     // MARK: - control flow
     
     // MARK: - interrupts
+}
+
+extension CPU {
+    
+    /// execute instruction and returns number of steps
+    mutating func step() -> Int {
+        
+        // TODO: Don't foreget to finish this thing
+        
+        let opcode = read(address: pc)
+        let instructionInfo = getInstrutcionTable()[Int(opcode)]
+        let mode: AddressingMode = .absolute // TODO: <- get addressing mode from instruction info
+        let address: UInt16 = 0 // TODO: <- get correct address depending on addressing mode
+        let stepData = StepData(address: address, mode: mode, pc: self.pc)
+        
+        // TODO: Execute instruction
+        
+        // TODO: create counter
+        
+        return 0
+    }
+}
+
+extension CPU {
+    
+    func getInstrutcionTable() -> [InstructionData] {
+        // TODO: create instructions table
+        return [
+            
+        ]
+    }
+}
+
+// MARK: - Data Models
+
+// TODO: separate from this file
+enum AddressingMode: UInt8 {
+    case absolute, absoluteXIndexed, absoluteYIndexed, accumulator, immediate, implied, xIndexedIndirect, indirect, indirectYIndexed, relative, zeropage, zeroPageXIndexed, zeroPageYIndexed
+}
+
+struct StepData {
+    
+    /// memory address
+    let address: UInt16
+    
+    /// addressing mode
+    let mode: AddressingMode
+    
+    /// program counter
+    let pc: UInt16
+}
+
+// TODO: create instruction data model
+
+struct InstructionData {
+    
 }
