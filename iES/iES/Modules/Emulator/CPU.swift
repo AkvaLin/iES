@@ -152,6 +152,23 @@ extension CPU {
     }
 }
 
+// MARK: - Stack
+
+extension CPU {
+    
+    /// push a byte to the stack
+    private mutating func push(value: UInt8) {
+        write(address: 0x100 | UInt16(sp), value: value)
+        sp &-= 1
+    }
+    
+    /// pop a byte from the stack
+    private mutating func pop() -> UInt8 {
+        sp &+= 1
+        return read(address: 0x100 | UInt16(sp))
+    }
+}
+
 // MARK: - 6502 functions
 extension CPU {
     
@@ -447,6 +464,27 @@ extension CPU {
     }
     
     // MARK: - stack related
+    
+    /// PHA - Push Accumulator
+    private mutating func pha() {
+        push(value: a)
+    }
+    
+    /// PHP - Push Processor Status
+    private mutating func php() {
+        push(value: flags() | 0x10)
+    }
+    
+    /// PLA - Pull Accumulator
+    private mutating func pla() {
+        a = pop()
+        setZN(value: a)
+    }
+    
+    /// PLP - Pull Processor Status
+    private mutating func plp() {
+        set(flags: (pop() & 0xEF) | 0x20)
+    }
     
     // MARK: - control flow
     
