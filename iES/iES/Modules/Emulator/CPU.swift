@@ -141,6 +141,11 @@ extension CPU {
         }
     }
     
+    /// check whether two addresses reside on different pages
+    private func isDifferentpages(address1: UInt16, address2: UInt16) -> Bool {
+        return address1 & 0xFF00 != address2 & 0xFF00
+    }
+    
     private mutating func write(address: UInt16, value: UInt8) {
         switch address {
         case 0x0000 ..< 0x2000:
@@ -191,6 +196,17 @@ extension CPU {
         let high = UInt16(pop())
         
         return (high << 8) | low
+    }
+}
+
+// MARK: - Timing
+
+extension CPU {
+    private mutating func addCycles(stepData: StepData) {
+        cycles &+= 1
+        if isDifferentpages(address1: pc, address2: stepData.address) {
+            cycles &+= 1
+        }
     }
 }
 
@@ -512,6 +528,87 @@ extension CPU {
     }
     
     // MARK: - control flow
+    
+    /// BCC - Branch if Carry Clear
+    private mutating func bcc(stepData: StepData) {
+        if !c {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BCS - Branch if Carry Set
+    private mutating func bcs(stepData: StepData) {
+        if c {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BEQ - Branch if Equal
+    private mutating func beq(stepData: StepData) {
+        if z {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BMI - Branch if Minus
+    private mutating func bmi(stepData: StepData) {
+        if n
+        {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BNE - Branch if Not Equal
+    private mutating func bne(stepData: StepData) {
+        if !z {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BPL - Branch if Positive
+    private mutating func bpl(stepData: StepData) {
+        if !n {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BVC - Branch if Overflow Clear
+    private mutating func bvc(stepData: StepData) {
+        if !v {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// BVS - Branch if Overflow Set
+    private mutating func bvs(stepData: StepData) {
+        if v {
+            pc = stepData.address
+            addCycles(stepData: stepData)
+        }
+    }
+    
+    /// JMP - Jump
+    private mutating func jmp(stepData: StepData) {
+        pc = stepData.address
+    }
+    
+    /// JSR - Jump to Subroutine
+    private mutating func jsr(stepData: StepData) {
+        push16(value: pc - 1)
+        pc = stepData.address
+    }
+    
+    /// RTS - Return from Subroutine
+    private mutating func rts() {
+        pc = pop16() &+ 1
+    }
     
     // MARK: - interrupts
     
