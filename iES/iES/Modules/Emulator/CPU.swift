@@ -150,6 +150,14 @@ extension CPU {
             break
         }
     }
+    
+    /// read two bytes and return a double-word value
+    private mutating func read16(address: UInt16) -> UInt16 {
+        let low = UInt16(read(address: address))
+        let high = UInt16(read(address: address &+ 1))
+        
+        return (high << 8) | low
+    }
 }
 
 // MARK: - Stack
@@ -166,6 +174,23 @@ extension CPU {
     private mutating func pop() -> UInt8 {
         sp &+= 1
         return read(address: 0x100 | UInt16(sp))
+    }
+    
+    /// push two bytes to the stack
+    private mutating func push16(value: UInt16) {
+        let low = UInt8(value & 0xFF)
+        let high = UInt8(value >> 8)
+        
+        push(value: high)
+        push(value: low)
+    }
+    
+    /// pop two bytes from the stack
+    private mutating func pop16() -> UInt16 {
+        let low = UInt16(pop())
+        let high = UInt16(pop())
+        
+        return (high << 8) | low
     }
 }
 
@@ -489,6 +514,20 @@ extension CPU {
     // MARK: - control flow
     
     // MARK: - interrupts
+    
+    /// BRK - Force Interrupt
+    private mutating func brk() {
+        push16(value: pc)
+        php()
+        sei()
+        pc = read16(address: 0xFFFE)
+    }
+    
+    /// RTI - Return from Interrupt
+    private mutating func rti() {
+        set(flags:  (pop() & 0xEF) | 0x20)
+        pc = pop16()
+    }
 }
 
 extension CPU {
