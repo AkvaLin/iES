@@ -8,5 +8,17 @@
 import Foundation
 
 enum AddressingMode: UInt8 {
-    case absolute, absoluteXIndexed, absoluteYIndexed, accumulator, immediate, implied, xIndexedIndirect, indirect, indirectYIndexed, relative, zeropage, zeroPageXIndexed, zeroPageYIndexed
+    case absolute, 
+         absoluteXIndexed,
+         absoluteYIndexed,
+         accumulator,
+         immediate,
+         implied,
+         xIndexedIndirect,
+         indirect,
+         indirectYIndexed,
+         relative,
+         zeropage,
+         zeroPageXIndexed,
+         zeroPageYIndexed
 }

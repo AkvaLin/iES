@@ -9,6 +9,8 @@ import Foundation
 
 final class CPU {
     
+    var isStopped: Bool = false
+    
     private var ram: [UInt8] = Array(repeating: 0, count: 2048)
     
     /// number of cycles
@@ -56,6 +58,12 @@ final class CPU {
     
     /// negative flag
     private var n: Bool = false
+    
+    /// interrupt type to perform
+    private var interrupt: Interrupt = .none
+    
+    /// number of cycles to stall
+    private var stall: UInt64 = 0
 }
 
 // MARK: - Flag operations
@@ -208,6 +216,24 @@ extension CPU {
     }
 }
 
+// MARK: Interrupt Operations
+extension CPU {
+    /// causes a non-maskable interrupt to occur on the next cycle
+    func triggerNMI()
+    {
+        self.interrupt = .nmi
+    }
+    
+    /// causes an IRQ interrupt to occur on the next cycle, if the interrupt disable flag is not set
+    func triggerIRQ()
+    {
+        if self.i == false
+        {
+            self.interrupt = .irq
+        }
+    }
+}
+
 // MARK: - Timing
 
 extension CPU {
@@ -216,6 +242,26 @@ extension CPU {
         if isDifferentpages(address1: pc, address2: stepData.address) {
             cycles &+= 1
         }
+    }
+    
+    /// NMI - Non-Maskable Interrupt
+    private func nmi()
+    {
+        self.push16(value: self.pc)
+        php(stepData: .init(address: 0, mode: .implied, pc: 0))
+        self.pc = self.read16(address: 0xFFFA)
+        self.i = true
+        self.cycles &+= 7
+    }
+    
+    /// IRQ - IRQ Interrupt
+    private func irq()
+    {
+        self.push16(value: self.pc)
+        php(stepData: .init(address: 0, mode: .implied, pc: 0))
+        self.pc = self.read16(address: 0xFFFE)
+        self.i = true
+        self.cycles &+= 7
     }
 }
 
@@ -642,6 +688,29 @@ extension CPU {
     func step() -> Int {
         
         // TODO: Don't foreget to finish this thing
+        let numCPUCyclesThisStep: Int
+        
+        guard self.stall == 0
+        else
+        {
+            numCPUCyclesThisStep = 1
+            stall -= 1
+            stepOthers(for: numCPUCyclesThisStep)
+            return numCPUCyclesThisStep
+        }
+        
+        switch self.interrupt {
+        case .nmi:
+            nmi()
+        case .irq:
+            irq()
+            isStopped = false
+        default:
+            break
+        }
+        self.interrupt = .none
+        
+        let oldCycles = cycles
         
         let opcode = read(address: pc)
         let instructionInfo = getInstrutcionTable()[Int(opcode)]
@@ -736,9 +805,17 @@ extension CPU {
         let stepData = StepData(address: address, mode: mode, pc: self.pc)
         instructionInfo.instruction(stepData)
         
-        // TODO: create counter
+        numCPUCyclesThisStep = Int(cycles - oldCycles)
         
-        return 0
+        stepOthers(for: numCPUCyclesThisStep)
+        
+        return numCPUCyclesThisStep
+    }
+    
+    private func stepOthers(for numCPUCycles: Int) {
+        // PPU step
+        
+        // APU step
     }
 }
 
