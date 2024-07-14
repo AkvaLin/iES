@@ -926,39 +926,3 @@ extension CPU {
         ]
     }
 }
-
-// MARK: - Data Models
-
-enum AddressingMode: UInt8 {
-    case absolute, absoluteXIndexed, absoluteYIndexed, accumulator, immediate, implied, xIndexedIndirect, indirect, indirectYIndexed, relative, zeropage, zeroPageXIndexed, zeroPageYIndexed
-}
-
-struct StepData {
-    
-    /// memory address
-    let address: UInt16
-    
-    /// addressing mode
-    let mode: AddressingMode
-    
-    /// program counter
-    let pc: UInt16
-}
-
-struct InstructionData {
-    
-    /// CPU instruction
-    let instruction: (_ stepData: StepData) -> ()
-    
-    /// the addressing mode of the instruction
-    let mode: AddressingMode
-    
-    /// the number of cycles used by instruction
-    let cycles: UInt8
-    
-    /// number of cycles the instruction takes if a page boundary is closed
-    let pageCycles: UInt8
-    
-    /// the size of the instruction in bytes
-    let bytes: UInt8
-}

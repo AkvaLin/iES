@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501D52C43EE5A003B7574 /* AddressingMode.swift */; };
+		F61501D92C43EE77003B7574 /* StepData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501D82C43EE77003B7574 /* StepData.swift */; };
+		F61501DB2C43EE94003B7574 /* InstructionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501DA2C43EE94003B7574 /* InstructionData.swift */; };
 		F6228A062C14EC570042F578 /* CPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A052C14EC570042F578 /* CPUTests.swift */; };
 		F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A072C14FA860042F578 /* MockedCPU.swift */; };
 		F65308652C0B0746009C886C /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308642C0B0746009C886C /* CPU.swift */; };
@@ -36,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F61501D52C43EE5A003B7574 /* AddressingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressingMode.swift; sourceTree = "<group>"; };
+		F61501D82C43EE77003B7574 /* StepData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepData.swift; sourceTree = "<group>"; };
+		F61501DA2C43EE94003B7574 /* InstructionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionData.swift; sourceTree = "<group>"; };
 		F6228A052C14EC570042F578 /* CPUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUTests.swift; sourceTree = "<group>"; };
 		F6228A072C14FA860042F578 /* MockedCPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedCPU.swift; sourceTree = "<group>"; };
 		F65308642C0B0746009C886C /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
@@ -76,6 +82,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F61501D22C43EE1C003B7574 /* CPU */ = {
+			isa = PBXGroup;
+			children = (
+				F61501D72C43EE6E003B7574 /* Models */,
+				F65308642C0B0746009C886C /* CPU.swift */,
+				F61501D52C43EE5A003B7574 /* AddressingMode.swift */,
+			);
+			path = CPU;
+			sourceTree = "<group>";
+		};
+		F61501D72C43EE6E003B7574 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F61501D82C43EE77003B7574 /* StepData.swift */,
+				F61501DA2C43EE94003B7574 /* InstructionData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		F65308602C0B0729009C886C /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,7 +112,7 @@
 		F65308612C0B0734009C886C /* Emulator */ = {
 			isa = PBXGroup;
 			children = (
-				F65308642C0B0746009C886C /* CPU.swift */,
+				F61501D22C43EE1C003B7574 /* CPU */,
 				F6228A072C14FA860042F578 /* MockedCPU.swift */,
 				F65308662C0B266C009C886C /* Extensions.swift */,
 			);
@@ -281,9 +306,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F61501D92C43EE77003B7574 /* StepData.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 				F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */,
+				F61501DB2C43EE94003B7574 /* InstructionData.swift in Sources */,
 				F65308652C0B0746009C886C /* CPU.swift in Sources */,
+				F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */,
 				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
