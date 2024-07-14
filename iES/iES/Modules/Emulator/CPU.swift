@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CPU {
+final class CPU {
     
     private var ram: [UInt8] = Array(repeating: 0, count: 2048)
     
@@ -68,7 +68,7 @@ extension CPU {
     }
     
     /// sets processor status with bits arranged as c,z,i,d,b,u,v,n
-    private mutating func set(flags: UInt8) {
+    private func set(flags: UInt8) {
         let bits = flags.littleEndianBitArray
         self.c = bits[0]
         self.z = bits[1]
@@ -81,16 +81,16 @@ extension CPU {
     }
     
     /// sets the zero flag if the argument is zero
-    private mutating func setZ(value: UInt8) {
+    private func setZ(value: UInt8) {
         self.z = (value == 0) ? true : false
     }
     
     /// sets the negative flag if the argument is negative
-    private mutating func setN(value: UInt8) {
+    private func setN(value: UInt8) {
         self.n = (value & 0x80 != 0) ? true : false
     }
     
-    private mutating func setZN(value: UInt8) {
+    private func setZN(value: UInt8) {
         setZ(value: value)
         setN(value: value)
     }
@@ -100,7 +100,7 @@ extension CPU {
      - parameter firstValue: the main value that will be compared
      - parameter secondValue: the value to be compared with
      */
-    private mutating func compare(firstValue: UInt8, secondValue: UInt8)
+    private func compare(firstValue: UInt8, secondValue: UInt8)
     {
         self.setZN(value: firstValue &- secondValue)
         self.c = firstValue >= secondValue ? true : false
@@ -110,7 +110,7 @@ extension CPU {
 // MARK: - Memory
 extension CPU {
     
-    private mutating func read(address: UInt16) -> UInt8
+    private func read(address: UInt16) -> UInt8
     {
         switch address {
         case 0x0000 ..< 0x2000:
@@ -146,7 +146,7 @@ extension CPU {
         return address1 & 0xFF00 != address2 & 0xFF00
     }
     
-    private mutating func write(address: UInt16, value: UInt8) {
+    private func write(address: UInt16, value: UInt8) {
         switch address {
         case 0x0000 ..< 0x2000:
             ram[Int(address % 0x0800)] = value
@@ -157,7 +157,7 @@ extension CPU {
     }
     
     /// read two bytes and return a double-word value
-    private mutating func read16(address: UInt16) -> UInt16 {
+    private func read16(address: UInt16) -> UInt16 {
         let low = UInt16(read(address: address))
         let high = UInt16(read(address: address &+ 1))
         
@@ -170,19 +170,19 @@ extension CPU {
 extension CPU {
     
     /// push a byte to the stack
-    private mutating func push(value: UInt8) {
+    private func push(value: UInt8) {
         write(address: 0x100 | UInt16(sp), value: value)
         sp &-= 1
     }
     
     /// pop a byte from the stack
-    private mutating func pop() -> UInt8 {
+    private func pop() -> UInt8 {
         sp &+= 1
         return read(address: 0x100 | UInt16(sp))
     }
     
     /// push two bytes to the stack
-    private mutating func push16(value: UInt16) {
+    private func push16(value: UInt16) {
         let low = UInt8(value & 0xFF)
         let high = UInt8(value >> 8)
         
@@ -191,7 +191,7 @@ extension CPU {
     }
     
     /// pop two bytes from the stack
-    private mutating func pop16() -> UInt16 {
+    private func pop16() -> UInt16 {
         let low = UInt16(pop())
         let high = UInt16(pop())
         
@@ -202,7 +202,7 @@ extension CPU {
 // MARK: - Timing
 
 extension CPU {
-    private mutating func addCycles(stepData: StepData) {
+    private func addCycles(stepData: StepData) {
         cycles &+= 1
         if isDifferentpages(address1: pc, address2: stepData.address) {
             cycles &+= 1
@@ -214,12 +214,12 @@ extension CPU {
 extension CPU {
     
     /// NOP - No Operation
-    private mutating func nop() { }
+    private func nop(stepData: StepData) { }
     
     // MARK: - arithmetic & logic
     
     /// ADC - Add with Carry
-    private mutating func adc(stepData: StepData) {
+    private func adc(stepData: StepData) {
         let a = a
         let b = read(address: stepData.address)
         let c: UInt8 = c ? 1 : 0
@@ -230,13 +230,13 @@ extension CPU {
     }
     
     /// AND - Logical AND
-    private mutating func and(stepData: StepData) {
+    private func and(stepData: StepData) {
         a = a & read(address: stepData.address)
         setZN(value: a)
     }
     
     /// ASL - Arithmetic Shift Left
-    private mutating func asl(stepData: StepData) {
+    private func asl(stepData: StepData) {
         if stepData.mode == .accumulator
         {
             c = ((a >> 7) & 1) == 1
@@ -254,7 +254,7 @@ extension CPU {
     }
     
     /// BIT - Bit Test
-    private mutating func bit(stepData: StepData) {
+    private func bit(stepData: StepData) {
         let value = read(address: stepData.address)
         v = ((value >> 6) & 1) == 1
         setZ(value: value & a)
@@ -262,26 +262,26 @@ extension CPU {
     }
     
     /// CMP - Compare
-    private mutating func cmp(stepData: StepData) {
+    private func cmp(stepData: StepData) {
         let value = read(address: stepData.address)
         compare(firstValue: a, secondValue: value)
     }
     
     /// DEC - Decrement Memory
-    private mutating func dec(stepData: StepData) {
+    private func dec(stepData: StepData) {
         let value = read(address: stepData.address) &- 1
         write(address: stepData.address, value: value)
         setZN(value: value)
     }
     
     /// EOR - Exclusive OR
-    private mutating func eor(stepData: StepData) {
+    private func eor(stepData: StepData) {
         a = a ^ read(address: stepData.address)
         setZN(value: a)
     }
     
     /// LSR - Logical Shift Right
-    private mutating func lsr(stepData: StepData) {
+    private func lsr(stepData: StepData) {
         if stepData.mode == .accumulator
         {
             c = (a & 1) == 1
@@ -299,13 +299,13 @@ extension CPU {
     }
     
     /// ORA - Logical Inclusive OR
-    private mutating func ora(stepData: StepData) {
+    private func ora(stepData: StepData) {
         a = a | read(address: stepData.address)
         setZN(value: a)
     }
     
     /// ROL - Rotate Left
-    private mutating func rol(stepData: StepData) {
+    private func rol(stepData: StepData) {
         if stepData.mode == .accumulator
         {
             let c: UInt8 = self.c ? 1 : 0
@@ -325,7 +325,7 @@ extension CPU {
     }
     
     /// ROR - Rotate Right
-    private mutating func ror(stepData: StepData) {
+    private func ror(stepData: StepData) {
         if stepData.mode == .accumulator
         {
             let c: UInt8 = self.c ? 1 : 0
@@ -345,7 +345,7 @@ extension CPU {
     }
     
     /// SBC - Subtract with Carry
-    private mutating func sbc(stepData: StepData) {
+    private func sbc(stepData: StepData) {
         let a: UInt8 = self.a
         let b: UInt8 = self.read(address: stepData.address)
         let c: UInt8 = self.c ? 1 : 0
@@ -360,13 +360,13 @@ extension CPU {
     // MARK: Logical instructions
     
     /// CPX - Compare X Register
-    private mutating func cpx(stepData: StepData) {
+    private func cpx(stepData: StepData) {
         let value = read(address: stepData.address)
         compare(firstValue: x, secondValue: value)
     }
     
     /// CPY - Compare Y Register
-    private mutating func cpy(stepData: StepData) {
+    private func cpy(stepData: StepData) {
         let value = read(address: stepData.address)
         compare(firstValue: y, secondValue: value)
     }
@@ -374,25 +374,25 @@ extension CPU {
     // MARK: Increment and decrement operations
     
     /// DEX - Decrement X Register
-    private mutating func dex() {
+    private func dex(stepData: StepData) {
         x &-= 1
         setZN(value: x)
     }
     
     /// DEY - Decrement Y Register
-    private mutating func dey() {
+    private func dey(stepData: StepData) {
         y &-= 1
         setZN(value: y)
     }
     
     /// INX - Increment X Register
-    private mutating func inx() {
+    private func inx(stepData: StepData) {
         x &+= 1
         setZN(value: x)
     }
     
     /// INY - Increment Y Register
-    private mutating func iny() {
+    private func iny(stepData: StepData) {
         y &+= 1
         setZN(value: y)
     }
@@ -400,19 +400,19 @@ extension CPU {
     // MARK: Load instructions
     
     /// LDA - Load accumulator
-    private mutating func lda(stepData: StepData) {
+    private func lda(stepData: StepData) {
         a = read(address: stepData.address)
         setZN(value: a)
     }
     
     /// LDX - Load X Register
-    private mutating func ldx(stepData: StepData) {
+    private func ldx(stepData: StepData) {
         x = read(address: stepData.address)
         setZN(value: x)
     }
     
     /// LDY - Load Y Register
-    private mutating func ldy(stepData: StepData) {
+    private func ldy(stepData: StepData) {
         y = read(address: stepData.address)
         setZN(value: y)
     }
@@ -420,49 +420,49 @@ extension CPU {
     // MARK: Store instructions
     
     /// STA - Store Accumulator
-    private mutating func sta(stepData: StepData) {
+    private func sta(stepData: StepData) {
         write(address: stepData.address, value: a)
     }
     
     /// STX - Store X Register
-    private mutating func stx(stepData: StepData) {
+    private func stx(stepData: StepData) {
         write(address: stepData.address, value: x)
     }
     
     /// STY - Store Y Register
-    private mutating func sty(stepData: StepData) {
+    private func sty(stepData: StepData) {
         write(address: stepData.address, value: y)
     }
     
     // MARK: Transfer instructions
     
     /// TAX - Transfer Accumulator to X
-    private mutating func tax() {
+    private func tax(stepData: StepData) {
         x = a
         setZN(value: x)
     }
     
     /// TAY - Transfer Accumulator to Y
-    private mutating func tay() {
+    private func tay(stepData: StepData) {
         y = a
         setZN(value: y)
     }
     
-    private mutating func tsx() {
+    private func tsx(stepData: StepData) {
         x = sp
         setZN(value: x)
     }
     
-    private mutating func txa() {
+    private func txa(stepData: StepData) {
         a = x
         setZN(value: a)
     }
     
-    private mutating func txs() {
+    private func txs(stepData: StepData) {
         sp = x
     }
     
-    private mutating func tya() {
+    private func tya(stepData: StepData) {
         a = y
         setZN(value: a)
     }
@@ -470,67 +470,67 @@ extension CPU {
     // MARK: - status register
     
     /// CLC - Clear Carry Flag
-    private mutating func clc() {
+    private func clc(stepData: StepData) {
         c = false
     }
     
     /// CLD - Clear Decimal Mode
-    private mutating func cld() {
+    private func cld(stepData: StepData) {
         d = false
     }
     
     /// CLI - Clear Interrupt Disable
-    private mutating func  cli() {
+    private func  cli(stepData: StepData) {
         i = false
     }
     
     /// CLV - Clear Overflow Flag
-    private mutating func  clv() {
+    private func  clv(stepData: StepData) {
         v = false
     }
     
     /// SEC - Set Carry Flag
-    private mutating func sec() {
+    private func sec(stepData: StepData) {
         c = true
     }
     
     /// SED - Set Decimal Flag
-    private mutating func sed() {
+    private func sed(stepData: StepData) {
         d = true
     }
     
     /// SEI - Set Interrupt Disable
-    private mutating func sei() {
+    private func sei(stepData: StepData) {
         i = true
     }
     
     // MARK: - stack related
     
     /// PHA - Push Accumulator
-    private mutating func pha() {
+    private func pha(stepData: StepData) {
         push(value: a)
     }
     
     /// PHP - Push Processor Status
-    private mutating func php() {
+    private func php(stepData: StepData) {
         push(value: flags() | 0x10)
     }
     
     /// PLA - Pull Accumulator
-    private mutating func pla() {
+    private func pla(stepData: StepData) {
         a = pop()
         setZN(value: a)
     }
     
     /// PLP - Pull Processor Status
-    private mutating func plp() {
+    private func plp(stepData: StepData) {
         set(flags: (pop() & 0xEF) | 0x20)
     }
     
     // MARK: - control flow
     
     /// BCC - Branch if Carry Clear
-    private mutating func bcc(stepData: StepData) {
+    private func bcc(stepData: StepData) {
         if !c {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -538,7 +538,7 @@ extension CPU {
     }
     
     /// BCS - Branch if Carry Set
-    private mutating func bcs(stepData: StepData) {
+    private func bcs(stepData: StepData) {
         if c {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -546,7 +546,7 @@ extension CPU {
     }
     
     /// BEQ - Branch if Equal
-    private mutating func beq(stepData: StepData) {
+    private func beq(stepData: StepData) {
         if z {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -554,7 +554,7 @@ extension CPU {
     }
     
     /// BMI - Branch if Minus
-    private mutating func bmi(stepData: StepData) {
+    private func bmi(stepData: StepData) {
         if n
         {
             pc = stepData.address
@@ -563,7 +563,7 @@ extension CPU {
     }
     
     /// BNE - Branch if Not Equal
-    private mutating func bne(stepData: StepData) {
+    private func bne(stepData: StepData) {
         if !z {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -571,7 +571,7 @@ extension CPU {
     }
     
     /// BPL - Branch if Positive
-    private mutating func bpl(stepData: StepData) {
+    private func bpl(stepData: StepData) {
         if !n {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -579,7 +579,7 @@ extension CPU {
     }
     
     /// BVC - Branch if Overflow Clear
-    private mutating func bvc(stepData: StepData) {
+    private func bvc(stepData: StepData) {
         if !v {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -587,7 +587,7 @@ extension CPU {
     }
     
     /// BVS - Branch if Overflow Set
-    private mutating func bvs(stepData: StepData) {
+    private func bvs(stepData: StepData) {
         if v {
             pc = stepData.address
             addCycles(stepData: stepData)
@@ -595,33 +595,33 @@ extension CPU {
     }
     
     /// JMP - Jump
-    private mutating func jmp(stepData: StepData) {
+    private func jmp(stepData: StepData) {
         pc = stepData.address
     }
     
     /// JSR - Jump to Subroutine
-    private mutating func jsr(stepData: StepData) {
+    private func jsr(stepData: StepData) {
         push16(value: pc - 1)
         pc = stepData.address
     }
     
     /// RTS - Return from Subroutine
-    private mutating func rts() {
+    private func rts(stepData: StepData) {
         pc = pop16() &+ 1
     }
     
     // MARK: - interrupts
     
     /// BRK - Force Interrupt
-    private mutating func brk() {
+    private func brk(stepData: StepData) {
         push16(value: pc)
-        php()
-        sei()
+        php(stepData: stepData)
+        sei(stepData: stepData)
         pc = read16(address: 0xFFFE)
     }
     
     /// RTI - Return from Interrupt
-    private mutating func rti() {
+    private func rti(stepData: StepData) {
         set(flags:  (pop() & 0xEF) | 0x20)
         pc = pop16()
     }
@@ -630,7 +630,7 @@ extension CPU {
 extension CPU {
     
     /// execute instruction and returns number of steps
-    mutating func step() -> Int {
+    func step() -> Int {
         
         // TODO: Don't foreget to finish this thing
         
@@ -650,17 +650,191 @@ extension CPU {
 
 extension CPU {
     
-    func getInstrutcionTable() -> [InstructionData] {
-        // TODO: create instructions table
+    /// reuturns all combinations of instructions
+    private func getInstrutcionTable() -> [InstructionData] {
+        // TODO: add illegal instructions
         return [
-            
+            .init(instruction: brk, mode: .implied,          cycles: 7, pageCycles: 0, bytes: 2),
+            .init(instruction: ora, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: ora, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: asl, mode: .zeropage,         cycles: 5, pageCycles: 0, bytes: 2),
+            .init(instruction: php, mode: .implied,          cycles: 3, pageCycles: 0, bytes: 1),
+            .init(instruction: ora, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: asl, mode: .accumulator,      cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: ora, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: asl, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: bpl, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: ora, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: ora, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: asl, mode: .zeroPageXIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: clc, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: ora, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: ora, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: asl, mode: .absoluteXIndexed, cycles: 7, pageCycles: 0, bytes: 3),
+            .init(instruction: jsr, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: and, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: bit, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: and, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: rol, mode: .zeropage,         cycles: 5, pageCycles: 0, bytes: 2),
+            .init(instruction: plp, mode: .implied,          cycles: 4, pageCycles: 0, bytes: 1),
+            .init(instruction: and, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: rol, mode: .accumulator,      cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: bit, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: and, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: rol, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: bmi, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: and, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: and, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: rol, mode: .zeroPageXIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: sec, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: and, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: and, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: rol, mode: .absoluteXIndexed, cycles: 7, pageCycles: 0, bytes: 3),
+            .init(instruction: rti, mode: .implied,          cycles: 6, pageCycles: 0, bytes: 1),
+            .init(instruction: eor, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: eor, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: lsr, mode: .zeropage,         cycles: 5, pageCycles: 0, bytes: 2),
+            .init(instruction: pha, mode: .implied,          cycles: 3, pageCycles: 0, bytes: 1),
+            .init(instruction: eor, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: lsr, mode: .accumulator,      cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: jmp, mode: .absolute,         cycles: 3, pageCycles: 0, bytes: 3),
+            .init(instruction: eor, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: lsr, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: bvc, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: eor, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: eor, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: lsr, mode: .zeroPageXIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: cli, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: eor, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: eor, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: lsr, mode: .absoluteXIndexed, cycles: 7, pageCycles: 0, bytes: 3),
+            .init(instruction: rts, mode: .implied,          cycles: 6, pageCycles: 0, bytes: 1),
+            .init(instruction: adc, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: adc, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: ror, mode: .zeropage,         cycles: 5, pageCycles: 0, bytes: 2),
+            .init(instruction: pla, mode: .implied,          cycles: 4, pageCycles: 0, bytes: 1),
+            .init(instruction: adc, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: ror, mode: .accumulator,      cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: jmp, mode: .indirect,         cycles: 5, pageCycles: 0, bytes: 3),
+            .init(instruction: adc, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: ror, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: bvs, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: adc, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: adc, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: ror, mode: .zeroPageXIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: sei, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: adc, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: adc, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: ror, mode: .absoluteXIndexed, cycles: 7, pageCycles: 0, bytes: 3),
+            .init(instruction: nop, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: sta, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: sty, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: sta, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: stx, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: dey, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: txa, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sty, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: sta, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: stx, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: bcc, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: sta, mode: .indirectYIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: sty, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: sta, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: stx, mode: .zeroPageYIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: tya, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sta, mode: .absoluteYIndexed, cycles: 5, pageCycles: 0, bytes: 3),
+            .init(instruction: txs, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sta, mode: .absoluteXIndexed, cycles: 5, pageCycles: 0, bytes: 3),
+            .init(instruction: ldy, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: lda, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: ldx, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: ldy, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: lda, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: ldx, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: tay, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: lda, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: tax, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: ldy, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: lda, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: ldx, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: bcs, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: lda, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: ldy, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: lda, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: ldx, mode: .zeroPageYIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: clv, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: lda, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: tsx, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: ldy, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: lda, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: ldx, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: cpy, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: cmp, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: cpy, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: cmp, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: dec, mode: .zeropage,         cycles: 5, pageCycles: 0, bytes: 2),
+            .init(instruction: iny, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: cmp, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: dex, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: cpy, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: cmp, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: dec, mode: .absolute,         cycles: 6, pageCycles: 0, bytes: 3),
+            .init(instruction: bne, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: cmp, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: cmp, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: dec, mode: .zeroPageXIndexed, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: cld, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: cmp, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: cmp, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: dec, mode: .absoluteXIndexed, cycles: 7, pageCycles: 0, bytes: 3),
+            .init(instruction: cpx, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: sbc, mode: .xIndexedIndirect, cycles: 6, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: cpx, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: sbc, mode: .zeropage,         cycles: 3, pageCycles: 0, bytes: 2),
+            .init(instruction: inx, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sbc, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sbc, mode: .immediate,        cycles: 2, pageCycles: 0, bytes: 2),
+            .init(instruction: cpx, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: sbc, mode: .absolute,         cycles: 4, pageCycles: 0, bytes: 3),
+            .init(instruction: beq, mode: .relative,         cycles: 2, pageCycles: 1, bytes: 2),
+            .init(instruction: sbc, mode: .indirectYIndexed, cycles: 5, pageCycles: 1, bytes: 2),
+            .init(instruction: nop, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: sbc, mode: .zeroPageXIndexed, cycles: 4, pageCycles: 0, bytes: 2),
+            .init(instruction: sed, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: sbc, mode: .absoluteYIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: nop, mode: .implied,          cycles: 2, pageCycles: 0, bytes: 1),
+            .init(instruction: nop, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
+            .init(instruction: sbc, mode: .absoluteXIndexed, cycles: 4, pageCycles: 1, bytes: 3),
         ]
     }
 }
 
 // MARK: - Data Models
 
-// TODO: separate from this file
 enum AddressingMode: UInt8 {
     case absolute, absoluteXIndexed, absoluteYIndexed, accumulator, immediate, implied, xIndexedIndirect, indirect, indirectYIndexed, relative, zeropage, zeroPageXIndexed, zeroPageYIndexed
 }
@@ -677,8 +851,20 @@ struct StepData {
     let pc: UInt16
 }
 
-// TODO: create instruction data model
-
 struct InstructionData {
     
+    /// CPU instruction
+    let instruction: (_ stepData: StepData) -> ()
+    
+    /// the addressing mode of the instruction
+    let mode: AddressingMode
+    
+    /// the number of cycles used by instruction
+    let cycles: UInt8
+    
+    /// number of cycles the instruction takes if a page boundary is closed
+    let pageCycles: UInt8
+    
+    /// the size of the instruction in bytes
+    let bytes: UInt8
 }
