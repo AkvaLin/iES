@@ -163,6 +163,15 @@ extension CPU {
         
         return (high << 8) | low
     }
+    
+    /// impements 6502 bug in reading
+    private func read16bug(address: UInt16) -> UInt16 {
+        let b: UInt16 = (address & 0xFF00) | UInt16((address % 256) &+ 1)
+        let low = read(address: address)
+        let high = read(address: b)
+        
+        return (UInt16(high) << 8) | UInt16(low)
+    }
 }
 
 // MARK: - Stack
@@ -636,11 +645,96 @@ extension CPU {
         
         let opcode = read(address: pc)
         let instructionInfo = getInstrutcionTable()[Int(opcode)]
-        let mode: AddressingMode = .absolute // TODO: <- get addressing mode from instruction info
-        let address: UInt16 = 0 // TODO: <- get correct address depending on addressing mode
-        let stepData = StepData(address: address, mode: mode, pc: self.pc)
+        let mode: AddressingMode = instructionInfo.mode
+        let address: UInt16
+        let pageCrossed: Bool
         
-        // TODO: Execute instruction
+        switch mode {
+        case .absolute:
+            address = read16(address: pc &+ 1)
+            pageCrossed = false
+        case .absoluteXIndexed:
+            address = read16(address: pc &+ 1) &+ UInt16(x)
+            pageCrossed = isDifferentpages(address1: address &- UInt16(x), address2: address)
+        case .absoluteYIndexed:
+            address = read16(address: pc &+ 1) &+ UInt16(y)
+            pageCrossed = isDifferentpages(address1: address &- UInt16(y), address2: address)
+        case .accumulator:
+            address = 0
+            pageCrossed = false
+        case .immediate:
+            address = pc &+ 1
+            pageCrossed = false
+        case .implied:
+            address = 0
+            pageCrossed = false
+        case .xIndexedIndirect:
+            let zero: UInt8 = read(address: pc &+ 1) &+ x
+            
+            if zero == 0xFF
+            {
+                address = UInt16(read(address: 0x00FF)) | (UInt16(read(address: 0x0000)) << 8)
+            }
+            else
+            {
+                address = read16bug(address: UInt16(zero))
+            }
+            
+            pageCrossed = false
+        case .indirect:
+            let vector = read16(address: pc &+ 1)
+            if vector & 0x00FF == 0x00FF
+            {
+                let lo = read(address: vector)
+                let hi = read(address: vector &- 0x00FF)
+                address = UInt16(lo) | (UInt16(hi) << 8)
+            }
+            else
+            {
+                address = read16bug(address: vector)
+            }
+            pageCrossed = false
+        case .indirectYIndexed:
+            let zero: UInt8 = read(address: pc &+ 1)
+            
+            if zero == 0xFF
+            {
+                address = UInt16(read(address: 0x00FF)) | (UInt16(read(address: 0x0000)) << 8) &+ UInt16(y)
+            }
+            else
+            {
+                address = read16bug(address: UInt16(zero)) &+ UInt16(y)
+            }
+            
+            pageCrossed = isDifferentpages(address1: address &- UInt16(y), address2: address)
+        case .relative:
+            let offset = UInt16(read(address: pc &+ 1))
+            if offset < 0x80 {
+                address = pc &+ 2 &+ offset
+            } else {
+                address = pc &+ 2 &+ offset &- 0x100
+            }
+            pageCrossed = false
+        case .zeropage:
+            address = UInt16(read(address: pc &+ 1))
+            pageCrossed = false
+        case .zeroPageXIndexed:
+            address = UInt16(read(address: pc &+ 1) &+ x) & 0xff
+            pageCrossed = false
+        case .zeroPageYIndexed:
+            address = UInt16(read(address: pc &+ 1) &+ y) & 0xff
+            pageCrossed = false
+        }
+        
+        self.pc &+= UInt16(instructionInfo.bytes)
+        self.cycles &+= UInt64(instructionInfo.cycles)
+        if pageCrossed
+        {
+            self.cycles &+= UInt64(instructionInfo.pageCycles)
+        }
+        
+        let stepData = StepData(address: address, mode: mode, pc: self.pc)
+        instructionInfo.instruction(stepData)
         
         // TODO: create counter
         
