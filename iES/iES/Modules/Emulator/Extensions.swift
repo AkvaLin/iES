@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 extension UInt8
 {
@@ -42,5 +43,13 @@ extension UInt8
         }
         
         self.init(retValue)
+    }
+}
+
+extension Data
+{
+    var md5: String
+    {
+        Insecure.MD5.hash(data: self).map({ String(format: "%02hhx", $0) }).joined()
     }
 }
