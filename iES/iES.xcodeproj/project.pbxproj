@@ -7,21 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501D52C43EE5A003B7574 /* AddressingMode.swift */; };
+		F61501D92C43EE77003B7574 /* StepData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501D82C43EE77003B7574 /* StepData.swift */; };
+		F61501DB2C43EE94003B7574 /* InstructionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501DA2C43EE94003B7574 /* InstructionData.swift */; };
 		F61501E72C440C43003B7574 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501E62C440C43003B7574 /* HomeView.swift */; };
 		F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501EC2C440FC6003B7574 /* LibraryView.swift */; };
 		F61501F82C44105A003B7574 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501F72C44105A003B7574 /* MainView.swift */; };
 		F61501FA2C441076003B7574 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501F92C441076003B7574 /* ProfileView.swift */; };
 		F61501FE2C441181003B7574 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501FD2C441181003B7574 /* AppSettings.swift */; };
+		F6228A062C14EC570042F578 /* CPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A052C14EC570042F578 /* CPUTests.swift */; };
+		F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A072C14FA860042F578 /* MockedCPU.swift */; };
 		F6498A4F2C5E3BD0006D371C /* LibraryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A4E2C5E3BD0006D371C /* LibraryItemView.swift */; };
 		F6498A512C5E46C4006D371C /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A502C5E46C4006D371C /* LibraryViewModel.swift */; };
 		F6498A532C5E46E0006D371C /* LibraryItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A522C5E46E0006D371C /* LibraryItemModel.swift */; };
 		F6498A552C5E5C52006D371C /* AddGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A542C5E5C51006D371C /* AddGameView.swift */; };
+		F65308652C0B0746009C886C /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308642C0B0746009C886C /* CPU.swift */; };
+		F65308672C0B266C009C886C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65308662C0B266C009C886C /* Extensions.swift */; };
 		F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDB82BFD1A92007A3B60 /* iESApp.swift */; };
 		F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */; };
 		F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */; };
 		F668DDD72BFD1A94007A3B60 /* iESUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD62BFD1A94007A3B60 /* iESUITests.swift */; };
 		F668DDD92BFD1A94007A3B60 /* iESUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */; };
 		F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */; };
+		F6A3DB932C44183E0025A941 /* Cartridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB922C44183E0025A941 /* Cartridge.swift */; };
+		F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */; };
+		F6A3DB9E2C441ADE0025A941 /* Interrupt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9D2C441ADE0025A941 /* Interrupt.swift */; };
+		F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9F2C441DA60025A941 /* RomHeader.swift */; };
+		F6A3DBA22C441ECA0025A941 /* MapperIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DBA12C441ECA0025A941 /* MapperIdentifier.swift */; };
+		F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DBA32C441EE20025A941 /* MirroringMode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,15 +55,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F61501D52C43EE5A003B7574 /* AddressingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressingMode.swift; sourceTree = "<group>"; };
+		F61501D82C43EE77003B7574 /* StepData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepData.swift; sourceTree = "<group>"; };
+		F61501DA2C43EE94003B7574 /* InstructionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionData.swift; sourceTree = "<group>"; };
 		F61501E62C440C43003B7574 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F61501EC2C440FC6003B7574 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		F61501F72C44105A003B7574 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		F61501F92C441076003B7574 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F61501FD2C441181003B7574 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		F6228A052C14EC570042F578 /* CPUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUTests.swift; sourceTree = "<group>"; };
+		F6228A072C14FA860042F578 /* MockedCPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedCPU.swift; sourceTree = "<group>"; };
 		F6498A4E2C5E3BD0006D371C /* LibraryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemView.swift; sourceTree = "<group>"; };
 		F6498A502C5E46C4006D371C /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
 		F6498A522C5E46E0006D371C /* LibraryItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemModel.swift; sourceTree = "<group>"; };
 		F6498A542C5E5C51006D371C /* AddGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGameView.swift; sourceTree = "<group>"; };
+		F65308642C0B0746009C886C /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
+		F65308662C0B266C009C886C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F668DDB52BFD1A92007A3B60 /* iES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F668DDB82BFD1A92007A3B60 /* iESApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESApp.swift; sourceTree = "<group>"; };
 		F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,6 +81,12 @@
 		F668DDD62BFD1A94007A3B60 /* iESUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITests.swift; sourceTree = "<group>"; };
 		F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewIcon.swift; sourceTree = "<group>"; };
+		F6A3DB922C44183E0025A941 /* Cartridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cartridge.swift; sourceTree = "<group>"; };
+		F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperProtocol.swift; sourceTree = "<group>"; };
+		F6A3DB9D2C441ADE0025A941 /* Interrupt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interrupt.swift; sourceTree = "<group>"; };
+		F6A3DB9F2C441DA60025A941 /* RomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RomHeader.swift; sourceTree = "<group>"; };
+		F6A3DBA12C441ECA0025A941 /* MapperIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperIdentifier.swift; sourceTree = "<group>"; };
+		F6A3DBA32C441EE20025A941 /* MirroringMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirroringMode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +114,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F61501D22C43EE1C003B7574 /* CPU */ = {
+			isa = PBXGroup;
+			children = (
+				F61501D72C43EE6E003B7574 /* Models */,
+				F65308642C0B0746009C886C /* CPU.swift */,
+				F61501D52C43EE5A003B7574 /* AddressingMode.swift */,
+				F6A3DB9D2C441ADE0025A941 /* Interrupt.swift */,
+			);
+			path = CPU;
+			sourceTree = "<group>";
+		};
+		F61501D72C43EE6E003B7574 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F61501D82C43EE77003B7574 /* StepData.swift */,
+				F61501DA2C43EE94003B7574 /* InstructionData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		F61501E22C440C27003B7574 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -229,14 +275,28 @@
 				F61501E22C440C27003B7574 /* Home */,
 				F61501E82C440F95003B7574 /* Library */,
 				F61501EF2C441030003B7574 /* Profile */,
+				F65308612C0B0734009C886C /* Emulator */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		F65308612C0B0734009C886C /* Emulator */ = {
+			isa = PBXGroup;
+			children = (
+				F6A3DB9A2C441A060025A941 /* Mappers */,
+				F6A3DB912C4418310025A941 /* Cartridge */,
+				F61501D22C43EE1C003B7574 /* CPU */,
+				F6228A072C14FA860042F578 /* MockedCPU.swift */,
+				F65308662C0B266C009C886C /* Extensions.swift */,
+			);
+			path = Emulator;
 			sourceTree = "<group>";
 		};
 		F668DDAC2BFD1A92007A3B60 = {
 			isa = PBXGroup;
 			children = (
 				F668DDB72BFD1A92007A3B60 /* iES */,
+				F668DDCB2BFD1A94007A3B60 /* iESTests */,
 				F668DDD52BFD1A94007A3B60 /* iESUITests */,
 				F668DDB62BFD1A92007A3B60 /* Products */,
 			);
@@ -272,6 +332,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		F668DDCB2BFD1A94007A3B60 /* iESTests */ = {
+			isa = PBXGroup;
+			children = (
+				F6228A052C14EC570042F578 /* CPUTests.swift */,
+			);
+			path = iESTests;
+			sourceTree = "<group>";
+		};
 		F668DDD52BFD1A94007A3B60 /* iESUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +347,25 @@
 				F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */,
 			);
 			path = iESUITests;
+			sourceTree = "<group>";
+		};
+		F6A3DB912C4418310025A941 /* Cartridge */ = {
+			isa = PBXGroup;
+			children = (
+				F6A3DB922C44183E0025A941 /* Cartridge.swift */,
+				F6A3DB9F2C441DA60025A941 /* RomHeader.swift */,
+			);
+			path = Cartridge;
+			sourceTree = "<group>";
+		};
+		F6A3DB9A2C441A060025A941 /* Mappers */ = {
+			isa = PBXGroup;
+			children = (
+				F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */,
+				F6A3DBA12C441ECA0025A941 /* MapperIdentifier.swift */,
+				F6A3DBA32C441EE20025A941 /* MirroringMode.swift */,
+			);
+			path = Mappers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -415,17 +502,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */,
+				F61501D92C43EE77003B7574 /* StepData.swift in Sources */,
+				F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 				F61501FE2C441181003B7574 /* AppSettings.swift in Sources */,
 				F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */,
+				F6A3DBA22C441ECA0025A941 /* MapperIdentifier.swift in Sources */,
 				F6498A512C5E46C4006D371C /* LibraryViewModel.swift in Sources */,
+				F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */,
 				F61501F82C44105A003B7574 /* MainView.swift in Sources */,
+				F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */,
+				F61501DB2C43EE94003B7574 /* InstructionData.swift in Sources */,
 				F6498A4F2C5E3BD0006D371C /* LibraryItemView.swift in Sources */,
+				F6A3DB932C44183E0025A941 /* Cartridge.swift in Sources */,
 				F6498A532C5E46E0006D371C /* LibraryItemModel.swift in Sources */,
+				F65308652C0B0746009C886C /* CPU.swift in Sources */,
 				F61501E72C440C43003B7574 /* HomeView.swift in Sources */,
+				F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */,
 				F61501FA2C441076003B7574 /* ProfileView.swift in Sources */,
 				F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */,
+				F6A3DB9E2C441ADE0025A941 /* Interrupt.swift in Sources */,
 				F6498A552C5E5C52006D371C /* AddGameView.swift in Sources */,
+				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +532,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6228A062C14EC570042F578 /* CPUTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
