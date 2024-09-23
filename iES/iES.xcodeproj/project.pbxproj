@@ -28,6 +28,7 @@
 		F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F668DDC22BFD1A94007A3B60 /* Preview Assets.xcassets */; };
 		F668DDD72BFD1A94007A3B60 /* iESUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD62BFD1A94007A3B60 /* iESUITests.swift */; };
 		F668DDD92BFD1A94007A3B60 /* iESUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */; };
+		F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */; };
 		F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */; };
 		F6A3DB932C44183E0025A941 /* Cartridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB922C44183E0025A941 /* Cartridge.swift */; };
 		F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */; };
@@ -35,6 +36,8 @@
 		F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9F2C441DA60025A941 /* RomHeader.swift */; };
 		F6A3DBA22C441ECA0025A941 /* MapperIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DBA12C441ECA0025A941 /* MapperIdentifier.swift */; };
 		F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DBA32C441EE20025A941 /* MirroringMode.swift */; };
+		F6E31CDC2CA043EF00283AD4 /* PPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E31CDB2CA043EA00283AD4 /* PPU.swift */; };
+		F6E31CDE2CA0480F00283AD4 /* PPUState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E31CDD2CA0480F00283AD4 /* PPUState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +83,7 @@
 		F668DDD22BFD1A94007A3B60 /* iESUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iESUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F668DDD62BFD1A94007A3B60 /* iESUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITests.swift; sourceTree = "<group>"; };
 		F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemDetailView.swift; sourceTree = "<group>"; };
 		F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewIcon.swift; sourceTree = "<group>"; };
 		F6A3DB922C44183E0025A941 /* Cartridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cartridge.swift; sourceTree = "<group>"; };
 		F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperProtocol.swift; sourceTree = "<group>"; };
@@ -87,6 +91,8 @@
 		F6A3DB9F2C441DA60025A941 /* RomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RomHeader.swift; sourceTree = "<group>"; };
 		F6A3DBA12C441ECA0025A941 /* MapperIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperIdentifier.swift; sourceTree = "<group>"; };
 		F6A3DBA32C441EE20025A941 /* MirroringMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirroringMode.swift; sourceTree = "<group>"; };
+		F6E31CDB2CA043EA00283AD4 /* PPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPU.swift; sourceTree = "<group>"; };
+		F6E31CDD2CA0480F00283AD4 /* PPUState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPUState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +204,7 @@
 			children = (
 				F61501EC2C440FC6003B7574 /* LibraryView.swift */,
 				F6498A4E2C5E3BD0006D371C /* LibraryItemView.swift */,
+				F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */,
 				F6498A542C5E5C51006D371C /* AddGameView.swift */,
 			);
 			path = Views;
@@ -286,6 +293,7 @@
 				F6A3DB9A2C441A060025A941 /* Mappers */,
 				F6A3DB912C4418310025A941 /* Cartridge */,
 				F61501D22C43EE1C003B7574 /* CPU */,
+				F6E31CDA2CA043DA00283AD4 /* PPU */,
 				F6228A072C14FA860042F578 /* MockedCPU.swift */,
 				F65308662C0B266C009C886C /* Extensions.swift */,
 			);
@@ -366,6 +374,15 @@
 				F6A3DBA32C441EE20025A941 /* MirroringMode.swift */,
 			);
 			path = Mappers;
+			sourceTree = "<group>";
+		};
+		F6E31CDA2CA043DA00283AD4 /* PPU */ = {
+			isa = PBXGroup;
+			children = (
+				F6E31CDB2CA043EA00283AD4 /* PPU.swift */,
+				F6E31CDD2CA0480F00283AD4 /* PPUState.swift */,
+			);
+			path = PPU;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -502,12 +519,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */,
 				F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */,
 				F61501D92C43EE77003B7574 /* StepData.swift in Sources */,
 				F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 				F61501FE2C441181003B7574 /* AppSettings.swift in Sources */,
 				F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */,
+				F6E31CDE2CA0480F00283AD4 /* PPUState.swift in Sources */,
 				F6A3DBA22C441ECA0025A941 /* MapperIdentifier.swift in Sources */,
 				F6498A512C5E46C4006D371C /* LibraryViewModel.swift in Sources */,
 				F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */,
@@ -522,6 +541,7 @@
 				F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */,
 				F61501FA2C441076003B7574 /* ProfileView.swift in Sources */,
 				F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */,
+				F6E31CDC2CA043EF00283AD4 /* PPU.swift in Sources */,
 				F6A3DB9E2C441ADE0025A941 /* Interrupt.swift in Sources */,
 				F6498A552C5E5C52006D371C /* AddGameView.swift in Sources */,
 				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
