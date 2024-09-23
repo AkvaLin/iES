@@ -14,36 +14,96 @@ struct LibraryView: View {
     
     var body: some View {
         ZStack {
-            if colorScheme == .dark {
-                Rectangle()
-                    .fill(.black.gradient)
-                    .ignoresSafeArea()
-            } else {
-                Rectangle()
-                    .fill(.white.gradient)
-                    .ignoresSafeArea()
+            Group {
+                backgroundView
+                contentView
             }
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], content: {
-                    ForEach(viewModel.games) { game in
-                        LibraryItemView(icon: game.icon, title: game.title)
-                            .padding(20)
+            .allowsHitTesting(!viewModel.isDetailsPresented)
+            .blur(radius: viewModel.isDetailsPresented ? 15 : 0)
+            .onChange(of: viewModel.isDetailsPresented, { oldValue, newValue in
+                withAnimation {
+                    if newValue {
+                        viewModel.detailsViewOffset.height = 0
                     }
-                })
-                .padding([.horizontal, .top], 40)
+                }
+            })
+            
+            if viewModel.isDetailsPresented {
+                detailsView
             }
-            .navigationTitle("Library")
-            .toolbarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    NavigationLink {
-                        AddGameView()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
+        }
+        .navigationTitle("Library")
+        .toolbarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                NavigationLink {
+                    AddGameView()
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
         }
+    }
+    
+    private var backgroundView: some View {
+        if colorScheme == .dark {
+            Rectangle()
+                .fill(.black.gradient)
+                .ignoresSafeArea()
+        } else {
+            Rectangle()
+                .fill(.white.gradient)
+                .ignoresSafeArea()
+        }
+    }
+    
+    private var contentView: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], content: {
+                ForEach(viewModel.games) { game in
+                    LibraryItemView(icon: game.icon, title: game.title)
+                        .onTapGesture {
+                            viewModel.modelToPresent = game
+                            withAnimation {
+                                viewModel.isDetailsPresented = true
+                            }
+                        }
+                        .padding(20)
+                }
+            })
+            .padding([.horizontal, .top], 40)
+        }
+    }
+    
+    private var detailsView: some View {
+        LibraryItemDetailView(model: viewModel.modelToPresent ?? LibraryItemModel(title: "<Missing>", icon: Image(systemName: "externaldrive.badge.exclamationmark")))
+            .padding(40)
+            .aspectRatio(1, contentMode: .fit)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        withAnimation {
+                            if value.translation.height < 0 {
+                                viewModel.detailsViewOffset.height = 0
+                            } else {
+                                viewModel.detailsViewOffset.height = value.translation.height
+                            }
+                        }
+                    }
+                    .onEnded { value in
+                        if value.translation.height > 200 {
+                            withAnimation {
+                                viewModel.isDetailsPresented = false
+                                viewModel.detailsViewOffset.height = 500
+                            }
+                        } else {
+                            withAnimation {
+                                viewModel.detailsViewOffset.height = 0
+                            }
+                        }
+                    }
+            )
+            .offset(viewModel.detailsViewOffset)
     }
 }
 

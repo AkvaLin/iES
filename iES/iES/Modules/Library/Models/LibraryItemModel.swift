@@ -8,8 +8,12 @@
 import Foundation
 import SwiftUI
 
-struct LibraryItemModel: Identifiable {
+struct LibraryItemModel: Identifiable, Hashable, Equatable {
     let id = UUID()
     let title: String
     let icon: Image
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
