@@ -38,6 +38,17 @@
 		F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DBA32C441EE20025A941 /* MirroringMode.swift */; };
 		F6E31CDC2CA043EF00283AD4 /* PPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E31CDB2CA043EA00283AD4 /* PPU.swift */; };
 		F6E31CDE2CA0480F00283AD4 /* PPUState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E31CDD2CA0480F00283AD4 /* PPUState.swift */; };
+		F6E4E5222CABF330005D5165 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5212CABF327005D5165 /* ProfileViewModel.swift */; };
+		F6E4E5262CABF37B005D5165 /* Emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5252CABF378005D5165 /* Emulator.swift */; };
+		F6E4E5292CABF41F005D5165 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5282CABF41B005D5165 /* HomeViewModel.swift */; };
+		F6E4E52B2CABF47A005D5165 /* EmulatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E52A2CABF472005D5165 /* EmulatorService.swift */; };
+		F6E4E52D2CABF496005D5165 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E52C2CABF47D005D5165 /* AppService.swift */; };
+		F6E4E52F2CABF4BA005D5165 /* GamesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E52E2CABF4B7005D5165 /* GamesService.swift */; };
+		F6E4E5312CABF4D0005D5165 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5302CABF4C1005D5165 /* UserService.swift */; };
+		F6E4E5332CABF4DC005D5165 /* SavesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5322CABF4D9005D5165 /* SavesService.swift */; };
+		F6E4E5352CABFAFF005D5165 /* EmulatorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5342CABFAFB005D5165 /* EmulatorState.swift */; };
+		F6E4E5372CABFBAD005D5165 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5362CABFBA7005D5165 /* SettingsViewModel.swift */; };
+		F6E4E5392CABFD0B005D5165 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E4E5382CABFD04005D5165 /* LoginViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +104,17 @@
 		F6A3DBA32C441EE20025A941 /* MirroringMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirroringMode.swift; sourceTree = "<group>"; };
 		F6E31CDB2CA043EA00283AD4 /* PPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPU.swift; sourceTree = "<group>"; };
 		F6E31CDD2CA0480F00283AD4 /* PPUState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPUState.swift; sourceTree = "<group>"; };
+		F6E4E5212CABF327005D5165 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		F6E4E5252CABF378005D5165 /* Emulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emulator.swift; sourceTree = "<group>"; };
+		F6E4E5282CABF41B005D5165 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		F6E4E52A2CABF472005D5165 /* EmulatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorService.swift; sourceTree = "<group>"; };
+		F6E4E52C2CABF47D005D5165 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
+		F6E4E52E2CABF4B7005D5165 /* GamesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesService.swift; sourceTree = "<group>"; };
+		F6E4E5302CABF4C1005D5165 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		F6E4E5322CABF4D9005D5165 /* SavesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavesService.swift; sourceTree = "<group>"; };
+		F6E4E5342CABFAFB005D5165 /* EmulatorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatorState.swift; sourceTree = "<group>"; };
+		F6E4E5362CABFBA7005D5165 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		F6E4E5382CABFD04005D5165 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +182,7 @@
 		F61501E42C440C33003B7574 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F6E4E5282CABF41B005D5165 /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -263,6 +286,7 @@
 		F61501F42C441046003B7574 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F6E4E5212CABF327005D5165 /* ProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -283,6 +307,8 @@
 				F61501E82C440F95003B7574 /* Library */,
 				F61501EF2C441030003B7574 /* Profile */,
 				F65308612C0B0734009C886C /* Emulator */,
+				F6E4E51E2CABF2FB005D5165 /* Settings */,
+				F6E4E51F2CABF30F005D5165 /* Login */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -290,12 +316,14 @@
 		F65308612C0B0734009C886C /* Emulator */ = {
 			isa = PBXGroup;
 			children = (
+				F6E4E5342CABFAFB005D5165 /* EmulatorState.swift */,
 				F6A3DB9A2C441A060025A941 /* Mappers */,
 				F6A3DB912C4418310025A941 /* Cartridge */,
 				F61501D22C43EE1C003B7574 /* CPU */,
 				F6E31CDA2CA043DA00283AD4 /* PPU */,
 				F6228A072C14FA860042F578 /* MockedCPU.swift */,
 				F65308662C0B266C009C886C /* Extensions.swift */,
+				F6E4E5252CABF378005D5165 /* Emulator.swift */,
 			);
 			path = Emulator;
 			sourceTree = "<group>";
@@ -324,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				F65308602C0B0729009C886C /* Modules */,
+				F6E4E5272CABF3D9005D5165 /* Services */,
 				F668DDB82BFD1A92007A3B60 /* iESApp.swift */,
 				F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */,
 				F668DDC02BFD1A94007A3B60 /* iES.entitlements */,
@@ -383,6 +412,50 @@
 				F6E31CDD2CA0480F00283AD4 /* PPUState.swift */,
 			);
 			path = PPU;
+			sourceTree = "<group>";
+		};
+		F6E4E51E2CABF2FB005D5165 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F6E4E5242CABF367005D5165 /* ViewModels */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		F6E4E51F2CABF30F005D5165 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				F6E4E5232CABF361005D5165 /* ViewModels */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		F6E4E5232CABF361005D5165 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F6E4E5382CABFD04005D5165 /* LoginViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F6E4E5242CABF367005D5165 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F6E4E5362CABFBA7005D5165 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F6E4E5272CABF3D9005D5165 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F6E4E52C2CABF47D005D5165 /* AppService.swift */,
+				F6E4E52A2CABF472005D5165 /* EmulatorService.swift */,
+				F6E4E52E2CABF4B7005D5165 /* GamesService.swift */,
+				F6E4E5322CABF4D9005D5165 /* SavesService.swift */,
+				F6E4E5302CABF4C1005D5165 /* UserService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -522,9 +595,13 @@
 				F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */,
 				F6A3DBA42C441EE20025A941 /* MirroringMode.swift in Sources */,
 				F61501D92C43EE77003B7574 /* StepData.swift in Sources */,
+				F6E4E5352CABFAFF005D5165 /* EmulatorState.swift in Sources */,
+				F6E4E5222CABF330005D5165 /* ProfileViewModel.swift in Sources */,
 				F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
+				F6E4E5262CABF37B005D5165 /* Emulator.swift in Sources */,
 				F61501FE2C441181003B7574 /* AppSettings.swift in Sources */,
+				F6E4E5332CABF4DC005D5165 /* SavesService.swift in Sources */,
 				F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */,
 				F6E31CDE2CA0480F00283AD4 /* PPUState.swift in Sources */,
 				F6A3DBA22C441ECA0025A941 /* MapperIdentifier.swift in Sources */,
@@ -532,19 +609,26 @@
 				F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */,
 				F61501F82C44105A003B7574 /* MainView.swift in Sources */,
 				F6228A082C14FA860042F578 /* MockedCPU.swift in Sources */,
+				F6E4E5292CABF41F005D5165 /* HomeViewModel.swift in Sources */,
 				F61501DB2C43EE94003B7574 /* InstructionData.swift in Sources */,
+				F6E4E5312CABF4D0005D5165 /* UserService.swift in Sources */,
 				F6498A4F2C5E3BD0006D371C /* LibraryItemView.swift in Sources */,
+				F6E4E52D2CABF496005D5165 /* AppService.swift in Sources */,
 				F6A3DB932C44183E0025A941 /* Cartridge.swift in Sources */,
 				F6498A532C5E46E0006D371C /* LibraryItemModel.swift in Sources */,
 				F65308652C0B0746009C886C /* CPU.swift in Sources */,
 				F61501E72C440C43003B7574 /* HomeView.swift in Sources */,
+				F6E4E52F2CABF4BA005D5165 /* GamesService.swift in Sources */,
+				F6E4E52B2CABF47A005D5165 /* EmulatorService.swift in Sources */,
 				F61501D62C43EE5A003B7574 /* AddressingMode.swift in Sources */,
+				F6E4E5392CABFD0B005D5165 /* LoginViewModel.swift in Sources */,
 				F61501FA2C441076003B7574 /* ProfileView.swift in Sources */,
 				F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */,
 				F6E31CDC2CA043EF00283AD4 /* PPU.swift in Sources */,
 				F6A3DB9E2C441ADE0025A941 /* Interrupt.swift in Sources */,
 				F6498A552C5E5C52006D371C /* AddGameView.swift in Sources */,
 				F65308672C0B266C009C886C /* Extensions.swift in Sources */,
+				F6E4E5372CABFBAD005D5165 /* SettingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

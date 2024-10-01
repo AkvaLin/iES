@@ -38,4 +38,20 @@ class LibraryViewModel: ObservableObject {
         }
     }
     @Published var detailsViewOffset: CGSize = .init(width: 0, height: 500)
+    
+    func getGames() {
+        print(GamesService.getGames())
+    }
+    
+    func addGame() {
+        GamesService.addGame()
+    }
+    
+    func removeGame() {
+        GamesService.removeGame()
+    }
+    
+    func sortGames() { }
+    
+    func runGame() { }
 }
