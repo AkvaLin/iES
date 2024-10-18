@@ -18,6 +18,6 @@ class ProfileViewModel: ObservableObject {
     }
     
     func changeUserInfo() {
-        UserService.changeUserInfo(info: User)
+        UserService.changeUserInfo(info: .init(uid: "", name: "", email: ""))
     }
 }
