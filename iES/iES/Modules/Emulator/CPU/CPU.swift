@@ -9,7 +9,12 @@ import Foundation
 
 final class CPU {
     
+    var ppu: PPU
     var isStopped: Bool = false
+    
+    init(ppu: PPU) {
+        self.ppu = ppu
+    }
     
     private var ram: [UInt8] = Array(repeating: 0, count: 2048)
     
@@ -124,11 +129,9 @@ extension CPU {
         case 0x0000 ..< 0x2000:
             return self.ram[Int(address % 0x0800)]
         case 0x2000 ..< 0x4000:
-            // TODO: PPU register
-            return 0
+            return self.ppu.readRegister(address: 0x2000 + (address % 8))
         case 0x4014:
-            // TODO: PPU register
-            return 0
+            return self.ppu.readRegister(address: address)
         case 0x4015:
             // TODO: APU register
             return 0
@@ -142,8 +145,7 @@ extension CPU {
             // TODO: I/O registers
             return 0
         case 0x5000 ... 0xFFFF:
-            // TODO: ...
-            return 0
+            return self.ppu.mapper.cpuRead(address: address)
         default:
             return 0
         }
@@ -158,6 +160,14 @@ extension CPU {
         switch address {
         case 0x0000 ..< 0x2000:
             ram[Int(address % 0x0800)] = value
+        case 0x2000 ..< 0x4000:
+            self.ppu.writeRegister(address: 0x2000 + (address % 8), value: value)
+        case 0x4014:
+            let startIndex: Int = Int(UInt16(value) << 8)
+            self.ppu.writeOAMDMA(oamDMA: [UInt8](self.ram[startIndex ..< startIndex + 256]))
+            self.stall += (self.cycles % 2 == 0) ? 513 : 514
+        case 0x5000 ... 0xFFFF:
+            self.ppu.mapper.cpuWrite(address: address, value: value)
             // TODO: other cases
         default:
             break
@@ -814,7 +824,19 @@ extension CPU {
     
     private func stepOthers(for numCPUCycles: Int) {
         // PPU step
-        
+        for _ in 0 ..< numCPUCycles * 3
+        {
+            let ppuStepResults: PPUStepResults = self.ppu.step()
+            if let safeRequestedInterrupt: Interrupt = ppuStepResults.requestedCPUInterrupt
+            {
+                switch safeRequestedInterrupt
+                {
+                case .irq: self.triggerIRQ()
+                case .nmi: self.triggerNMI()
+                case .none: self.interrupt = .none
+                }
+            }
+        }
         // APU step
     }
 }
