@@ -32,6 +32,7 @@
 		F668DDD92BFD1A94007A3B60 /* iESUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */; };
 		F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */; };
 		F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */; };
+		F69D595E2CDF648C00EA89F5 /* PPUStepResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69D595D2CDF648C00EA89F5 /* PPUStepResults.swift */; };
 		F6A3DB932C44183E0025A941 /* Cartridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB922C44183E0025A941 /* Cartridge.swift */; };
 		F6A3DB9C2C441A120025A941 /* MapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */; };
 		F6A3DB9E2C441ADE0025A941 /* Interrupt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A3DB9D2C441ADE0025A941 /* Interrupt.swift */; };
@@ -129,6 +130,7 @@
 		F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemDetailView.swift; sourceTree = "<group>"; };
 		F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewIcon.swift; sourceTree = "<group>"; };
+		F69D595D2CDF648C00EA89F5 /* PPUStepResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPUStepResults.swift; sourceTree = "<group>"; };
 		F6A3DB922C44183E0025A941 /* Cartridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cartridge.swift; sourceTree = "<group>"; };
 		F6A3DB9B2C441A120025A941 /* MapperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapperProtocol.swift; sourceTree = "<group>"; };
 		F6A3DB9D2C441ADE0025A941 /* Interrupt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interrupt.swift; sourceTree = "<group>"; };
@@ -514,6 +516,7 @@
 		F6E31CDA2CA043DA00283AD4 /* PPU */ = {
 			isa = PBXGroup;
 			children = (
+				F69D595D2CDF648C00EA89F5 /* PPUStepResults.swift */,
 				F6E31CDB2CA043EA00283AD4 /* PPU.swift */,
 				F6E31CDD2CA0480F00283AD4 /* PPUState.swift */,
 			);
@@ -733,6 +736,7 @@
 				F6E4E5352CABFAFF005D5165 /* EmulatorState.swift in Sources */,
 				F6DFBBC82CC2F2CA000B4D5E /* UserServiceProtocol.swift in Sources */,
 				F6E4E5222CABF330005D5165 /* ProfileViewModel.swift in Sources */,
+				F69D595E2CDF648C00EA89F5 /* PPUStepResults.swift in Sources */,
 				F6A3DBA02C441DA60025A941 /* RomHeader.swift in Sources */,
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 				F6E4E5262CABF37B005D5165 /* Emulator.swift in Sources */,
