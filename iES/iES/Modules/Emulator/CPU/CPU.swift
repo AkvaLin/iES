@@ -9,6 +9,7 @@ import Foundation
 
 final class CPU {
     
+    static let frequency: Int = 1789773
     var ppu: PPU
     var isStopped: Bool = false
     
