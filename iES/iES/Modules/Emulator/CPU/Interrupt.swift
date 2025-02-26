@@ -8,7 +8,5 @@
 import Foundation
 
 enum Interrupt: UInt8 {
-    case none, 
-         nmi,
-         irq
+    case none, nmi, irq
 }

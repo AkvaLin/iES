@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct RomHeader
-{
+struct RomHeader {
     static let sizeInBytes: Int = 16
     let numPrgBlocks: UInt8
     let numChrBlocks: UInt8
@@ -18,8 +17,7 @@ struct RomHeader
     let hasBattery: Bool
     let isValid: Bool
     
-    init(from data: Data)
-    {
+    init(from data: Data) {
         let bytes: [UInt8] = [UInt8](data)
         
         // check for header length and N,E,S,0x1a start of file
@@ -28,8 +26,7 @@ struct RomHeader
             bytes[1] == 0x45, // E
             bytes[2] == 0x53, // S
             bytes[3] == 0x1A
-        else
-        {
+        else {
             self.mapperIdentifier = nil
             self.mirroringMode = .horizontal
             self.hasTrainer = false

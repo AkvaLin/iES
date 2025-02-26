@@ -7,8 +7,7 @@
 
 import Foundation
 
-enum MapperIdentifier: UInt8
-{    
+enum MapperIdentifier: UInt8 {
     case NROM = 0,
          MMC1 = 1,
          UxROM = 2,

@@ -5,9 +5,9 @@
 //  Created by Никита Пивоваров on 22.09.2024.
 //
 
+import Foundation
 
-struct PPUState
-{
+struct PPUState: Codable {
     let cycle: UInt16
     let scanline: UInt16
     let frame: UInt64
@@ -39,14 +39,14 @@ struct PPUState
     let nmiOutput: Bool
     let nmiDelay: UInt8
     
-    // MARK: Background temporary variables
+    // MARK: Background temporary letiables
     let nameTableByte: UInt8
     let attributeTableByte: UInt8
     let lowTileByte: UInt8
     let highTileByte: UInt8
     let tileData: UInt64
     
-    // MARK: Sprite temporary variables
+    // MARK: Sprite temporary letiables
     let spriteCount: UInt8
     let spritePatterns: [UInt32]
     let spritePositions: [UInt8]

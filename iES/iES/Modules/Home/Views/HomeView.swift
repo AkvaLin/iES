@@ -5,45 +5,45 @@
 //  Created by Никита Пивоваров on 14.07.2024.
 //
 
+import Foundation
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     
-    @Environment(\.colorScheme) var colorScheme
+    @Query(GamesService.getDescriptor(limit: 3)) private var games: [GameModel]
     
     var body: some View {
         NavigationStack {
             ZStack {
-                if colorScheme == .dark {
-                    Rectangle()
-                        .fill(.black.gradient)
-                        .ignoresSafeArea()
-                } else {
-                    Rectangle()
-                        .fill(.white.gradient)
-                        .ignoresSafeArea()
-                }
+                UIElements.background()
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 40) {
                         Group {
                             HomeViewIcon()
-                            ForEach(0..<3) { _ in
-                                HomeViewIcon(localizedText: "Game", color: .game, icon: Image(systemName: "gamecontroller"))
+                            EmptyView()
+                            ForEach(games, id: \.id) { game in
+                                NavigationLink {
+                                    ConsoleView(game: game)
+                                        .ignoresSafeArea()
+                                } label: {
+                                    HomeViewIcon(text: game.title, icon: UIElements.gameImage(imageData: game.imageData))
+                                }
                             }
                             NavigationLink {
                                 LibraryView()
-                            } label: {//00CED1
-                                HomeViewIcon(localizedText: "Library", color: .library, icon: Image(systemName: "books.vertical"))
+                            } label: {
+                                HomeViewIcon(localizedText: "Library", icon: Image(systemName: "books.vertical"))
                             }
                             NavigationLink {
                                 ProfileView()
                             } label: {
-                                HomeViewIcon(localizedText: "Profile", color: .profile, icon: Image(systemName: "person"))
+                                HomeViewIcon(localizedText: "Profile", icon: Image(systemName: "person"))
                             }
                             NavigationLink {
-                                
+                                SettingsView()
                             } label: {
-                                HomeViewIcon(localizedText: "Settings", color: .settings, icon: Image(systemName: "slider.horizontal.3"))
+                                HomeViewIcon(localizedText: "Settings", icon: Image(systemName: "slider.horizontal.3"))
                             }
                             HomeViewIcon()
                         }
@@ -68,18 +68,12 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            //            HomeView()
-            //                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
-            //                .previewDisplayName("iPhone")
+            HomeView()
+                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
+                .previewDisplayName("iPhone")
             HomeView()
                 .previewDevice(PreviewDevice(rawValue: "iPad Pro 13-inch (M4)"))
                 .previewDisplayName("iPad")
-            //            HomeView()
-            //                .previewDevice(PreviewDevice(rawValue: "Apple TV 4K (3rd generation)"))
-            //                .previewDisplayName("TV")
-            //            HomeView()
-            //                .previewDevice(PreviewDevice(rawValue: "Apple Vision Pro"))
-            //                .previewDisplayName("Vision")
         }
         .previewInterfaceOrientation(.landscapeLeft)
     }

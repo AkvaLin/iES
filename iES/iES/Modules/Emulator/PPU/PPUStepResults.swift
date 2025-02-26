@@ -6,7 +6,6 @@
 //
 
 
-struct PPUStepResults
-{
+struct PPUStepResults {
     let requestedCPUInterrupt: Interrupt?
 }

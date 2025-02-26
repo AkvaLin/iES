@@ -9,100 +9,197 @@ import SwiftUI
 
 struct LibraryItemDetailView: View {
     
-    @Environment(\.colorScheme) var colorScheme
-    let model: LibraryItemModel
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+    @State private var showDeleteAlert = false
+    let model: GameModel?
+    @Binding var playButtonWasPressed: Bool
+    @State private var isViewFlipped = false
+    @State private var isSettingsPresented = false
+    @State private var showDeleteSaveDataAlert = false
     
     var body: some View {
-        Group {
-            if colorScheme == .dark {
-                Rectangle()
-                    .fill(.black.gradient)
-            } else {
-                Rectangle()
-                    .fill(.white.gradient)
-            }
-        }
-        .overlay {
-            VStack {
-                HStack {
-                    contentView
-                    divier
-                    rightMenuBar
-                }
-                playButton
+        ZStack {
+            UIElements.background()
+            HStack {
+                Spacer()
+                contentView
+                Spacer()
+                divier
+                rightMenuBar
             }
             .padding()
         }
-        .clipShape(RoundedRectangle(cornerRadius: 25))
-        .aspectRatio(1, contentMode: .fit)
-        .shadow(color: colorScheme == .dark ? .gray.opacity(0.33) : .black.opacity(0.33), radius: 10)
-        .padding()
+        .alert("The game and all data will be permanently deleted.\nAre you sure?", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                if let model = model {
+                    modelContext.delete(model)
+                }
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .alert("You'll loose all ingame progress.\nAre you sure?", isPresented: $showDeleteSaveDataAlert) {
+            Button("Delete", role: .destructive) {
+                model?.state = nil
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
     
     private var contentView: some View {
         VStack {
-            Text(model.title)
-                .lineLimit(3)
-                .font(.largeTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            model.icon
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding(.vertical)
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.compact.backward")
+                }
+                .font(.title)
+                .foregroundStyle(Colors.primaryColor)
+                .frame(minWidth: 44, minHeight: 44)
+                Spacer()
+                Text(model?.title ?? "<Unknown>")
+                    .lineLimit(1)
+                    .font(.title)
+                Spacer()
+            }
+            Spacer()
+            FlipView(
+                frontView: FrontView(model: model, flipAction: { isViewFlipped.toggle() }),
+                backView: BackView(isSettingsPresented: $isSettingsPresented, showDeleteAlert: $showDeleteAlert, showDeleteSaveDataAlert: $showDeleteSaveDataAlert, model: model, flipAction: { isViewFlipped.toggle() }),
+                showBack: $isViewFlipped
+            )
+            .padding(.horizontal)
+            Spacer()
         }
-        .padding()
     }
     
     private var divier: some View {
         Rectangle()
-            .fill(.accent)
+            .fill(Colors.primaryColor)
             .frame(maxWidth: 1, maxHeight: .infinity)
-            .padding(.vertical)
     }
     
     private var rightMenuBar: some View {
         VStack {
-            Button {
-                
-            } label: {
-                Image(systemName: "gear")
+            Group {
+                Button {
+                    withAnimation {
+                        if isSettingsPresented, isViewFlipped {
+                            isViewFlipped = false
+                        } else {
+                            isSettingsPresented = true
+                            isViewFlipped = true
+                        }
+                    }
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .frame(minWidth: 44, minHeight: 44)
+                Spacer()
+                Button {
+                    withAnimation {
+                        if !isSettingsPresented, isViewFlipped {
+                            isViewFlipped = false
+                        } else {
+                            isSettingsPresented = false
+                            isViewFlipped = true
+                        }
+                    }
+                } label: {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+                .frame(minWidth: 44, minHeight: 44)
             }
-            .frame(minWidth: 44, minHeight: 44)
-            .padding(.top, 25)
+            .foregroundStyle(Colors.primaryColor)
             Spacer()
-            Button {
-                
-            } label: {
-                Image(systemName: "chart.bar.xaxis")
-            }
-            .frame(minWidth: 44, minHeight: 44)
-            Spacer()
-            Button {
-                
-            } label: {
-                Image(systemName: "trash")
-            }
-            .frame(minWidth: 44, minHeight: 44)
-            .padding(.bottom, 25)
+            playButton
+                .frame(minWidth: 44, minHeight: 44)
         }
         .font(.title)
-        .padding()
+        .padding(.vertical)
     }
     
     private var playButton: some View {
         Button {
-            
+            playButtonWasPressed = true
+            dismiss()
         } label: {
-            Text("Play")
-                .font(.largeTitle)
-                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                .padding()
+            Image(systemName: "play.fill")
         }
         .buttonStyle(.borderedProminent)
-        .padding()
     }
 }
 
-#Preview {
-    LibraryItemDetailView(model: .init(title: "Some Title", icon: Image(systemName: "house")))
+
+fileprivate struct FrontView: View {
+    
+    let model: GameModel?
+    let flipAction: () -> Void
+    
+    var body: some View {
+        UIElements.gameImage(imageData: model?.imageData)
+            .resizable()
+            .scaledToFit()
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .onTapGesture {
+                  withAnimation {
+                        flipAction()
+                  }
+            }
+    }
+}
+
+fileprivate struct BackView: View {
+    @Binding var isSettingsPresented: Bool
+    @Binding var showDeleteAlert: Bool
+    @Binding var showDeleteSaveDataAlert: Bool
+    @State var isAutoSaveEnabled: Bool = false
+    let model: GameModel?
+    let flipAction: () -> Void
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.ultraThinMaterial)
+                .onTapGesture {
+                      withAnimation {
+                            flipAction()
+                      }
+                }
+            if isSettingsPresented {
+                VStack {
+                    Text("Settings")
+                        .font(.title3)
+                        .padding(.vertical)
+                    List {
+                        Section {
+                            Toggle("Auto Save Enabled", isOn: $isAutoSaveEnabled)
+                        }
+                        Section {
+                            Button("Delete save data", role: .destructive) {
+                                showDeleteSaveDataAlert = true
+                            }
+                            Button("Delete game", role: .destructive) {
+                                showDeleteAlert = true
+                            }
+                        }
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .listStyle(.insetGrouped)
+                }
+                .padding(.horizontal)
+                .onAppear {
+                    isAutoSaveEnabled = model?.isAutoSaveEnabled ?? false
+                }
+                .onChange(of: isAutoSaveEnabled) { oldValue, newValue in
+                    model?.isAutoSaveEnabled = newValue
+                }
+            } else {
+                Text("Stats")
+            }
+        }
+    }
 }

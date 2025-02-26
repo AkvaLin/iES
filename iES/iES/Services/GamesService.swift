@@ -6,46 +6,38 @@
 //
 
 import Foundation
+import SwiftData
 
-struct GamesService {
+actor GamesService {
     
-    struct GameModel {
-        let title: String
-        let description: String?
-        let imageData: Data?
-        let timePlayed: Int
-        let isFavorite: Bool
-        
-        init(title: String, description: String, imageData: Data, timePlayed: Int, isFavorite: Bool) {
-            self.title = title
-            self.description = description
-            self.imageData = imageData
-            self.timePlayed = timePlayed
-            self.isFavorite = isFavorite
-        }
-        
-        init(isEmpty: Bool) {
-            if isEmpty {
-                self.title = ""
-                self.description = ""
-                self.imageData = nil
-                self.timePlayed = 0
-                self.isFavorite = false
-            } else {
-                self.title = "Game title"
-                self.description = "Game description"
-                self.imageData = Data()
-                self.timePlayed = 0
-                self.isFavorite = false
-            }
-        }
+    static var container = try? ModelContainer(for: GameModel.self)
+    
+    static func getDescriptor(limit: Int = 0) -> FetchDescriptor<GameModel> {
+        var descriptor = FetchDescriptor<GameModel>(sortBy: [SortDescriptor(\.lastTimePlayed, order: .reverse)])
+        descriptor.fetchLimit = limit
+        return descriptor
     }
     
-    static func addGame() { }
+    static func updateLastTimePlayed(for game: GameModel) {
+        game.lastTimePlayed = .now
+    }
+}
+
+@Model
+class GameModel {
+    var title: String
+    var imageData: Data?
+    var lastTimePlayed: Date
+    var gameData: Data
+    var isAutoSaveEnabled: Bool
+    var state: EmulatorState?
     
-    static func removeGame() { }
-    
-    static func getGames() -> [GameModel] {
-        return [GameModel(isEmpty: false)]
+    init(title: String, imageData: Data? = nil, lastTimePlayed: Date, gameData: Data, isAutoSaveEnabled: Bool = false, state: EmulatorState? = nil) {
+        self.title = title
+        self.imageData = imageData
+        self.lastTimePlayed = lastTimePlayed
+        self.gameData = gameData
+        self.isAutoSaveEnabled = isAutoSaveEnabled
+        self.state = state
     }
 }

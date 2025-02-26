@@ -5,6 +5,8 @@
 //  Created by Никита Пивоваров on 22.09.2024.
 //
 
+import Foundation
+
 /// NES Picture Processing Unit
 struct PPU {
     private(set) var cycle: Int = 340
@@ -54,8 +56,7 @@ struct PPU {
         didSet {
             guard nmiOccurred,
                   !oldValue,
-                  nmiOutput
-            else { return }
+                  nmiOutput else { return }
             
             // TODO: this fixes some games (e.g. Burger Time), but shouldn't be necessary - the timings are off somewhere
             nmiDelay = PPU.nmiMaximumDelay
@@ -137,15 +138,7 @@ struct PPU {
     static let screenWidth: Int = 256
     static let screenHeight: Int = 224
     static let emptyBuffer: [UInt32] = [UInt32].init(repeating: 0, count: PPU.screenWidth * PPU.screenHeight)
-    private static let paletteColors: [UInt32] = [
-        0x666666FF, 0x882A00FF, 0xA71214FF, 0xA4003BFF, 0x7E005CFF, 0x40006EFF, 0x00066CFF, 0x001D56FF,
-        0x003533FF, 0x00480BFF, 0x005200FF, 0x084F00FF, 0x4D4000FF, 0x000000FF, 0x000000FF, 0x000000FF,
-        0xADADADFF, 0xD95F15FF, 0xFF4042FF, 0xFE2775FF, 0xCC1AA0FF, 0x7B1EB7FF, 0x2031B5FF, 0x004E99FF,
-        0x006D6BFF, 0x008738FF, 0x00930CFF, 0x328F00FF, 0x8D7C00FF, 0x000000FF, 0x000000FF, 0x000000FF,
-        0xFFFEFFFF, 0xFFB064FF, 0xFF9092FF, 0xFF76C6FF, 0xFF6AF3FF, 0xCC6EFEFF, 0x7081FEFF, 0x229EEAFF,
-        0x00BEBCFF, 0x00D888FF, 0x30E45CFF, 0x82E045FF, 0xDECD48FF, 0x4F4F4FFF, 0x000000FF, 0x000000FF,
-        0xFFFEFFFF, 0xFFDFC0FF, 0xFFD2D3FF, 0xFFC8E8FF, 0xFFC2FBFF, 0xEAC4FEFF, 0xC5CCFEFF, 0xA5D8F7FF,
-        0x94E5E4FF, 0x96EFCFFF, 0xABF4BDFF, 0xCCF3B3FF, 0xF2EBB5FF, 0xB8B8B8FF, 0x000000FF, 0x000000FF]
+    private let paletteColors: [UInt32]
     
     /// colors in 0xBBGGRRAA format from Palette.colors
     private(set) var frontBuffer: [UInt32] = PPU.emptyBuffer
@@ -153,13 +146,11 @@ struct PPU {
     private var backBuffer: [UInt32] = PPU.emptyBuffer
     private(set) var scanline: Int = 240
     
-    init(mapper aMapper: MapperProtocol, state aState: PPUState? = nil)
-    {
+    init(mapper aMapper: MapperProtocol, state aState: PPUState? = nil) {
         mapper = aMapper
         mapperHasStep = aMapper.hasStep
         mapperHasExtendedNametableMapping = aMapper.hasExtendedNametableMapping
-        if let safePPUState = aState
-        {
+        if let safePPUState = aState {
             cycle = Int(safePPUState.cycle)
             frame = safePPUState.frame
             paletteData = safePPUState.paletteData
@@ -205,21 +196,41 @@ struct PPU {
             frontBuffer = safePPUState.frontBuffer
             scanline = Int(safePPUState.scanline)
         }
+        
+        paletteColors = UserDefaults.standard.bool(forKey: Settings.Keys.metalFxEnabled) ? [
+            0xFF666666, 0xFF002A88, 0xFF1412A7, 0xFF3B00A4, 0xFF5C007E, 0xFF6E0040, 0xFF6C0600, 0xFF561D00,
+            0xFF333500, 0xFF0B4800, 0xFF005200, 0xFF004F08, 0xFF00404D, 0xFF000000, 0xFF000000, 0xFF000000,
+            0xFFADADAD, 0xFF155FD9, 0xFF4240FF, 0xFF7527FE, 0xFFA01ACC, 0xFFB71E7B, 0xFFB53120, 0xFF994E00,
+            0xFF6B6D00, 0xFF388700, 0xFF0C9300, 0xFF008F32, 0xFF007C8D, 0xFF000000, 0xFF000000, 0xFF000000,
+            0xFFFFFEFF, 0xFF64B0FF, 0xFF9290FF, 0xFFC676FF, 0xFFF36AFF, 0xFFFE6ECC, 0xFFFE8170, 0xFFEA9E22,
+            0xFFBCBE00, 0xFF88D800, 0xFF5CE430, 0xFF45E082, 0xFF48CDDE, 0xFF4F4F4F, 0xFF000000, 0xFF000000,
+            0xFFFFFEFF, 0xFFC0DFFF, 0xFFD3D2FF, 0xFFE8C8FF, 0xFFFBC2FF, 0xFFFEC4EA, 0xFFFECCC5, 0xFFF7D8A5,
+            0xFFE4E594, 0xFFCFEF96, 0xFFBDF4AB, 0xFFB3F3CC, 0xFFB5EBF2, 0xFFB8B8B8, 0xFF000000, 0xFF000000
+        ] : [
+            0x666666FF, 0x882A00FF, 0xA71214FF, 0xA4003BFF, 0x7E005CFF, 0x40006EFF, 0x00066CFF, 0x001D56FF,
+            0x003533FF, 0x00480BFF, 0x005200FF, 0x084F00FF, 0x4D4000FF, 0x000000FF, 0x000000FF, 0x000000FF,
+            0xADADADFF, 0xD95F15FF, 0xFF4042FF, 0xFE2775FF, 0xCC1AA0FF, 0x7B1EB7FF, 0x2031B5FF, 0x004E99FF,
+            0x006D6BFF, 0x008738FF, 0x00930CFF, 0x328F00FF, 0x8D7C00FF, 0x000000FF, 0x000000FF, 0x000000FF,
+            0xFFFEFFFF, 0xFFB064FF, 0xFF9092FF, 0xFF76C6FF, 0xFF6AF3FF, 0xCC6EFEFF, 0x7081FEFF, 0x229EEAFF,
+            0x00BEBCFF, 0x00D888FF, 0x30E45CFF, 0x82E045FF, 0xDECD48FF, 0x4F4F4FFF, 0x000000FF, 0x000000FF,
+            0xFFFEFFFF, 0xFFDFC0FF, 0xFFD2D3FF, 0xFFC8E8FF, 0xFFC2FBFF, 0xEAC4FEFF, 0xC5CCFEFF, 0xA5D8F7FF,
+            0x94E5E4FF, 0x96EFCFFF, 0xABF4BDFF, 0xCCF3B3FF, 0xF2EBB5FF, 0xB8B8B8FF, 0x000000FF, 0x000000FF
+        ]
     }
     
-    mutating func read(address aAddress: UInt16) -> UInt8
-    {
-        let address = aAddress % 0x4000
+        var ppuState: PPUState {
+            return PPUState.init(cycle: UInt16(self.cycle), scanline: UInt16(self.scanline), frame: self.frame, paletteData: self.paletteData, nameTableData: self.nameTableData, oamData: self.oamData, v: self.v, t: self.t, x: self.x, w: self.w, f: self.f, register: self.register, nmiOccurred: self.nmiOccurred, nmiOutput: self.nmiOutput, nmiDelay: self.nmiDelay, nameTableByte: self.nameTableByte, attributeTableByte: self.attributeTableByte, lowTileByte: self.lowTileByte, highTileByte: self.highTileByte, tileData: self.tileData, spriteCount: UInt8(self.spriteCount), spritePatterns: self.spritePatterns, spritePositions: self.spritePositions, spritePriorities: self.spritePriorities, spriteIndexes: self.spriteIndexes, flagNameTable: self.flagNameTable, flagIncrement: self.flagIncrement, flagSpriteTable: self.flagSpriteTable, flagBackgroundTable: self.flagBackgroundTable, flagSpriteSize: self.flagSpriteSize, flagMasterSlave: self.flagMasterSlave, flagGrayscale: self.flagGrayscale, flagShowLeftBackground: self.flagShowLeftBackground, flagShowLeftSprites: self.flagShowLeftSprites, flagShowBackground: self.flagShowBackground, flagShowSprites: self.flagShowSprites, flagRedTint: self.flagRedTint, flagGreenTint: self.flagGreenTint, flagBlueTint: self.flagBlueTint, flagSpriteZeroHit: self.flagSpriteZeroHit, flagSpriteOverflow: self.flagSpriteOverflow, oamAddress: self.oamAddress, bufferedData: self.bufferedData, frontBuffer: self.frontBuffer)
+        }
+    
+    mutating func read(address: UInt16) -> UInt8 {
+        let address = address % 0x4000
         switch address {
         case 0x0000 ... 0x1FFF:
             return mapper.ppuRead(address: address)
         case 0x2000 ... 0x2FFF:
-            if mapperHasExtendedNametableMapping
-            {
-                return mapper.ppuRead(address: aAddress)
-            }
-            else
-            {
+            if mapperHasExtendedNametableMapping {
+                return mapper.ppuRead(address: address)
+            } else {
                 return nameTableData[Int(adjustedPPUAddress(forOriginalAddress: address, withMirroringMode: mapper.mirroringMode) % 2048)]
             }
         case 0x3000 ... 0x3EFF:
@@ -231,40 +242,34 @@ struct PPU {
         }
     }
     
-    mutating func write(address aAddress: UInt16, value aValue: UInt8)
-    {
-        let address = aAddress % 0x4000
+    mutating func write(address: UInt16, value: UInt8) {
+        let address = address % 0x4000
         switch address {
         case 0x0000 ... 0x1FFF:
-            mapper.ppuWrite(address: address, value: aValue)
+            mapper.ppuWrite(address: address, value: value)
         case 0x2000 ... 0x2FFF:
-            if mapperHasExtendedNametableMapping
-            {
-                mapper.ppuWrite(address: address, value: aValue)
-            }
-            else
-            {
-                nameTableData[Int(adjustedPPUAddress(forOriginalAddress: address, withMirroringMode: mapper.mirroringMode) % 2048)] = aValue
+            if mapperHasExtendedNametableMapping {
+                mapper.ppuWrite(address: address, value: value)
+            } else {
+                nameTableData[Int(adjustedPPUAddress(forOriginalAddress: address, withMirroringMode: mapper.mirroringMode) % 2048)] = value
             }
         case 0x3000 ... 0x3EFF:
-            nameTableData[Int(adjustedPPUAddress(forOriginalAddress: address, withMirroringMode: mapper.mirroringMode) % 2048)] = aValue
+            nameTableData[Int(adjustedPPUAddress(forOriginalAddress: address, withMirroringMode: mapper.mirroringMode) % 2048)] = value
         case 0x3F00 ... 0x3FFF:
-            writePalette(address: (address % 32), value: aValue)
+            writePalette(address: (address % 32), value: value)
         default:
             break
         }
     }
     
-    private func adjustedPPUAddress(forOriginalAddress aOriginalAddress: UInt16, withMirroringMode aMirrorMode: MirroringMode) -> UInt16
-    {
+    private func adjustedPPUAddress(forOriginalAddress aOriginalAddress: UInt16, withMirroringMode aMirrorMode: MirroringMode) -> UInt16 {
         let address: UInt16 = (aOriginalAddress - 0x2000) % 0x1000
         let addrRange: UInt16 = address / 0x0400
         let offset: UInt16 = address % 0x0400
         return 0x2000 + PPU.nameTableOffsetSequence[Int(aMirrorMode.rawValue)][Int(addrRange)] + offset
     }
     
-    mutating func reset()
-    {
+    mutating func reset() {
         cycle = 340
         scanline = 240
         frame = 0
@@ -275,22 +280,18 @@ struct PPU {
         frontBuffer = PPU.emptyBuffer
     }
     
-    private mutating func readPalette(address aAddress: UInt16) -> UInt8 // mutating because it makes a copy of PPU otherwise
-    {
-        let index: UInt16 = (aAddress >= 16 && aAddress % 4 == 0) ? aAddress - 16 : aAddress
+    private mutating func readPalette(address: UInt16) -> UInt8 { // mutating because it makes a copy of PPU otherwise
+        let index: UInt16 = (address >= 16 && address % 4 == 0) ? address - 16 : address
         return paletteData[Int(index)]
     }
 
-    private mutating func writePalette(address aAddress: UInt16, value aValue: UInt8)
-    {
-        let index: UInt16 = (aAddress >= 16 && aAddress % 4 == 0) ? aAddress - 16 : aAddress
-        paletteData[Int(index)] = aValue
+    private mutating func writePalette(address: UInt16, value: UInt8) {
+        let index: UInt16 = (address >= 16 && address % 4 == 0) ? address - 16 : address
+        paletteData[Int(index)] = value
     }
 
-    mutating func readRegister(address aAddress: UInt16) -> UInt8
-    {
-        switch aAddress
-        {
+    mutating func readRegister(address: UInt16) -> UInt8 {
+        switch address {
         case 0x2002:
             return readStatus()
         case 0x2004:
@@ -301,25 +302,23 @@ struct PPU {
         }
     }
 
-    mutating func writeRegister(address aAddress: UInt16, value aValue: UInt8)
-    {
-        register = aValue
-        switch aAddress
-        {
+    mutating func writeRegister(address: UInt16, value: UInt8) {
+        register = value
+        switch address {
         case 0x2000:
-            writeControl(value: aValue)
+            writeControl(value: value)
         case 0x2001:
-            writeMask(value: aValue)
+            writeMask(value: value)
         case 0x2003:
-            writeOAMAddress(value: aValue)
+            writeOAMAddress(value: value)
         case 0x2004:
-            writeOAMData(value: aValue)
+            writeOAMData(value: value)
         case 0x2005:
-            writeScroll(value: aValue)
+            writeScroll(value: value)
         case 0x2006:
-            writeAddress(value: aValue)
+            writeAddress(value: value)
         case 0x2007:
-            writeData(value: aValue)
+            writeData(value: value)
         case 0x4014:
             // Write DMA (this is actually handled elsewhere when the CPU calls the PPU's writeOAMData function)
             break
@@ -328,41 +327,37 @@ struct PPU {
     }
 
     // $2000: PPUCTRL
-    private mutating func writeControl(value aValue: UInt8)
-    {
-        flagNameTable = (aValue >> 0) & 3
-        flagIncrement = ((aValue >> 2) & 1) == 1
-        flagSpriteTable = ((aValue >> 3) & 1) == 1
-        flagBackgroundTable = ((aValue >> 4) & 1) == 1
-        flagSpriteSize = ((aValue >> 5) & 1) == 1
-        flagMasterSlave = ((aValue >> 6) & 1) == 1
-        nmiOutput = ((aValue >> 7) & 1) == 1
+    private mutating func writeControl(value: UInt8) {
+        flagNameTable = (value >> 0) & 3
+        flagIncrement = ((value >> 2) & 1) == 1
+        flagSpriteTable = ((value >> 3) & 1) == 1
+        flagBackgroundTable = ((value >> 4) & 1) == 1
+        flagSpriteSize = ((value >> 5) & 1) == 1
+        flagMasterSlave = ((value >> 6) & 1) == 1
+        nmiOutput = ((value >> 7) & 1) == 1
         // TODO: should we set NMI Delay (nmiDelay) here if nmiOutput is true?
         // t: ....BA.. ........ = d: ......BA
-        t = (t & 0xF3FF) | ((UInt16(aValue) & 0x03) << 10)
+        t = (t & 0xF3FF) | ((UInt16(value) & 0x03) << 10)
     }
 
     // $2001: PPUMASK
-    private mutating func writeMask(value aValue: UInt8)
-    {
-        flagGrayscale = ((aValue >> 0) & 1) == 1
-        flagShowLeftBackground = ((aValue >> 1) & 1) == 1
-        flagShowLeftSprites = ((aValue >> 2) & 1) == 1
-        flagShowBackground = ((aValue >> 3) & 1) == 1
-        flagShowSprites = ((aValue >> 4) & 1) == 1
-        flagRedTint = ((aValue >> 5) & 1) == 1
-        flagGreenTint = ((aValue >> 6) & 1) == 1
-        flagBlueTint = ((aValue >> 7) & 1) == 1
+    private mutating func writeMask(value: UInt8) {
+        flagGrayscale = ((value >> 0) & 1) == 1
+        flagShowLeftBackground = ((value >> 1) & 1) == 1
+        flagShowLeftSprites = ((value >> 2) & 1) == 1
+        flagShowBackground = ((value >> 3) & 1) == 1
+        flagShowSprites = ((value >> 4) & 1) == 1
+        flagRedTint = ((value >> 5) & 1) == 1
+        flagGreenTint = ((value >> 6) & 1) == 1
+        flagBlueTint = ((value >> 7) & 1) == 1
     }
     
     // $2002: PPUSTATUS
-    private mutating func readStatus() -> UInt8
-    {
+    private mutating func readStatus() -> UInt8 {
         var result = register & 0x1F
         result |= flagSpriteOverflow << 5
         result |= flagSpriteZeroHit << 6
-        if nmiOccurred
-        {
+        if nmiOccurred {
             result |= 1 << 7
         }
         nmiOccurred = false
@@ -372,23 +367,18 @@ struct PPU {
     }
 
     // $2003: OAMADDR
-    private mutating func writeOAMAddress(value aValue: UInt8)
-    {
-        oamAddress = aValue
+    private mutating func writeOAMAddress(value: UInt8) {
+        oamAddress = value
     }
 
     // $2004: OAMDATA (read)
-    private mutating func readOAMData() -> UInt8
-    {
+    private mutating func readOAMData() -> UInt8 {
         let result: UInt8
-        if (oamAddress & 0x03) == 0x02 // if sprite byte 2 of 0...3
-        {
+        if (oamAddress & 0x03) == 0x02 { // if sprite byte 2 of 0...3
             // bits 2...4 should always come back as zero
             // (see http://wiki.nesdev.com/w/index.php/PPU_OAM )
             result = oamData[Int(oamAddress)] & 0xE3
-        }
-        else
-        {
+        } else {
             result = oamData[Int(oamAddress)]
         }
         
@@ -396,69 +386,57 @@ struct PPU {
     }
 
     // $2004: OAMDATA (write)
-    private mutating func writeOAMData(value aValue: UInt8)
-    {
-        oamData[Int(oamAddress)] = aValue
+    private mutating func writeOAMData(value: UInt8) {
+        oamData[Int(oamAddress)] = value
         oamAddress &+= 1
     }
 
     // $2005: PPUSCROLL
-    private mutating func writeScroll(value aValue: UInt8)
-    {
-        if w == false
-        {
+    private mutating func writeScroll(value: UInt8) {
+        if w == false {
             // t: ........ ...HGFED = d: HGFED...
             // x:               CBA = d: .....CBA
             // w:                   = 1
-            t = (t & 0xFFE0) | (UInt16(aValue) >> 3)
-            x = aValue & 0x07
+            t = (t & 0xFFE0) | (UInt16(value) >> 3)
+            x = value & 0x07
             w = true
-        }
-        else
-        {
+        } else {
             // t: .CBA..HG FED..... = d: HGFEDCBA
             // w:                   = 0
-            t = (t & 0x8FFF) | ((UInt16(aValue) & 0x07) << 12)
-            t = (t & 0xFC1F) | ((UInt16(aValue) & 0xF8) << 2)
+            t = (t & 0x8FFF) | ((UInt16(value) & 0x07) << 12)
+            t = (t & 0xFC1F) | ((UInt16(value) & 0xF8) << 2)
             w = false
         }
     }
 
     // $2006: PPUADDR
-    private mutating func writeAddress(value aValue: UInt8)
-    {
+    private mutating func writeAddress(value: UInt8) {
         if w == false {
             // t: ..FEDCBA ........ = d: ..FEDCBA
             // t: .X...... ........ = 0
             // w:                   = 1
-            t = (t & 0x80FF) | ((UInt16(aValue) & 0x3F) << 8)
+            t = (t & 0x80FF) | ((UInt16(value) & 0x3F) << 8)
             w = true
-        }
-        else
-        {
+        } else {
             // t: ........ HGFEDCBA = d: HGFEDCBA
             // v                    = t
             // w:                   = 0
-            t = (t & 0xFF00) | UInt16(aValue)
+            t = (t & 0xFF00) | UInt16(value)
             v = t
             w = false
         }
     }
 
     // $2007: PPUDATA (read)
-    private mutating func readData() -> UInt8
-    {
+    private mutating func readData() -> UInt8 {
         var value = read(address: v)
         
         // emulate buffered reads
-        if v % 0x4000 < 0x3F00
-        {
+        if v % 0x4000 < 0x3F00 {
             let buffered = bufferedData
             bufferedData = value
             value = buffered
-        }
-        else
-        {
+        } else {
             bufferedData = read(address: v - 0x1000)
         }
         
@@ -467,19 +445,16 @@ struct PPU {
     }
 
     // $2007: PPUDATA (write)
-    private mutating func writeData(value aValue: UInt8)
-    {
-        write(address: v, value: aValue)
+    private mutating func writeData(value: UInt8) {
+        write(address: v, value: value)
         v &+= flagIncrement ? 32 : 1
     }
 
     // $4014: OAMDMA
     
     /// called by the CPU with 256 bytes of OAM data for sprites and metadata
-    mutating func writeOAMDMA(oamDMA aOamData: [UInt8])
-    {
-        for i in 0 ..< 256
-        {
+    mutating func writeOAMDMA(oamDMA aOamData: [UInt8]) {
+        for i in 0 ..< 256 {
             oamData[Int(oamAddress)] = aOamData[i]
             oamAddress &+= 1
         }
@@ -487,53 +462,40 @@ struct PPU {
     
     // NTSC Timing Helper Functions
 
-    private mutating func incrementX()
-    {
+    private mutating func incrementX() {
         // increment hori(v)
         // if coarse X == 31
-        if v & 0x001F == 31
-        {
+        if v & 0x001F == 31 {
             // coarse X = 0
             v &= 0xFFE0
             // switch horizontal nametable
             v ^= 0x0400
-        }
-        else
-        {
+        } else {
             // increment coarse X
             v &+= 1
         }
     }
 
-    private mutating func incrementY()
-    {
+    private mutating func incrementY() {
         // increment vert(v)
         // if fine Y < 7
-        if v & 0x7000 != 0x7000
-        {
+        if v & 0x7000 != 0x7000 {
             // increment fine Y
             v &+= 0x1000
-        }
-        else
-        {
+        } else {
             // fine Y = 0
             v &= 0x8FFF
             // let y = coarse Y
             var y = (v & 0x03E0) >> 5
-            if y == 29
-            {
+            if y == 29 {
                 // coarse Y = 0
                 y = 0
                 // switch vertical nametable
                 v ^= 0x0800
-            }
-            else if y == 31
-            {
+            } else if y == 31 {
                 // coarse Y = 0, nametable not switched
                 y = 0
-            }
-            else
-            {
+            } else {
                 // increment coarse Y
                 y &+= 1
             }
@@ -542,48 +504,41 @@ struct PPU {
         }
     }
 
-    private mutating func copyX()
-    {
+    private mutating func copyX() {
         // hori(v) = hori(t)
         // v: .....F.. ...EDCBA = t: .....F.. ...EDCBA
         v = (v & 0xFBE0) | (t & 0x041F)
     }
 
-    private mutating func copyY()
-    {
+    private mutating func copyY() {
         // vert(v) = vert(t)
         // v: .IHGF.ED CBA..... = t: .IHGF.ED CBA.....
         v = (v & 0x841F) | (t & 0x7BE0)
     }
 
-    private mutating func setVerticalBlank()
-    {
+    private mutating func setVerticalBlank() {
         swap(&frontBuffer, &backBuffer)
         nmiOccurred = true
     }
 
-    private mutating func clearVerticalBlank()
-    {
+    private mutating func clearVerticalBlank() {
         nmiOccurred = false
     }
 
-    private mutating func fetchNameTableByte()
-    {
+    private mutating func fetchNameTableByte() {
         let v = v
         let address = 0x2000 | (v & 0x0FFF)
         nameTableByte = read(address: address)
     }
 
-    private mutating func fetchAttributeTableByte()
-    {
+    private mutating func fetchAttributeTableByte() {
         let v = v
         let address = 0x23C0 | (v & 0x0C00) | ((v >> 4) & 0x38) | ((v >> 2) & 0x07)
         let shift = ((v >> 4) & 4) | (v & 2)
         attributeTableByte = ((read(address: address) >> shift) & 3) << 2
     }
 
-    private mutating func fetchLowTileByte()
-    {
+    private mutating func fetchLowTileByte() {
         let fineY = (v >> 12) & 7
         let table: UInt16 = flagBackgroundTable ? 0x1000 : 0
         let tile = nameTableByte
@@ -591,8 +546,7 @@ struct PPU {
         lowTileByte = read(address: address)
     }
 
-    private mutating func fetchHighTileByte()
-    {
+    private mutating func fetchHighTileByte() {
         let fineY = (v >> 12) & 7
         let table: UInt16 = flagBackgroundTable ? 0x1000 : 0
         let tile = nameTableByte
@@ -600,11 +554,9 @@ struct PPU {
         highTileByte = read(address: address + 8)
     }
 
-    private mutating func storeTileData()
-    {
+    private mutating func storeTileData() {
         var data: UInt32 = 0
-        for _ in 0 ..< 8
-        {
+        for _ in 0 ..< 8 {
             let a = attributeTableByte
             let p1 = (lowTileByte & 0x80) >> 7
             let p2 = (highTileByte & 0x80) >> 6
@@ -616,39 +568,31 @@ struct PPU {
         tileData |= UInt64(data)
     }
 
-    private func fetchTileData() -> UInt32
-    {
+    private func fetchTileData() -> UInt32 {
         return UInt32(tileData >> 32)
     }
 
-    private func backgroundPixel() -> UInt8
-    {
-        if !flagShowBackground
-        {
+    private func backgroundPixel() -> UInt8 {
+        if !flagShowBackground {
             return 0
         }
         let data = fetchTileData() >> ((7 - x) * 4)
         return UInt8(data & 0x0F)
     }
 
-    private func spritePixel() -> (UInt8, UInt8)
-    {
-        if !flagShowSprites
-        {
+    private func spritePixel() -> (UInt8, UInt8) {
+        if !flagShowSprites {
             return (0, 0)
         }
         
-        for i in 0 ..< spriteCount
-        {
+        for i in 0 ..< spriteCount {
             var offset = (cycle - 1) - Int(spritePositions[i])
-            if offset < 0 || offset > 7
-            {
+            if offset < 0 || offset > 7 {
                 continue
             }
             offset = 7 - offset
             let color = UInt8((spritePatterns[i] >> UInt8(offset * 4)) & 0x0F)
-            if color % 4 == 0
-            {
+            if color % 4 == 0 {
                 continue
             }
             return (UInt8(i), color)
@@ -656,22 +600,18 @@ struct PPU {
         return (0, 0)
     }
 
-    private mutating func renderPixel()
-    {
+    private mutating func renderPixel() {
         let x = cycle - 1
         let y = scanline - 8
         var background = backgroundPixel()
         var spritePixelTuple: (i: UInt8, sprite: UInt8) = spritePixel()
         
-        if x < 8
-        {
-            if !flagShowLeftBackground
-            {
+        if x < 8 {
+            if !flagShowLeftBackground {
                 background = 0
             }
             
-            if !flagShowLeftSprites
-            {
+            if !flagShowLeftSprites {
                 spritePixelTuple.sprite = 0
             }
         }
@@ -680,65 +620,49 @@ struct PPU {
         let s: Bool = spritePixelTuple.sprite % 4 != 0
         let color: UInt8
         
-        if !b
-        {
+        if !b {
             color = s ? (spritePixelTuple.sprite | 0x10) : 0
-        }
-        else if !s
-        {
+        } else if !s {
             color = background
-        }
-        else
-        {
+        } else {
             let spritePixelIndex: Int = Int(spritePixelTuple.i)
             
-            if spriteIndexes[spritePixelIndex] == 0 && x < 255
-            {
+            if spriteIndexes[spritePixelIndex] == 0 && x < 255 {
                 flagSpriteZeroHit = 1
             }
             
-            if spritePriorities[spritePixelIndex] == 0
-            {
+            if spritePriorities[spritePixelIndex] == 0 {
                 color = spritePixelTuple.sprite | 0x10
-            }
-            else
-            {
+            } else {
                 color = background
             }
         }
         
         let index: Int = Int(readPalette(address: UInt16(color)) % 64)
-        let paletteColor: UInt32 = PPU.paletteColors[index]
+        let paletteColor: UInt32 = paletteColors[index]
         backBuffer[(256 * y) + x] = paletteColor
     }
 
-    private mutating func fetchSpritePattern(i aI: Int, row aRow: Int) -> UInt32
-    {
+    private mutating func fetchSpritePattern(i aI: Int, row aRow: Int) -> UInt32 {
         var row = aRow
         var tile = oamData[(aI * 4) + 1]
         let attributes = oamData[(aI * 4) + 2]
         var address: UInt16
         
-        if !flagSpriteSize
-        {
-            if attributes & 0x80 == 0x80
-            {
+        if !flagSpriteSize {
+            if attributes & 0x80 == 0x80 {
                 row = 7 - row
             }
             
             let table: UInt16 = flagSpriteTable ? 0x1000 : 0
             address = table + (UInt16(tile) * 16) + UInt16(row)
-        }
-        else
-        {
-            if attributes & 0x80 == 0x80
-            {
+        } else {
+            if attributes & 0x80 == 0x80 {
                 row = 15 - row
             }
             let table = tile & 1
             tile &= 0xFE
-            if row > 7
-            {
+            if row > 7 {
                 tile &+= 1
                 row &-= 8
             }
@@ -750,19 +674,15 @@ struct PPU {
         var highTileByte = read(address: address + 8)
         var data: UInt32 = 0
         
-        for _ in 0 ..< 8
-        {
+        for _ in 0 ..< 8 {
             var p1: UInt8
             var p2: UInt8
-            if attributes & 0x40 == 0x40
-            {
+            if attributes & 0x40 == 0x40 {
                 p1 = (lowTileByte & 1) << 0
                 p2 = (highTileByte & 1) << 1
                 lowTileByte >>= 1
                 highTileByte >>= 1
-            }
-            else
-            {
+            } else {
                 p1 = (lowTileByte & 0x80) >> 7
                 p2 = (highTileByte & 0x80) >> 6
                 lowTileByte <<= 1
@@ -775,26 +695,22 @@ struct PPU {
         return data
     }
 
-    private mutating func evaluateSprites()
-    {
+    private mutating func evaluateSprites() {
         let h: Int = flagSpriteSize ? 16 : 8
         var count: Int = 0
         
-        for i in 0 ..< 64
-        {
+        for i in 0 ..< 64 {
             let i4: Int = i * 4
             let y = oamData[i4 + 0]
             let a = oamData[i4 + 2]
             let x = oamData[i4 + 3]
             let row = scanline - Int(y)
             
-            if row < 0 || row >= h
-            {
+            if row < 0 || row >= h {
                 continue
             }
             
-            if count < 8
-            {
+            if count < 8 {
                 spritePatterns[count] = fetchSpritePattern(i: i, row: row)
                 spritePositions[count] = x
                 spritePriorities[count] = (a >> 5) & 1
@@ -804,8 +720,7 @@ struct PPU {
             count += 1
         }
         
-        if count > 8
-        {
+        if count > 8 {
             count = 8
             flagSpriteOverflow = 1
         }
@@ -814,25 +729,19 @@ struct PPU {
     }
 
     /// Updates Cycle, ScanLine and Frame counters.
-    private mutating func tick()
-    {
-        if cycle == 339 && scanline == 261 && (flagShowBackground || flagShowSprites) && f
-        {
+    private mutating func tick() {
+        if cycle == 339 && scanline == 261 && (flagShowBackground || flagShowSprites) && f {
             cycle = 0
             scanline = 0
             frame += 1
             f = false
-        }
-        else
-        {
+        } else {
             cycle += 1
-            if cycle > 340
-            {
+            if cycle > 340 {
                 cycle = 0
                 scanline += 1
                 
-                if scanline > 261
-                {
+                if scanline > 261 {
                     scanline = 0
                     frame += 1
                     f.toggle()
@@ -842,15 +751,12 @@ struct PPU {
     }
     
     /// executes a single PPU cycle, and returns a Boolean indicating whether the CPU should trigger an NMI based on this cycle
-    mutating func step() -> PPUStepResults
-    {
+    mutating func step() -> PPUStepResults {
         var shouldTriggerNMI: Bool = false
         
-        if nmiDelay > 0
-        {
+        if nmiDelay > 0 {
             nmiDelay -= 1
-            if nmiDelay == 0 && nmiOutput && nmiOccurred
-            {
+            if nmiDelay == 0 && nmiOutput && nmiOccurred {
                 shouldTriggerNMI = true
             }
         }
@@ -860,8 +766,7 @@ struct PPU {
         let renderingEnabled: Bool = flagShowBackground || flagShowSprites
         let preLine: Bool = scanline == 261
         
-        if renderingEnabled
-        {
+        if renderingEnabled {
             let visibleCycle: Bool = cycle >= 1 && cycle <= 256
             let preFetchCycle: Bool = cycle >= 321 && cycle <= 336
             let fetchCycle: Bool = preFetchCycle || visibleCycle
@@ -871,16 +776,13 @@ struct PPU {
             let safeAreaScanline: Bool = scanline >= 8 && scanline < 232
             
             // background logic
-            if safeAreaScanline && visibleCycle
-            {
+            if safeAreaScanline && visibleCycle {
                 renderPixel()
             }
 
-            if renderLine && fetchCycle
-            {
+            if renderLine && fetchCycle {
                 tileData <<= 4
-                switch cycle % 8
-                {
+                switch cycle % 8 {
                 case 1:
                     fetchNameTableByte()
                 case 3:
@@ -895,62 +797,47 @@ struct PPU {
                 }
             }
 
-            if preLine && cycle >= 280 && cycle <= 304
-            {
+            if preLine && cycle >= 280 && cycle <= 304 {
                 copyY()
             }
 
-            if renderLine
-            {
-                if fetchCycle && cycle % 8 == 0
-                {
+            if renderLine {
+                if fetchCycle && cycle % 8 == 0 {
                     incrementX()
                 }
 
-                if cycle == 256
-                {
+                if cycle == 256 {
                     incrementY()
-                }
-                else if cycle == 257
-                {
+                } else if cycle == 257 {
                     copyX()
                 }
             }
             
             // sprite logic
-            if cycle == 257
-            {
-                if visibleLine
-                {
+            if cycle == 257 {
+                if visibleLine {
                     evaluateSprites()
-                }
-                else
-                {
+                } else {
                     spriteCount = 0
                 }
             }
         }
 
         // vblank logic
-        if scanline == 241 && cycle == 1
-        {
+        if scanline == 241 && cycle == 1 {
             setVerticalBlank()
         }
 
-        if preLine && cycle == 1
-        {
+        if preLine && cycle == 1 {
             clearVerticalBlank()
             flagSpriteZeroHit = 0
             flagSpriteOverflow = 0
         }
 
         let interruptRequestedByMapper: Interrupt?
-        if mapperHasStep
-        {
+        if mapperHasStep {
             interruptRequestedByMapper = mapper.step(input: MapperStepInput(ppuScanline: scanline, ppuCycle: cycle, ppuShowBackground: flagShowBackground, ppuShowSprites: flagShowSprites, ppuSpriteSize: flagSpriteSize))?.requestedCPUInterrupt
-        }
-        else
-        {
+        } else {
             interruptRequestedByMapper = nil
         }
         

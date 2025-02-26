@@ -1,0 +1,956 @@
+//
+//  APUStepResults.swift
+//  iES
+//
+//  Created by Никита Пивоваров on 10.01.2025.
+//
+
+
+import Foundation
+
+struct APUStepResults {
+    let shouldTriggerIRQOnCPU: Bool
+    let numCPUStallCycles: UInt64
+}
+
+/// NES Audio Processing Unit
+struct APU {
+    weak var audioEngineDelegate: AudioEngineProtocol?
+    private var audioBufferIndex: Int
+    private var audioBuffer: [Float32]
+    private(set) var sampleRate: SampleRate
+    private let cycleSampleRate: Double
+    private var pulse1: Pulse
+    private var pulse2: Pulse
+    private var triangle: Triangle
+    private var noise: Noise
+    private var dmc: DMC
+    private var cycle: UInt64
+    private var framePeriod: UInt8
+    private var frameValue: UInt8
+    private var frameIRQ: Bool
+    private var filterChain: FilterChain
+    var filtersEnabled: Bool { return self.filterChain.filters.count > 0}
+    var dmcCurrentAddress: UInt16 { return self.dmc.currentAddress }
+    
+    static let frameCounterRate: Double = Double(CPU.frequency) / 240.0
+    
+    static let lengthTable: [UInt8] = [10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30]
+    
+    /// pulseTable[i] = 95.52 / ((8128.0 / Float32(i)) + 100)
+    private static let pulseTable: [Float32] = [0.0, 0.011609139, 0.02293948, 0.034000948, 0.044803, 0.05535466, 0.06566453, 0.07574082, 0.0855914, 0.09522375, 0.10464504, 0.11386215, 0.12288164, 0.1317098, 0.14035264, 0.14881596, 0.15710525, 0.16522588, 0.17318292, 0.18098126, 0.18862559, 0.19612046, 0.20347017, 0.21067894, 0.21775076, 0.2246895, 0.23149887, 0.23818247, 0.24474378, 0.25118607, 0.25751257]
+    
+    /// tndTable[i] = 163.67 / ((24329.0 / Float32(i)) + 100)
+    private static let tndTable: [Float32] = [0.0, 0.006699824, 0.01334502, 0.019936256, 0.02647418, 0.032959443, 0.039392676, 0.0457745, 0.052105535, 0.05838638, 0.064617634, 0.07079987, 0.07693369, 0.08301962, 0.08905826, 0.095050134, 0.100995794, 0.10689577, 0.11275058, 0.118560754, 0.12432679, 0.13004918, 0.13572845, 0.14136505, 0.1469595, 0.15251222, 0.1580237, 0.1634944, 0.16892476, 0.17431524, 0.17966628, 0.1849783, 0.19025174, 0.19548698, 0.20068447, 0.20584463, 0.21096781, 0.21605444, 0.22110492, 0.2261196, 0.23109888, 0.23604311, 0.24095272, 0.245828, 0.25066936, 0.2554771, 0.26025164, 0.26499328, 0.26970237, 0.27437922, 0.27902418, 0.28363758, 0.28821972, 0.29277095, 0.29729152, 0.3017818, 0.3062421, 0.31067267, 0.31507385, 0.31944588, 0.32378912, 0.32810378, 0.3323902, 0.3366486, 0.3408793, 0.34508255, 0.34925863, 0.35340777, 0.35753027, 0.36162636, 0.36569634, 0.36974037, 0.37375876, 0.37775174, 0.38171956, 0.38566244, 0.38958064, 0.39347437, 0.39734384, 0.4011893, 0.405011, 0.40880907, 0.41258383, 0.41633546, 0.42006415, 0.42377013, 0.4274536, 0.43111476, 0.43475384, 0.43837097, 0.44196644, 0.4455404, 0.449093, 0.45262453, 0.45613506, 0.4596249, 0.46309412, 0.46654293, 0.46997157, 0.47338015, 0.47676894, 0.48013794, 0.48348752, 0.4868177, 0.49012873, 0.4934207, 0.49669388, 0.49994832, 0.50318426, 0.50640184, 0.5096012, 0.51278245, 0.51594585, 0.5190914, 0.5222195, 0.52533007, 0.52842325, 0.5314993, 0.53455836, 0.5376005, 0.54062593, 0.5436348, 0.54662704, 0.54960304, 0.55256283, 0.55550647, 0.5584343, 0.56134623, 0.5642425, 0.56712323, 0.5699885, 0.5728384, 0.5756732, 0.57849294, 0.5812977, 0.5840876, 0.5868628, 0.58962345, 0.59236956, 0.59510136, 0.5978189, 0.6005223, 0.6032116, 0.605887, 0.60854864, 0.6111966, 0.6138308, 0.61645156, 0.619059, 0.62165314, 0.624234, 0.62680185, 0.6293567, 0.63189864, 0.6344277, 0.6369442, 0.63944805, 0.64193934, 0.64441824, 0.64688486, 0.6493392, 0.6517814, 0.6542115, 0.65662974, 0.65903604, 0.6614306, 0.6638134, 0.66618466, 0.66854435, 0.6708926, 0.67322946, 0.67555505, 0.67786944, 0.68017274, 0.68246496, 0.6847462, 0.6870166, 0.6892762, 0.69152504, 0.6937633, 0.6959909, 0.69820803, 0.7004148, 0.7026111, 0.7047972, 0.7069731, 0.7091388, 0.7112945, 0.7134401, 0.7155759, 0.7177018, 0.7198179, 0.72192425, 0.72402096, 0.726108, 0.72818565, 0.7302538, 0.73231256, 0.73436195, 0.7364021, 0.7384331, 0.7404549, 0.7424676]
+    
+    init(withSampleRate sampleRate: SampleRate, filtersEnabled: Bool, state: APUState? = nil) {
+        self.sampleRate = sampleRate
+        self.cycleSampleRate = Double(CPU.frequency) / sampleRate.doubleValue
+        
+        if let safeState = state {
+            self.cycle = safeState.cycle
+            self.framePeriod = safeState.framePeriod
+            self.frameValue = safeState.frameValue
+            self.frameIRQ = safeState.frameIRQ
+            self.audioBuffer = safeState.audioBuffer.count == Int(sampleRate.bufferCapacity) ? safeState.audioBuffer : [Float32].init(repeating: 0.0, count: Int(sampleRate.bufferCapacity))
+            self.audioBufferIndex = Int(safeState.audioBufferIndex)
+        } else {
+            self.cycle = 0
+            self.framePeriod = 0
+            self.frameValue = 0
+            self.frameIRQ = false
+            self.audioBuffer = [Float32].init(repeating: 0.0, count: Int(sampleRate.bufferCapacity))
+            self.audioBufferIndex = 0
+        }
+        
+        self.pulse1 = Pulse(channel: 1, state: state?.pulse1)
+        self.pulse2 = Pulse(channel: 2, state: state?.pulse2)
+        self.triangle = Triangle(state: state?.triangle)
+        self.noise = Noise(state: state?.noise)
+        self.dmc = DMC(state: state?.dmc)
+        self.filterChain = FilterChain(filters: filtersEnabled ? [
+            APU.highPassFilter(sampleRate: sampleRate.floatValue, cutoffFreq: 90),
+            APU.highPassFilter(sampleRate: sampleRate.floatValue, cutoffFreq: 440),
+            APU.lowPassFilter(sampleRate: sampleRate.floatValue, cutoffFreq: 14000),
+        ] : [])
+    }
+    
+    var apuState: APUState {
+        APUState(
+            cycle: self.cycle,
+            framePeriod: self.framePeriod,
+            frameValue: self.frameValue,
+            frameIRQ: self.frameIRQ,
+            audioBuffer: self.audioBuffer,
+            audioBufferIndex: UInt32(self.audioBufferIndex),
+            pulse1: self.pulse1.pulseState,
+            pulse2: self.pulse2.pulseState,
+            triangle: self.triangle.triangleState,
+            noise: self.noise.noiseState,
+            dmc: self.dmc.dmcState
+        )
+    }
+    
+    mutating func step(dmcCurrentAddressValue: UInt8) -> APUStepResults {
+        let shouldFireIRQ: Bool
+        let cycle1 = self.cycle
+        self.cycle += 1
+        let cycle2 = self.cycle
+        let numCPUStallCycles: UInt64 = self.stepTimer(dmcCurrentAddressValue: dmcCurrentAddressValue)
+        let f1 = Int(Double(cycle1) / APU.frameCounterRate)
+        let f2 = Int(Double(cycle2) / APU.frameCounterRate)
+        if f1 != f2 {
+            shouldFireIRQ = self.stepFrameCounter()
+        } else {
+            shouldFireIRQ = false
+        }
+        let s1 = Int(Double(cycle1) / self.cycleSampleRate)
+        let s2 = Int(Double(cycle2) / self.cycleSampleRate)
+        if s1 != s2 {
+            self.sendSample()
+        }
+        
+        return APUStepResults(shouldTriggerIRQOnCPU: shouldFireIRQ, numCPUStallCycles: numCPUStallCycles)
+    }
+    
+    mutating func sendSample() {
+        let output = self.filterChain.step(x: self.output())
+        self.audioBuffer[self.audioBufferIndex] = output
+        self.audioBufferIndex += 1
+        if self.audioBufferIndex >= self.audioBuffer.count {
+            self.audioBufferIndex = 0
+            self.audioEngineDelegate?.schedule(buffer: self.audioBuffer, withSampleRate: self.sampleRate)
+        }
+    }
+    
+    private func output() -> Float32 {
+        let p1 = self.pulse1.output()
+        let p2 = self.pulse2.output()
+        let t = self.triangle.output()
+        let n = self.noise.output()
+        let d = self.dmc.output()
+        let pulseOut = APU.pulseTable[Int(p1 + p2)]
+        let tndOut = APU.tndTable[Int((3 * t) + (2 * n) + d)]
+        return pulseOut + tndOut
+    }
+    
+    // mode 0:    mode 1:       function
+    // ---------  -----------  -----------------------------
+    //  - - - f    - - - - -    IRQ (if bit 6 is clear)
+    //  - l - l    l - l - -    Length counter and sweep
+    //  e e e e    e e e e -    Envelope and linear counter
+    mutating func stepFrameCounter() -> Bool {
+        var shouldFireIRQ: Bool = false
+        switch self.framePeriod {
+        case 4:
+            self.frameValue = (self.frameValue + 1) % 4
+            switch self.frameValue {
+            case 0, 2:
+                self.stepEnvelope()
+            case 1:
+                self.stepEnvelope()
+                self.stepSweep()
+                self.stepLength()
+            case 3:
+                self.stepEnvelope()
+                self.stepSweep()
+                self.stepLength()
+                if self.frameIRQ { shouldFireIRQ = true }
+            default: break
+            }
+        case 5:
+            self.frameValue = (self.frameValue + 1) % 5
+            switch self.frameValue {
+            case 0, 2:
+                self.stepEnvelope()
+            case 1, 3:
+                self.stepEnvelope()
+                self.stepSweep()
+                self.stepLength()
+            default: break
+            }
+        default: break
+        }
+        
+        return shouldFireIRQ
+    }
+    
+    mutating func stepTimer(dmcCurrentAddressValue: UInt8) -> UInt64 {
+        let numCPUStallCycles: UInt64
+        if self.cycle % 2 == 0 {
+            self.pulse1.stepTimer()
+            self.pulse2.stepTimer()
+            self.noise.stepTimer()
+            numCPUStallCycles = self.dmc.stepTimer(dmcCurrentAddressValue: dmcCurrentAddressValue)
+        } else {
+            numCPUStallCycles = 0
+        }
+        self.triangle.stepTimer()
+        
+        return numCPUStallCycles
+    }
+    
+    mutating func stepEnvelope() {
+        self.pulse1.stepEnvelope()
+        self.pulse2.stepEnvelope()
+        self.triangle.stepCounter()
+        self.noise.stepEnvelope()
+    }
+    
+    mutating func stepSweep() {
+        self.pulse1.stepSweep()
+        self.pulse2.stepSweep()
+    }
+    
+    mutating func stepLength() {
+        self.pulse1.stepLength()
+        self.pulse2.stepLength()
+        self.triangle.stepLength()
+        self.noise.stepLength()
+    }
+    
+    func readRegister(address: UInt16) -> UInt8 {
+        switch address {
+        case 0x4015:
+            return self.readStatus()
+        default: return 0
+        }
+    }
+    
+    mutating func writeRegister(address: UInt16, value: UInt8) {
+        switch address {
+        case 0x4000:
+            self.pulse1.writeControl(value: value)
+        case 0x4001:
+            self.pulse1.writeSweep(value: value)
+        case 0x4002:
+            self.pulse1.writeTimerLow(value: value)
+        case 0x4003:
+            self.pulse1.writeTimerHigh(value: value)
+        case 0x4004:
+            self.pulse2.writeControl(value: value)
+        case 0x4005:
+            self.pulse2.writeSweep(value: value)
+        case 0x4006:
+            self.pulse2.writeTimerLow(value: value)
+        case 0x4007:
+            self.pulse2.writeTimerHigh(value: value)
+        case 0x4008:
+            self.triangle.writeControl(value: value)
+        case 0x4009, 0x4010:
+            self.dmc.writeControl(value: value)
+        case 0x4011:
+            self.dmc.writeValue(value: value)
+        case 0x4012:
+            self.dmc.writeAddress(value: value)
+        case 0x4013:
+            self.dmc.writeLength(value: value)
+        case 0x400A:
+            self.triangle.writeTimerLow(value: value)
+        case 0x400B:
+            self.triangle.writeTimerHigh(value: value)
+        case 0x400C:
+            self.noise.writeControl(value: value)
+        case 0x400D, 0x400E:
+            self.noise.writePeriod(value: value)
+        case 0x400F:
+            self.noise.writeLength(value: value)
+        case 0x4015:
+            self.writeControl(value: value)
+        case 0x4017:
+            self.writeFrameCounter(value: value)
+        default: break
+        }
+    }
+    
+    func readStatus() -> UInt8 {
+        var result: UInt8 = 0
+        
+        if self.pulse1.lengthValue > 0 { result |= 1 }
+        if self.pulse2.lengthValue > 0 { result |= 2 }
+        if self.triangle.lengthValue > 0 { result |= 4 }
+        if self.noise.lengthValue > 0 { result |= 8 }
+        if self.dmc.currentLength > 0 { result |= 16 }
+        
+        return result
+    }
+    
+    mutating func writeControl(value: UInt8) {
+        self.pulse1.enabled = value & 1 == 1
+        self.pulse2.enabled = value & 2 == 2
+        self.triangle.enabled = value & 4 == 4
+        self.noise.enabled = value & 8 == 8
+        self.dmc.enabled = value & 16 == 16
+        
+        if !self.pulse1.enabled { self.pulse1.lengthValue = 0 }
+        if !self.pulse2.enabled { self.pulse2.lengthValue = 0 }
+        if !self.triangle.enabled { self.triangle.lengthValue = 0 }
+        if !self.noise.enabled { self.noise.lengthValue = 0 }
+        if !self.dmc.enabled {
+            self.dmc.currentLength = 0
+        } else if self.dmc.currentLength == 0 {
+            self.dmc.restart()
+        }
+    }
+    
+    mutating func writeFrameCounter(value: UInt8) {
+        self.framePeriod = 4 + (value >> 7) & 1
+        self.frameIRQ = (value >> 6) & 1 == 0
+        if self.framePeriod == 5 {
+            self.stepEnvelope()
+            self.stepSweep()
+            self.stepLength()
+        }
+    }
+    
+    /// sampleRate: samples per second cutoffFreq: oscillations per second
+    private static func lowPassFilter(sampleRate: Float32, cutoffFreq: Float32) -> Filter {
+        let c = sampleRate / Float32.pi / cutoffFreq
+        let a0i = 1 / (1 + c)
+        return FirstOrderFilter(B0: a0i, B1: a0i, A1: (1 - c) * a0i, prevX: 0, prevY: 0)
+    }
+    
+    /// sampleRate: samples per second cutoffFreq: oscillations per second
+    private static func highPassFilter(sampleRate: Float32, cutoffFreq: Float32) -> Filter {
+        let c = sampleRate / Float32.pi / cutoffFreq
+        let a0i = 1 / (1 + c)
+        return FirstOrderFilter(B0: c * a0i, B1: -1.0 * c * a0i, A1: (1 - c) * a0i, prevX: 0, prevY: 0)
+    }
+    
+    // MARK: - Channel Structs
+    
+    struct Pulse {
+        let channel: UInt8
+        var enabled: Bool
+        var lengthEnabled: Bool
+        var lengthValue: UInt8
+        var timerPeriod: UInt16
+        var timerValue: UInt16
+        var dutyMode: UInt8
+        var dutyValue: UInt8
+        var sweepReload: Bool
+        var sweepEnabled: Bool
+        var sweepNegate: Bool
+        var sweepShift: UInt8
+        var sweepPeriod: UInt8
+        var sweepValue: UInt8
+        var envelopeEnabled: Bool
+        var envelopeLoop: Bool
+        var envelopeStart: Bool
+        var envelopePeriod: UInt8
+        var envelopeValue: UInt8
+        var envelopeVolume: UInt8
+        var constantVolume: UInt8
+        
+        static let dutyTable: [[UInt8]] =
+        [[0, 1, 0, 0, 0, 0, 0, 0],
+         [0, 1, 1, 0, 0, 0, 0, 0],
+         [0, 1, 1, 1, 1, 0, 0, 0],
+         [1, 0, 0, 1, 1, 1, 1, 1]]
+        
+        init(channel aChannel: UInt8, state: PulseState? = nil) {
+            self.channel = aChannel
+            if let safeState = state {
+                self.enabled = safeState.enabled
+                self.lengthEnabled = safeState.lengthEnabled
+                self.lengthValue = safeState.lengthValue
+                self.timerPeriod = safeState.timerPeriod
+                self.timerValue = safeState.timerValue
+                self.dutyMode = safeState.dutyMode
+                self.dutyValue = safeState.dutyValue
+                self.sweepReload = safeState.sweepReload
+                self.sweepEnabled = safeState.sweepEnabled
+                self.sweepNegate = safeState.sweepNegate
+                self.sweepShift = safeState.sweepShift
+                self.sweepPeriod = safeState.sweepPeriod
+                self.sweepValue = safeState.sweepValue
+                self.envelopeEnabled = safeState.envelopeEnabled
+                self.envelopeLoop = safeState.envelopeLoop
+                self.envelopeStart = safeState.envelopeStart
+                self.envelopePeriod = safeState.envelopePeriod
+                self.envelopeValue = safeState.envelopeValue
+                self.envelopeVolume = safeState.envelopeVolume
+                self.constantVolume = safeState.constantVolume
+            } else {
+                self.enabled = false
+                self.lengthEnabled = false
+                self.lengthValue = 0
+                self.timerPeriod = 0
+                self.timerValue = 0
+                self.dutyMode = 0
+                self.dutyValue = 0
+                self.sweepReload = false
+                self.sweepEnabled = false
+                self.sweepNegate = false
+                self.sweepShift = 0
+                self.sweepPeriod = 0
+                self.sweepValue = 0
+                self.envelopeEnabled = false
+                self.envelopeLoop = false
+                self.envelopeStart = false
+                self.envelopePeriod = 0
+                self.envelopeValue = 0
+                self.envelopeVolume = 0
+                self.constantVolume = 0
+            }
+        }
+        
+        var pulseState: PulseState {
+            PulseState.init(
+                enabled: self.enabled,
+                lengthEnabled: self.lengthEnabled,
+                lengthValue: self.lengthValue,
+                timerPeriod: self.timerPeriod,
+                timerValue: self.timerValue,
+                dutyMode: self.dutyMode,
+                dutyValue: self.dutyValue,
+                sweepReload: self.sweepReload,
+                sweepEnabled: self.sweepEnabled,
+                sweepNegate: self.sweepNegate,
+                sweepShift: self.sweepShift,
+                sweepPeriod: self.sweepPeriod,
+                sweepValue: self.sweepValue,
+                envelopeEnabled: self.envelopeEnabled,
+                envelopeLoop: self.envelopeLoop,
+                envelopeStart: self.envelopeStart,
+                envelopePeriod: self.envelopePeriod,
+                envelopeValue: self.envelopeValue,
+                envelopeVolume: self.envelopeVolume,
+                constantVolume: self.constantVolume
+            )
+        }
+        
+        mutating func writeControl(value: UInt8) {
+            self.dutyMode = (value >> 6) & 3
+            self.lengthEnabled = (value >> 5) & 1 == 0
+            self.envelopeLoop = (value >> 5) & 1 == 1
+            self.envelopeEnabled = (value >> 4) & 1 == 0
+            self.envelopePeriod = value & 15
+            self.constantVolume = value & 15
+        }
+        
+        mutating func writeSweep(value: UInt8) {
+            self.sweepEnabled = (value >> 7) & 1 == 1
+            self.sweepPeriod = ((value >> 4) & 7) + 1
+            self.sweepNegate = (value >> 3) & 1 == 1
+            self.sweepShift = value & 7
+            self.sweepReload = true
+        }
+        
+        mutating func writeTimerLow(value: UInt8) {
+            self.timerPeriod = (self.timerPeriod & 0xFF00) | UInt16(value)
+        }
+        
+        mutating func writeTimerHigh(value: UInt8) {
+            self.lengthValue = APU.lengthTable[Int(value >> 3)]
+            self.timerPeriod = (self.timerPeriod & 0x00FF) | (UInt16(value & 7) << 8)
+            self.envelopeStart = true
+            self.dutyValue = 0
+        }
+        
+        mutating func stepTimer() {
+            if self.timerValue == 0 {
+                self.timerValue = self.timerPeriod
+                self.dutyValue = (self.dutyValue + 1) % 8
+            } else {
+                self.timerValue -= 1
+            }
+        }
+        
+        mutating func stepEnvelope() {
+            if self.envelopeStart {
+                self.envelopeVolume = 15
+                self.envelopeValue = self.envelopePeriod
+                self.envelopeStart = false
+            } else if self.envelopeValue > 0 {
+                self.envelopeValue -= 1
+            } else {
+                if self.envelopeVolume > 0 {
+                    self.envelopeVolume -= 1
+                } else if self.envelopeLoop {
+                    self.envelopeVolume = 15
+                }
+                
+                self.envelopeValue = self.envelopePeriod
+            }
+        }
+        
+        mutating func stepSweep() {
+            if self.sweepReload {
+                if self.sweepEnabled && self.sweepValue == 0 {
+                    self.sweep()
+                }
+                self.sweepValue = self.sweepPeriod
+                self.sweepReload = false
+            } else if self.sweepValue > 0 {
+                self.sweepValue -= 1
+            } else {
+                if self.sweepEnabled {
+                    self.sweep()
+                }
+                self.sweepValue = self.sweepPeriod
+            }
+        }
+        
+        mutating func stepLength() {
+            if self.lengthEnabled && self.lengthValue > 0 {
+                self.lengthValue -= 1
+            }
+        }
+        
+        mutating func sweep() {
+            let delta = self.timerPeriod >> self.sweepShift
+            if self.sweepNegate {
+                self.timerPeriod -= delta
+                if self.channel == 1 {
+                    self.timerPeriod -= 1
+                }
+            } else {
+                self.timerPeriod &+= delta
+            }
+        }
+        
+        func output() -> UInt8 {
+            if !self.enabled {
+                return 0
+            }
+            
+            if self.lengthValue == 0 {
+                return 0
+            }
+            
+            if Pulse.dutyTable[Int(self.dutyMode)][Int(self.dutyValue)] == 0 {
+                return 0
+            }
+            
+            if self.timerPeriod < 8 || self.timerPeriod > 0x7FF {
+                return 0
+            }
+            
+            if self.envelopeEnabled {
+                return self.envelopeVolume
+            } else {
+                return self.constantVolume
+            }
+        }
+    }
+    
+    struct Triangle {
+        static let triangleTable: [UInt8] = [
+            15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        ]
+        
+        var enabled: Bool
+        var lengthEnabled: Bool
+        var lengthValue: UInt8
+        var timerPeriod: UInt16
+        var timerValue: UInt16
+        var dutyValue: UInt8
+        var counterPeriod: UInt8
+        var counterValue: UInt8
+        var counterReload: Bool
+        
+        init(state: TriangleState? = nil) {
+            if let safeState = state
+            {
+                self.enabled = safeState.enabled
+                self.lengthEnabled = safeState.lengthEnabled
+                self.lengthValue = safeState.lengthValue
+                self.timerPeriod = safeState.timerPeriod
+                self.timerValue = safeState.timerValue
+                self.dutyValue = safeState.dutyValue
+                self.counterPeriod = safeState.counterPeriod
+                self.counterValue = safeState.counterValue
+                self.counterReload = safeState.counterReload
+            }
+            else
+            {
+                self.enabled = false
+                self.lengthEnabled = false
+                self.lengthValue = 0
+                self.timerPeriod = 0
+                self.timerValue = 0
+                self.dutyValue = 0
+                self.counterPeriod = 0
+                self.counterValue = 0
+                self.counterReload = false
+            }
+        }
+        
+        var triangleState: TriangleState
+        {
+            return TriangleState.init(enabled: self.enabled, lengthEnabled: self.lengthEnabled, lengthValue: self.lengthValue, timerPeriod: self.timerPeriod, timerValue: self.timerValue, dutyValue: self.dutyValue, counterPeriod: self.counterPeriod, counterValue: self.counterValue, counterReload: self.counterReload)
+        }
+        
+        mutating func writeControl(value: UInt8)
+        {
+            self.lengthEnabled = (value >> 7) & 1 == 0
+            self.counterPeriod = value & 0x7F
+        }
+        
+        mutating func writeTimerLow(value: UInt8)
+        {
+            self.timerPeriod = (self.timerPeriod & 0xFF00) | UInt16(value)
+        }
+        
+        mutating func writeTimerHigh(value: UInt8)
+        {
+            self.lengthValue = APU.lengthTable[Int(value >> 3)]
+            self.timerPeriod = (self.timerPeriod & 0x00FF) | (UInt16(value & 7) << 8)
+            self.timerValue = self.timerPeriod
+            self.counterReload = true
+        }
+        
+        mutating func stepTimer()
+        {
+            if self.timerValue == 0
+            {
+                self.timerValue = self.timerPeriod
+                if self.lengthValue > 0 && self.counterValue > 0
+                {
+                    self.dutyValue = (self.dutyValue + 1) % 32
+                }
+            }
+            else
+            {
+                self.timerValue -= 1
+            }
+        }
+        
+        mutating func stepLength()
+        {
+            if self.lengthEnabled && self.lengthValue > 0
+            {
+                self.lengthValue -= 1
+            }
+        }
+        
+        mutating func stepCounter()
+        {
+            if self.counterReload
+            {
+                self.counterValue = self.counterPeriod
+            }
+            else if self.counterValue > 0
+            {
+                self.counterValue -= 1
+            }
+            
+            if self.lengthEnabled
+            {
+                self.counterReload = false
+            }
+        }
+        
+        func output() -> UInt8
+        {
+            if !self.enabled || self.lengthValue == 0 || self.counterValue == 0
+            {
+                return 0
+            }
+            
+            return Triangle.triangleTable[Int(self.dutyValue)]
+        }
+    }
+    
+    struct Noise
+    {
+        var enabled: Bool
+        var mode: Bool
+        var shiftRegister: UInt16
+        var lengthEnabled: Bool
+        var lengthValue: UInt8
+        var timerPeriod: UInt16
+        var timerValue: UInt16
+        var envelopeEnabled: Bool
+        var envelopeLoop: Bool
+        var envelopeStart: Bool
+        var envelopePeriod: UInt8
+        var envelopeValue: UInt8
+        var envelopeVolume: UInt8
+        var constantVolume: UInt8
+        
+        static let noiseTable: [UInt16] = [4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068]
+        
+        init(state: NoiseState? = nil)
+        {
+            if let safeState = state
+            {
+                self.enabled = safeState.enabled
+                self.mode = safeState.mode
+                self.shiftRegister = safeState.shiftRegister
+                self.lengthEnabled = safeState.lengthEnabled
+                self.lengthValue = safeState.lengthValue
+                self.timerPeriod = safeState.timerPeriod
+                self.timerValue = safeState.timerValue
+                self.envelopeEnabled = safeState.envelopeEnabled
+                self.envelopeLoop = safeState.envelopeLoop
+                self.envelopeStart = safeState.envelopeStart
+                self.envelopePeriod = safeState.envelopePeriod
+                self.envelopeValue = safeState.envelopeValue
+                self.envelopeVolume = safeState.envelopeVolume
+                self.constantVolume = safeState.constantVolume
+            }
+            else
+            {
+                self.enabled = false
+                self.mode = false
+                self.shiftRegister = 1
+                self.lengthEnabled = false
+                self.lengthValue = 0
+                self.timerPeriod = 0
+                self.timerValue = 0
+                self.envelopeEnabled = false
+                self.envelopeLoop = false
+                self.envelopeStart = false
+                self.envelopePeriod = 0
+                self.envelopeValue = 0
+                self.envelopeVolume = 0
+                self.constantVolume = 0
+            }
+        }
+        
+        var noiseState: NoiseState
+        {
+            return NoiseState(enabled: self.enabled, mode: self.mode, shiftRegister: self.shiftRegister, lengthEnabled: self.lengthEnabled, lengthValue: self.lengthValue, timerPeriod: self.timerPeriod, timerValue: self.timerValue, envelopeEnabled: self.envelopeEnabled, envelopeLoop: self.envelopeLoop, envelopeStart: self.envelopeStart, envelopePeriod: self.envelopePeriod, envelopeValue: self.envelopeValue, envelopeVolume: self.envelopeVolume, constantVolume: self.constantVolume)
+        }
+        
+        mutating func writeControl(value: UInt8)
+        {
+            self.lengthEnabled = (value >> 5) & 1 == 0
+            self.envelopeLoop = (value >> 5) & 1 == 1
+            self.envelopeEnabled = (value >> 4) & 1 == 0
+            self.envelopePeriod = value & 15
+            self.constantVolume = value & 15
+        }
+        
+        mutating func writePeriod(value: UInt8)
+        {
+            self.mode = value & 0x80 == 0x80
+            self.timerPeriod = Noise.noiseTable[Int(value & 0x0F)]
+        }
+        
+        mutating func writeLength(value: UInt8)
+        {
+            self.lengthValue = APU.lengthTable[Int(value >> 3)]
+            self.envelopeStart = true
+        }
+        
+        mutating func stepTimer()
+        {
+            if self.timerValue == 0
+            {
+                self.timerValue = self.timerPeriod
+                let shift: UInt8 = self.mode ? 6 : 1
+                let b1 = self.shiftRegister & 1
+                let b2 = (self.shiftRegister >> shift) & 1
+                self.shiftRegister >>= 1
+                self.shiftRegister |= (b1 ^ b2) << 14
+            }
+            else
+            {
+                self.timerValue -= 1
+            }
+        }
+        
+        mutating func stepEnvelope()
+        {
+            if self.envelopeStart
+            {
+                self.envelopeVolume = 15
+                self.envelopeValue = self.envelopePeriod
+                self.envelopeStart = false
+            }
+            else if self.envelopeValue > 0
+            {
+                self.envelopeValue -= 1
+            }
+            else
+            {
+                if self.envelopeVolume > 0
+                {
+                    self.envelopeVolume -= 1
+                }
+                else if self.envelopeLoop
+                {
+                    self.envelopeVolume = 15
+                }
+                self.envelopeValue = self.envelopePeriod
+            }
+        }
+        
+        mutating func stepLength()
+        {
+            if self.lengthEnabled && self.lengthValue > 0
+            {
+                self.lengthValue -= 1
+            }
+        }
+        
+        func output() -> UInt8
+        {
+            if !self.enabled || self.lengthValue == 0 || self.shiftRegister & 1 == 1 || self.timerPeriod < 3
+            {
+                return 0
+            }
+            
+            if self.envelopeEnabled
+            {
+                return self.envelopeVolume
+            }
+            else
+            {
+                return self.constantVolume
+            }
+        }
+    }
+    
+    struct DMC
+    {
+        var enabled: Bool
+        var currentAddress: UInt16
+        var currentLength: UInt16
+        private var value: UInt8
+        private var sampleAddress: UInt16
+        private var sampleLength: UInt16
+        private var shiftRegister: UInt8
+        private var bitCount: UInt8
+        private var tickPeriod: UInt8
+        private var tickValue: UInt8
+        private var loop: Bool
+        private var irq: Bool
+        
+        static let dmcTable: [UInt8] = [214, 190, 170, 160, 143, 127, 113, 107, 95, 80, 71, 64, 53, 42, 36, 27]
+        
+        init(state: DMCState? = nil) {
+            if let safeState = state {
+                self.enabled = safeState.enabled
+                self.value = safeState.value
+                self.sampleAddress = safeState.sampleAddress
+                self.sampleLength = safeState.sampleLength
+                self.currentAddress = safeState.currentAddress
+                self.currentLength = safeState.currentLength
+                self.shiftRegister = safeState.shiftRegister
+                self.bitCount = safeState.bitCount
+                self.tickPeriod = safeState.tickPeriod
+                self.tickValue = safeState.tickValue
+                self.loop = safeState.loop
+                self.irq = safeState.irq
+            } else {
+                self.enabled = false
+                self.value = 0
+                self.sampleAddress = 0
+                self.sampleLength = 0
+                self.currentAddress = 0
+                self.currentLength = 0
+                self.shiftRegister = 0
+                self.bitCount = 0
+                self.tickPeriod = 0
+                self.tickValue = 0
+                self.loop = false
+                self.irq = false
+            }
+        }
+        
+        var dmcState: DMCState {
+            DMCState(
+                enabled: self.enabled,
+                value: self.value,
+                sampleAddress: self.sampleAddress,
+                sampleLength: self.sampleLength,
+                currentAddress: self.currentAddress,
+                currentLength: self.currentLength,
+                shiftRegister: self.shiftRegister,
+                bitCount: self.bitCount,
+                tickPeriod: self.tickPeriod,
+                tickValue: self.tickValue,
+                loop: self.loop,
+                irq: self.irq
+            )
+        }
+        
+        mutating func writeControl(value: UInt8) {
+            self.irq = value & 0x80 == 0x80
+            self.loop = value & 0x40 == 0x40
+            self.tickPeriod = DMC.dmcTable[Int(value & 0x0F)]
+        }
+        
+        mutating func writeValue(value: UInt8) {
+            self.value = value & 0x7F
+        }
+        
+        mutating func writeAddress(value: UInt8) {
+            // Sample address = %11AAAAAA.AA000000
+            self.sampleAddress = 0xC000 | (UInt16(value) << 6)
+        }
+        
+        mutating func writeLength(value: UInt8) {
+            // Sample length = %0000LLLL.LLLL0001
+            self.sampleLength = (UInt16(value) << 4) | 1
+        }
+        
+        mutating func restart() {
+            self.currentAddress = self.sampleAddress
+            self.currentLength = self.sampleLength
+        }
+        
+        mutating func stepTimer(dmcCurrentAddressValue: UInt8) -> UInt64 {
+            guard self.enabled else { return 0 }
+            
+            let numCPUStallCycles: UInt64 = self.stepReader(dmcCurrentAddressValue: dmcCurrentAddressValue)
+            
+            if self.tickValue == 0 {
+                self.tickValue = self.tickPeriod
+                self.stepShifter()
+            } else {
+                self.tickValue -= 1
+            }
+            
+            return numCPUStallCycles
+        }
+        
+        mutating func stepReader(dmcCurrentAddressValue: UInt8) -> UInt64 {
+            let numCPUStallCycles: UInt64
+            if self.currentLength > 0 && self.bitCount == 0 {
+                numCPUStallCycles = 4
+                self.shiftRegister = dmcCurrentAddressValue
+                self.bitCount = 8
+                self.currentAddress &+= 1
+                
+                if self.currentAddress == 0 {
+                    self.currentAddress = 0x8000
+                }
+                
+                self.currentLength -= 1
+                
+                if self.currentLength == 0 && self.loop {
+                    self.restart()
+                }
+            } else {
+                numCPUStallCycles = 0
+            }
+            
+            return numCPUStallCycles
+        }
+        
+        mutating func stepShifter() {
+            if self.bitCount == 0 {
+                return
+            }
+            
+            if self.shiftRegister & 1 == 1 {
+                if self.value <= 125 { self.value += 2 }
+            } else {
+                if self.value >= 2 { self.value -= 2 }
+            }
+            
+            self.shiftRegister >>= 1
+            self.bitCount -= 1
+        }
+        
+        func output() -> UInt8 {
+            return self.value
+        }
+    }
+}

@@ -8,36 +8,24 @@
 import SwiftUI
 import PhotosUI
 
-// TODO: logic
-/*
- https://developer.apple.com/documentation/photokit/bringing_photos_picker_to_your_swiftui_app
- */
-
 struct AddGameView: View {
     
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     @State private var isImporting = false
     @State private var isFileSelected = false
     @State private var gameName = ""
     @State var imageSelection: PhotosPickerItem? = nil
+    @State private var selectedFile: URL?
+    @MainActor
+    @State private var imageData: Data? = nil
     
     var body: some View {
         ZStack {
-            if colorScheme == .dark {
-                Rectangle()
-                    .fill(.black.gradient)
-                    .ignoresSafeArea()
-            } else {
-                Rectangle()
-                    .fill(.white.gradient)
-                    .ignoresSafeArea()
-            }
-            
+            UIElements.background()
             VStack {
                 Button {
-                    //                    isImporting = true
-                    isFileSelected = true
+                    isImporting = true
                 } label: {
                     Label("Import from Files", systemImage: "folder")
                 }
@@ -53,22 +41,23 @@ struct AddGameView: View {
                                         RoundedRectangle(cornerRadius: 25.0)
                                             .fill(.thinMaterial)
                                     }
-                                PhotosPicker(selection: $imageSelection) {
+                                PhotosPicker(selection: $imageSelection, matching: .images) {
                                     Label("Choose an artwork", systemImage: "photo")
                                 }
                                 Spacer()
                             }
                             HStack {
-                                HomeViewIcon(text: gameName, color: .game, icon: Image(systemName: "gamecontroller"))
-                                LibraryItemView(icon: Image(systemName: "gamecontroller"), title: gameName)
+                                HomeViewIcon(text: gameName, icon: UIElements.gameImage(imageData: imageData))
+                                LibraryItemView(icon: Image(data: imageData), title: gameName)
                             }
                         }
                         .padding(.horizontal)
                         Button {
-                            
+                            addGame()
                         } label: {
                             Text("Save")
                         }
+                        .disabled(gameName.isEmpty || imageSelection == nil || selectedFile == nil)
                         .buttonStyle(.borderedProminent)
                         .padding()
                     }
@@ -77,11 +66,50 @@ struct AddGameView: View {
             .fileImporter(isPresented: $isImporting, allowedContentTypes: [.init(filenameExtension: "nes")!], onCompletion: { result in
                 switch result {
                 case .success(let success):
-                    print(success)
+                    selectedFile = success
+                    isFileSelected = true
                 case .failure(let failure):
                     print(failure)
                 }
             })
+        }
+        .onChange(of: imageSelection) {
+            guard let imageSelection else {
+                imageData = nil
+                return
+            }
+            Task {
+                guard let imageData = try? await imageSelection.loadTransferable(type: Data.self) else { return }
+                self.imageData = imageData
+            }
+        }
+    }
+    
+    private func addGame() {
+        Task {
+            defer { selectedFile?.stopAccessingSecurityScopedResource() }
+            guard
+                let imageData = try? await imageSelection?.loadTransferable(type: Data.self),
+                let selectedFile,
+                selectedFile.startAccessingSecurityScopedResource()
+            else { return }
+            
+            do {
+                let gameData = try Data(contentsOf: selectedFile)
+                
+                let model = GameModel(
+                    title: gameName,
+                    imageData: imageData,
+                    lastTimePlayed: .now,
+                    gameData: gameData
+                )
+                
+                modelContext.insert(model)
+            } catch {
+                
+            }
+            
+            dismiss()
         }
     }
 }
