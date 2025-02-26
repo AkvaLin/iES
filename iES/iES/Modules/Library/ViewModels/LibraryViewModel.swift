@@ -28,7 +28,6 @@ class LibraryViewModel: ObservableObject {
 extension LibraryViewModel {
     enum SortType {
         case name
-        case dateAdded
         case datePlayed
     }
 }

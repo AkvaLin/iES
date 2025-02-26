@@ -10,76 +10,63 @@ import SwiftUI
 struct SettingsView: View {
     
     @StateObject private var viewModel = SettingsViewModel()
-    @Namespace private var colorPickersNamespace
+    @EnvironmentObject var csManager: ColorSchemeManager
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                UIElements.background()
-                List {
+        ZStack {
+            UIElements.background()
+            List {
+                Group {
                     appSettings
                     videoSettings
                     audioSettings
                 }
-                .listStyle(.insetGrouped)
+                .listRowBackground(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                )
+                .clipShape(.rect(cornerRadius: Consts.buttonCornerRadius))
             }
-            .navigationTitle("Settings")
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
+        .navigationTitle(Localization.settings)
     }
     
     private var colorSchemePicker: some View {
         Group {
-            Picker("Color Scheme", selection: $viewModel.selectedColorScheme) {
+            Picker(Localization.colorScheme, selection: $csManager.colorScheme) {
                 Section {
-                    Text("System").tag(SettingsConstants.AppSettings.Theme.system)
-                    Text("Dark").tag(SettingsConstants.AppSettings.Theme.dark)
-                    Text("Light").tag(SettingsConstants.AppSettings.Theme.light)
+                    Text(Localization.system).tag(AppService.UIColorScheme.device)
+                    Text(Localization.light).tag(AppService.UIColorScheme.light)
+                    Text(Localization.dark).tag(AppService.UIColorScheme.dark)
                 } header: {
-                    Text("Default")
-                }
-                Section {
-                    Text("Custom").tag(SettingsConstants.AppSettings.Theme.custom(viewModel.customBackgroundColor, viewModel.customAccentColor))
-                } header: {
-                    Text("Select colors below")
+                    Text(Localization.defaultLoc)
                 }
             }
-            if viewModel.isColorPickersShown {
-                Group {
-                    ColorPicker("Accent Color", selection: $viewModel.customAccentColor)
-                    ColorPicker("Background Color", selection: $viewModel.customBackgroundColor)
-                }
-            }
-        }
-    }
-    
-    private var languagePicker: some View {
-        Picker("Language", selection: $viewModel.selectedLanguage) {
-            Text("English").tag(SettingsConstants.AppSettings.Language.en)
-            Text("Russian").tag(SettingsConstants.AppSettings.Language.ru)
         }
     }
     
     private var appSettings: some View {
-        Section("App Settings") {
+        Section(Localization.appSettings) {
             colorSchemePicker
-            languagePicker
         }
     }
     
     private var videoSettings: some View {
-        Section("Video settings") {
-            Toggle("Enable MetalFX", isOn: $viewModel.metalFxEnabled)
+        Section(Localization.videoSettings) {
+            Toggle(Localization.enableFX, isOn: $viewModel.metalFxEnabled)
             if !viewModel.metalFxEnabled {
-                Toggle("Enable sharper edges", isOn: $viewModel.nearestNeighborRendering)
-                Toggle("Integer scaling", isOn: $viewModel.integerScaling)
+                Toggle(Localization.enableSharperEdges, isOn: $viewModel.nearestNeighborRendering)
+                Toggle(Localization.integerScaling, isOn: $viewModel.integerScaling)
                 VStack {
-                    Text("Scanlines")
+                    Text(Localization.scanlines)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Picker("", selection: $viewModel.scanlines) {
-                        Text("off").tag(Int(Scanlines.off.rawValue))
-                        Text("low").tag(Int(Scanlines.low.rawValue))
-                        Text("med").tag(Int(Scanlines.med.rawValue))
-                        Text("hi").tag(Int(Scanlines.hi.rawValue))
+                        Text(Localization.off).tag(Int(Scanlines.off.rawValue))
+                        Text(Localization.low).tag(Int(Scanlines.low.rawValue))
+                        Text(Localization.med).tag(Int(Scanlines.med.rawValue))
+                        Text(Localization.hi).tag(Int(Scanlines.hi.rawValue))
                     }
                 }
                 .pickerStyle(.segmented)
@@ -88,11 +75,11 @@ struct SettingsView: View {
     }
     
     private var audioSettings: some View {
-        Section("Audio settings") {
-            Toggle("Enable Audio", isOn: $viewModel.enableAudio)
-            Toggle("High pass filtering", isOn: $viewModel.audioFilter)
+        Section(Localization.audioSettings) {
+            Toggle(Localization.enableAudio, isOn: $viewModel.enableAudio)
+            Toggle(Localization.highPassFiltering, isOn: $viewModel.audioFilter)
             VStack {
-                Text("Sample rate (kHz)")
+                Text(Localization.sampleRate)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Picker("", selection: $viewModel.sampleRate) {
                     Text("12").tag(SampleRate._12000Hz.rawValue)

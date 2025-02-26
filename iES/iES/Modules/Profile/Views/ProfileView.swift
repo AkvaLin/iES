@@ -10,11 +10,10 @@ import SwiftUI
 struct ProfileView: View {
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                UIElements.background()
-            }
+        ZStack {
+            UIElements.background()
         }
+        .navigationTitle(Localization.profile)
     }
 }
 

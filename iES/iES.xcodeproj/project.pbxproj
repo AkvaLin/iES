@@ -21,6 +21,8 @@
 		F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501EC2C440FC6003B7574 /* LibraryView.swift */; };
 		F61501FA2C441076003B7574 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501F92C441076003B7574 /* ProfileView.swift */; };
 		F6191F1C2D6C86BE008CEF57 /* MetalFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F612F9BC2D666EA20044284D /* MetalFX.framework */; };
+		F6191F212D6F3E50008CEF57 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F6191F202D6F3E50008CEF57 /* Localizable.xcstrings */; };
+		F6191F232D6F3F6C008CEF57 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6191F222D6F3F68008CEF57 /* Localization.swift */; };
 		F61A1CD42D53E355002BE8AB /* LoadingAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61A1CD32D53E351002BE8AB /* LoadingAnimation.swift */; };
 		F61A1CD82D548199002BE8AB /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61A1CD72D548199002BE8AB /* FlipView.swift */; };
 		F6228A062C14EC570042F578 /* CPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A052C14EC570042F578 /* CPUTests.swift */; };
@@ -132,6 +134,9 @@
 		F61501E62C440C43003B7574 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F61501EC2C440FC6003B7574 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		F61501F92C441076003B7574 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F6191F1D2D6F274F008CEF57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F6191F202D6F3E50008CEF57 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		F6191F222D6F3F68008CEF57 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		F61A1CD32D53E351002BE8AB /* LoadingAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimation.swift; sourceTree = "<group>"; };
 		F61A1CD72D548199002BE8AB /* FlipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlipView.swift; sourceTree = "<group>"; };
 		F6228A052C14EC570042F578 /* CPUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUTests.swift; sourceTree = "<group>"; };
@@ -362,6 +367,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		F6191F1E2D6F3E3A008CEF57 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				F6191F202D6F3E50008CEF57 /* Localizable.xcstrings */,
+				F6191F222D6F3F68008CEF57 /* Localization.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		F61A1CD22D53E34A002BE8AB /* Animations */ = {
 			isa = PBXGroup;
 			children = (
@@ -415,6 +429,7 @@
 				F668DDB82BFD1A92007A3B60 /* iESApp.swift */,
 				F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */,
 				F668DDC02BFD1A94007A3B60 /* iES.entitlements */,
+				F6191F1D2D6F274F008CEF57 /* Info.plist */,
 				F668DDC12BFD1A94007A3B60 /* Preview Content */,
 			);
 			path = iES;
@@ -606,6 +621,7 @@
 		F6DC34582D44106500E75525 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F6191F1E2D6F3E3A008CEF57 /* Localization */,
 				F6DC34592D44107300E75525 /* DesignSystem.swift */,
 			);
 			path = Resources;
@@ -728,6 +744,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = F668DDAC2BFD1A92007A3B60;
 			packageReferences = (
@@ -750,6 +767,7 @@
 			files = (
 				F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */,
 				F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */,
+				F6191F212D6F3E50008CEF57 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -776,6 +794,7 @@
 			files = (
 				F61A1CD42D53E355002BE8AB /* LoadingAnimation.swift in Sources */,
 				F6DC345A2D44107600E75525 /* DesignSystem.swift in Sources */,
+				F6191F232D6F3F6C008CEF57 /* Localization.swift in Sources */,
 				F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */,
 				F6B85B052CEA47190033027E /* ConsoleView.swift in Sources */,
 				F6E4E5222CABF330005D5165 /* ProfileViewModel.swift in Sources */,
@@ -950,6 +969,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1004,6 +1024,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Release;
 		};
@@ -1019,6 +1040,7 @@
 				DEVELOPMENT_TEAM = 5374B32457;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iES/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1029,6 +1051,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -1060,6 +1083,7 @@
 				DEVELOPMENT_TEAM = 5374B32457;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iES/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1070,6 +1094,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";

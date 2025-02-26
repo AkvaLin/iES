@@ -17,8 +17,6 @@ enum SettingsConstants {
             case light
             case dark
             case system
-            /// custom color theme where first color -> background, second -> accent
-            case custom(Color, Color)
         }
     }
 }

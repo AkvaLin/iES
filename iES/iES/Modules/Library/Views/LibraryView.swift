@@ -15,30 +15,32 @@ struct LibraryView: View {
     @StateObject private var viewModel = LibraryViewModel()
     @State private var presentConsole = false
     @State private var playButtonWasPressed = false
+    @State private var isBackgroundBlured = false
     
     var body: some View {
         ZStack {
             UIElements.background()
             contentView
+            if isBackgroundBlured {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .ignoresSafeArea()
+                    .opacity(0.9)
+            }
         }
-        .navigationTitle("Library")
+        .navigationTitle(Localization.library)
         .toolbarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Menu {
-                    Button("Sort by Name") {
+                    Button(Localization.sortByName) {
                         withAnimation {
                             viewModel.sortBy = .name
                         }
                     }
-                    Button("Sort by Recently Played") {
+                    Button(Localization.sortByRecentPlayed) {
                         withAnimation {
                             viewModel.sortBy = .datePlayed
-                        }
-                    }
-                    Button("Sort by Date Added") {
-                        withAnimation {
-                            viewModel.sortBy = .dateAdded
                         }
                     }
                 } label: {
@@ -60,14 +62,19 @@ struct LibraryView: View {
             }
         } content: {
             LibraryItemDetailView(model: viewModel.modelToPresent, playButtonWasPressed: $playButtonWasPressed)
+                .onDisappear {
+                    withAnimation {
+                        isBackgroundBlured = false
+                    }
+                }
         }
-        .alert("The game and all data will be permanently deleted.\nAre you sure?", isPresented: $viewModel.showDeleteAlert) {
-            Button("Delete", role: .destructive) {
+        .alert(Localization.deleteGameAlert, isPresented: $viewModel.showDeleteAlert) {
+            Button(Localization.delete, role: .destructive) {
                 if let model = viewModel.modelToDelete {
                     modelContext.delete(model)
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(Localization.cancel, role: .cancel) {}
         }
         .navigationDestination(isPresented: $presentConsole) {
             if let model = viewModel.modelToPresent {
@@ -79,12 +86,10 @@ struct LibraryView: View {
     
     private var contentView: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], content: {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], content: {
                 ForEach(games.sorted(by: { lhs, rhs in
                     switch viewModel.sortBy {
                     case .name:
-                        lhs.title < rhs.title
-                    case .dateAdded:
                         lhs.title < rhs.title
                     case .datePlayed:
                         lhs.lastTimePlayed > rhs.lastTimePlayed
@@ -93,11 +98,14 @@ struct LibraryView: View {
                     Button {
                         viewModel.modelToPresent = game
                         viewModel.isDetailsPresented = true
+                        withAnimation {
+                            isBackgroundBlured = true
+                        }
                     } label: {
                         LibraryItemView(icon: Image(data: game.imageData), title: game.title)
                     }
                     .contextMenu {
-                        Button("Delete", systemImage: "trash", role: .destructive) {
+                        Button(Localization.delete, systemImage: "trash", role: .destructive) {
                             viewModel.modelToDelete = game
                             viewModel.showDeleteAlert = true
                         }

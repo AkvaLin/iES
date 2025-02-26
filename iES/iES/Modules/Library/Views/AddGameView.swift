@@ -27,7 +27,7 @@ struct AddGameView: View {
                 Button {
                     isImporting = true
                 } label: {
-                    Label("Import from Files", systemImage: "folder")
+                    Label(Localization.importFromFiles, systemImage: "folder")
                 }
                 .padding()
                 if isFileSelected {
@@ -35,14 +35,14 @@ struct AddGameView: View {
                         HStack(spacing: 40) {
                             VStack(spacing: 40) {
                                 Spacer()
-                                TextField("Enter the name of the game", text: $gameName)
+                                TextField(Localization.gameTextFieldPrompt, text: $gameName)
                                     .padding()
                                     .background {
                                         RoundedRectangle(cornerRadius: 25.0)
                                             .fill(.thinMaterial)
                                     }
                                 PhotosPicker(selection: $imageSelection, matching: .images) {
-                                    Label("Choose an artwork", systemImage: "photo")
+                                    Label(Localization.libraryPhotoPickerLabel, systemImage: "photo")
                                 }
                                 Spacer()
                             }
@@ -55,7 +55,7 @@ struct AddGameView: View {
                         Button {
                             addGame()
                         } label: {
-                            Text("Save")
+                            Text(Localization.save)
                         }
                         .disabled(gameName.isEmpty || imageSelection == nil || selectedFile == nil)
                         .buttonStyle(.borderedProminent)

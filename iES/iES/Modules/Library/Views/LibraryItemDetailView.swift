@@ -30,20 +30,20 @@ struct LibraryItemDetailView: View {
             }
             .padding()
         }
-        .alert("The game and all data will be permanently deleted.\nAre you sure?", isPresented: $showDeleteAlert) {
-            Button("Delete", role: .destructive) {
+        .alert(Localization.deleteGameAlert, isPresented: $showDeleteAlert) {
+            Button(Localization.delete, role: .destructive) {
                 if let model = model {
                     modelContext.delete(model)
                 }
                 dismiss()
             }
-            Button("Cancel", role: .cancel) {}
+            Button(Localization.cancel, role: .cancel) {}
         }
-        .alert("You'll loose all ingame progress.\nAre you sure?", isPresented: $showDeleteSaveDataAlert) {
-            Button("Delete", role: .destructive) {
+        .alert(Localization.deleteGameSaveAlert, isPresented: $showDeleteSaveDataAlert) {
+            Button(Localization.delete, role: .destructive) {
                 model?.state = nil
             }
-            Button("Cancel", role: .cancel) {}
+            Button(Localization.cancel, role: .cancel) {}
         }
     }
     
@@ -170,18 +170,18 @@ fileprivate struct BackView: View {
                 }
             if isSettingsPresented {
                 VStack {
-                    Text("Settings")
+                    Text(Localization.settings)
                         .font(.title3)
                         .padding(.vertical)
                     List {
                         Section {
-                            Toggle("Auto Save Enabled", isOn: $isAutoSaveEnabled)
+                            Toggle(Localization.autoSaveEnabled, isOn: $isAutoSaveEnabled)
                         }
                         Section {
-                            Button("Delete save data", role: .destructive) {
+                            Button(Localization.deleteSaveData, role: .destructive) {
                                 showDeleteSaveDataAlert = true
                             }
-                            Button("Delete game", role: .destructive) {
+                            Button(Localization.deleteGame, role: .destructive) {
                                 showDeleteAlert = true
                             }
                         }
@@ -198,7 +198,7 @@ fileprivate struct BackView: View {
                     model?.isAutoSaveEnabled = newValue
                 }
             } else {
-                Text("Stats")
+                Text(Localization.stats)
             }
         }
     }

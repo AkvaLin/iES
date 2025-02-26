@@ -10,11 +10,14 @@ import SwiftData
 
 @main
 struct iESApp: App {
+    @StateObject var csManager = ColorSchemeManager()
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(csManager)
                 .onAppear {
                     Settings.registerDefaultsIfNeeded()
+                    csManager.applyColorScheme()
                 }
         }
         .modelContainer(for: [GameModel.self])

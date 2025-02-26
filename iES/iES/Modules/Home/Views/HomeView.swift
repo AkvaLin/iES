@@ -33,17 +33,17 @@ struct HomeView: View {
                             NavigationLink {
                                 LibraryView()
                             } label: {
-                                HomeViewIcon(localizedText: "Library", icon: Image(systemName: "books.vertical"))
+                                HomeViewIcon(localizedText: "library", icon: Image(systemName: "books.vertical"))
                             }
                             NavigationLink {
                                 ProfileView()
                             } label: {
-                                HomeViewIcon(localizedText: "Profile", icon: Image(systemName: "person"))
+                                HomeViewIcon(localizedText: "profile", icon: Image(systemName: "person"))
                             }
                             NavigationLink {
                                 SettingsView()
                             } label: {
-                                HomeViewIcon(localizedText: "Settings", icon: Image(systemName: "slider.horizontal.3"))
+                                HomeViewIcon(localizedText: "settings", icon: Image(systemName: "slider.horizontal.3"))
                             }
                             HomeViewIcon()
                         }
