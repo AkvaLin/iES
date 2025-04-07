@@ -14,16 +14,19 @@ struct ConsoleView: UIViewControllerRepresentable {
     typealias UIViewControllerType = NesRomViewController
     
     private let gameModel: GameModel
+    private let profileModel: ProfileModel
+    @Environment(\.modelContext) var modelContext
     
-    init(game: GameModel) {
+    init(game: GameModel, profile: ProfileModel) {
         self.gameModel = game
+        self.profileModel = profile
     }
     
     func makeUIViewController(context: Context) -> NesRomViewController {
         let vc = NesRomViewController()
         
         let cartridge = Cartridge(from: gameModel.gameData)
-        vc.setup(cartridge: cartridge, gameModel: gameModel)
+        vc.setup(cartridge: cartridge, gameModel: gameModel, profile: profileModel, modelContext: modelContext)
         
         return vc
     }

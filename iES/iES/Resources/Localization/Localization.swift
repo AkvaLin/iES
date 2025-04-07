@@ -23,13 +23,11 @@ enum Localization {
     static var enableAudio: String { String(localized: "enableAudio") }
     static var enableFX: String { String(localized: "enableFX") }
     static var enableSharperEdges: String { String(localized: "enableSharperEdges") }
-    static var english: String { String(localized: "english") }
     static var gameTextFieldPrompt: String { String(localized: "gameTextFieldPrompt") }
     static var hi: String { String(localized: "hi") }
     static var highPassFiltering: String { String(localized: "highPassFiltering") }
     static var importFromFiles: String { String(localized: "importFromFiles") }
     static var integerScaling: String { String(localized: "integerScaling") }
-    static var language: String { String(localized: "language") }
     static var library: String { String(localized: "library") }
     static var libraryPhotoPickerLabel: String { String(localized: "libraryPhotoPickerLabel") }
     static var light: String { String(localized: "light") }
@@ -37,7 +35,6 @@ enum Localization {
     static var med: String { String(localized: "med") }
     static var off: String { String(localized: "off") }
     static var profile: String { String(localized: "profile") }
-    static var russian: String { String(localized: "russian") }
     static var sampleRate: String { String(localized: "sampleRate") }
     static var save: String { String(localized: "save") }
     static var scanlines: String { String(localized: "scanlines") }

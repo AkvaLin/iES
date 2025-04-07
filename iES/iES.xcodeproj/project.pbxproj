@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F6026E682DA1091E0053560D /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E672DA1091B0053560D /* ProfileService.swift */; };
+		F6026E6D2DA1289D0053560D /* YandexAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E6C2DA1289D0053560D /* YandexAuthViewController.swift */; };
+		F6026E6F2DA129420053560D /* YandexAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E6E2DA1293D0053560D /* YandexAuthView.swift */; };
+		F6026E712DA1320D0053560D /* YandexDiskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E702DA132040053560D /* YandexDiskService.swift */; };
+		F6026E732DA13D550053560D /* CloudService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E722DA13D4D0053560D /* CloudService.swift */; };
+		F6026E752DA13E480053560D /* CloudServiceConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E742DA13E420053560D /* CloudServiceConverter.swift */; };
+		F6026E782DA149730053560D /* GoogleDriveClient in Frameworks */ = {isa = PBXBuildFile; productRef = F6026E772DA149730053560D /* GoogleDriveClient */; };
+		F6026E7B2DA149900053560D /* GoogleDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7A2DA1498B0053560D /* GoogleDriveService.swift */; };
+		F6026E7D2DA32F2E0053560D /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7C2DA32F2E0053560D /* KeychainManager.swift */; };
+		F6026E7F2DA3F0740053560D /* SwiftDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7E2DA3F06E0053560D /* SwiftDataManager.swift */; };
 		F608103C2D3194E8007AB5C2 /* NesRomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608103B2D3194E8007AB5C2 /* NesRomViewController.swift */; };
 		F60810402D3195E1007AB5C2 /* NESScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608103F2D3195E1007AB5C2 /* NESScreenView.swift */; };
 		F60811D52D32529F007AB5C2 /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60811CE2D32529F007AB5C2 /* Collection+SafeIndex.swift */; };
@@ -20,12 +30,12 @@
 		F61501E72C440C43003B7574 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501E62C440C43003B7574 /* HomeView.swift */; };
 		F61501ED2C440FC6003B7574 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501EC2C440FC6003B7574 /* LibraryView.swift */; };
 		F61501FA2C441076003B7574 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61501F92C441076003B7574 /* ProfileView.swift */; };
-		F6191F1C2D6C86BE008CEF57 /* MetalFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F612F9BC2D666EA20044284D /* MetalFX.framework */; };
 		F6191F212D6F3E50008CEF57 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F6191F202D6F3E50008CEF57 /* Localizable.xcstrings */; };
 		F6191F232D6F3F6C008CEF57 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6191F222D6F3F68008CEF57 /* Localization.swift */; };
 		F61A1CD42D53E355002BE8AB /* LoadingAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61A1CD32D53E351002BE8AB /* LoadingAnimation.swift */; };
 		F61A1CD82D548199002BE8AB /* FlipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61A1CD72D548199002BE8AB /* FlipView.swift */; };
 		F6228A062C14EC570042F578 /* CPUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6228A052C14EC570042F578 /* CPUTests.swift */; };
+		F63A11EA2D6F966200E091B6 /* MetalFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F612F9BC2D666EA20044284D /* MetalFX.framework */; };
 		F63D81C62D32AC990087107D /* Image+ImageDataInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63D81C52D32AC980087107D /* Image+ImageDataInit.swift */; };
 		F6498A4F2C5E3BD0006D371C /* LibraryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A4E2C5E3BD0006D371C /* LibraryItemView.swift */; };
 		F6498A512C5E46C4006D371C /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6498A502C5E46C4006D371C /* LibraryViewModel.swift */; };
@@ -38,6 +48,7 @@
 		F668DDD92BFD1A94007A3B60 /* iESUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */; };
 		F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */; };
 		F688E4AF2C5DDB1A00055CD0 /* HomeViewIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */; };
+		F6AE93072D97114300ED6722 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6AE93062D97114000ED6722 /* ProfileModel.swift */; };
 		F6B03BA92CB92CF600B2D3BA /* SettingsConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B03BA82CB92CF000B2D3BA /* SettingsConstants.swift */; };
 		F6B85B052CEA47190033027E /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B85B042CEA47170033027E /* ConsoleView.swift */; };
 		F6D073B32D32CDDD0086080F /* UIWindow+Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D073B22D32CDCF0086080F /* UIWindow+Current.swift */; };
@@ -120,6 +131,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F6026E672DA1091B0053560D /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		F6026E6C2DA1289D0053560D /* YandexAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexAuthViewController.swift; sourceTree = "<group>"; };
+		F6026E6E2DA1293D0053560D /* YandexAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexAuthView.swift; sourceTree = "<group>"; };
+		F6026E702DA132040053560D /* YandexDiskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexDiskService.swift; sourceTree = "<group>"; };
+		F6026E722DA13D4D0053560D /* CloudService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudService.swift; sourceTree = "<group>"; };
+		F6026E742DA13E420053560D /* CloudServiceConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudServiceConverter.swift; sourceTree = "<group>"; };
+		F6026E7A2DA1498B0053560D /* GoogleDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveService.swift; sourceTree = "<group>"; };
+		F6026E7C2DA32F2E0053560D /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		F6026E7E2DA3F06E0053560D /* SwiftDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataManager.swift; sourceTree = "<group>"; };
 		F608103B2D3194E8007AB5C2 /* NesRomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NesRomViewController.swift; sourceTree = "<group>"; };
 		F608103F2D3195E1007AB5C2 /* NESScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NESScreenView.swift; sourceTree = "<group>"; };
 		F60811CE2D32529F007AB5C2 /* Collection+SafeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeIndex.swift"; sourceTree = "<group>"; };
@@ -156,6 +176,7 @@
 		F668DDD82BFD1A94007A3B60 /* iESUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iESUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F6701BA92C824F3D00E5C7B1 /* LibraryItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItemDetailView.swift; sourceTree = "<group>"; };
 		F688E4AE2C5DDB1A00055CD0 /* HomeViewIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewIcon.swift; sourceTree = "<group>"; };
+		F6AE93062D97114000ED6722 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		F6B03BA82CB92CF000B2D3BA /* SettingsConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsConstants.swift; sourceTree = "<group>"; };
 		F6B85B042CEA47170033027E /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
 		F6D073B22D32CDCF0086080F /* UIWindow+Current.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Current.swift"; sourceTree = "<group>"; };
@@ -225,9 +246,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6191F1C2D6C86BE008CEF57 /* MetalFX.framework in Frameworks */,
+				F63A11EA2D6F966200E091B6 /* MetalFX.framework in Frameworks */,
 				F612F9C12D666EB50044284D /* ModelIO.framework in Frameworks */,
 				F612F9BF2D666EAF0044284D /* MetalKit.framework in Frameworks */,
+				F6026E782DA149730053560D /* GoogleDriveClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +270,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F6026E6B2DA128970053560D /* YandexDiskService */ = {
+			isa = PBXGroup;
+			children = (
+				F6026E6C2DA1289D0053560D /* YandexAuthViewController.swift */,
+				F6026E6E2DA1293D0053560D /* YandexAuthView.swift */,
+				F6026E702DA132040053560D /* YandexDiskService.swift */,
+			);
+			path = YandexDiskService;
+			sourceTree = "<group>";
+		};
+		F6026E792DA1497C0053560D /* GoogleDriveService */ = {
+			isa = PBXGroup;
+			children = (
+				F6026E7A2DA1498B0053560D /* GoogleDriveService.swift */,
+			);
+			path = GoogleDriveService;
+			sourceTree = "<group>";
+		};
 		F60811D42D32529F007AB5C2 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -347,6 +387,7 @@
 		F61501F32C441042003B7574 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F6AE93062D97114000ED6722 /* ProfileModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -648,10 +689,17 @@
 		F6E4E5272CABF3D9005D5165 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				F6026E7C2DA32F2E0053560D /* KeychainManager.swift */,
 				F6E4E52C2CABF47D005D5165 /* AppService.swift */,
 				F6E4E52A2CABF472005D5165 /* EmulatorService.swift */,
+				F6026E672DA1091B0053560D /* ProfileService.swift */,
 				F6E4E52E2CABF4B7005D5165 /* GamesService.swift */,
 				F6E4E5322CABF4D9005D5165 /* SavesService.swift */,
+				F6026E722DA13D4D0053560D /* CloudService.swift */,
+				F6026E742DA13E420053560D /* CloudServiceConverter.swift */,
+				F6026E7E2DA3F06E0053560D /* SwiftDataManager.swift */,
+				F6026E792DA1497C0053560D /* GoogleDriveService */,
+				F6026E6B2DA128970053560D /* YandexDiskService */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -673,6 +721,7 @@
 			);
 			name = iES;
 			packageProductDependencies = (
+				F6026E772DA149730053560D /* GoogleDriveClient */,
 			);
 			productName = iES;
 			productReference = F668DDB52BFD1A92007A3B60 /* iES.app */;
@@ -748,6 +797,7 @@
 			);
 			mainGroup = F668DDAC2BFD1A92007A3B60;
 			packageReferences = (
+				F6026E762DA149730053560D /* XCRemoteSwiftPackageReference "swift-google-drive-client" */,
 			);
 			productRefGroup = F668DDB62BFD1A92007A3B60 /* Products */;
 			projectDirPath = "";
@@ -792,7 +842,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6026E752DA13E480053560D /* CloudServiceConverter.swift in Sources */,
 				F61A1CD42D53E355002BE8AB /* LoadingAnimation.swift in Sources */,
+				F6026E682DA1091E0053560D /* ProfileService.swift in Sources */,
 				F6DC345A2D44107600E75525 /* DesignSystem.swift in Sources */,
 				F6191F232D6F3F6C008CEF57 /* Localization.swift in Sources */,
 				F6701BAA2C824F3D00E5C7B1 /* LibraryItemDetailView.swift in Sources */,
@@ -801,6 +853,7 @@
 				F668DDB92BFD1A92007A3B60 /* iESApp.swift in Sources */,
 				F6E4E5332CABF4DC005D5165 /* SavesService.swift in Sources */,
 				F6D073F72D33C9420086080F /* AddressingMode.swift in Sources */,
+				F6026E7B2DA149900053560D /* GoogleDriveService.swift in Sources */,
 				F6D073F82D33C9420086080F /* MirroringMode.swift in Sources */,
 				F6D073F92D33C9420086080F /* Mapper_VRC2c_VRC4b_VRC4d.swift in Sources */,
 				F6D073FA2D33C9420086080F /* Mapper_VRC7.swift in Sources */,
@@ -808,8 +861,10 @@
 				F6D073FC2D33C9420086080F /* Scanlines.swift in Sources */,
 				F6D073FD2D33C9420086080F /* PPU.swift in Sources */,
 				F6D073FF2D33C9420086080F /* InstructionData.swift in Sources */,
+				F6026E732DA13D550053560D /* CloudService.swift in Sources */,
 				F6D074002D33C9420086080F /* Mapper_Namcot118_TengenMimic1.swift in Sources */,
 				F6D074012D33C9420086080F /* Mapper_87.swift in Sources */,
+				F6026E7D2DA32F2E0053560D /* KeychainManager.swift in Sources */,
 				F6D074022D33C9420086080F /* Mapper_TxSROM.swift in Sources */,
 				F6D074032D33C9420086080F /* Mapper_MMC1.swift in Sources */,
 				F6D074042D33C9420086080F /* PPUState.swift in Sources */,
@@ -820,6 +875,7 @@
 				F6D074332D33FE320086080F /* Emulator.swift in Sources */,
 				F6D074082D33C9420086080F /* Mapper_MMC2.swift in Sources */,
 				F6D074312D33FDE50086080F /* EmulatorState.swift in Sources */,
+				F6026E6F2DA129420053560D /* YandexAuthView.swift in Sources */,
 				F6D074092D33C9420086080F /* Mapper_MMC3.swift in Sources */,
 				F6D0740A2D33C9420086080F /* StepData.swift in Sources */,
 				F6D0740B2D33C9420086080F /* TriangleState.swift in Sources */,
@@ -829,6 +885,7 @@
 				F6D074112D33C9420086080F /* MapperProtocol.swift in Sources */,
 				F6D074122D33C9420086080F /* CPUState.swift in Sources */,
 				F6D074132D33C9420086080F /* Mapper_AxROM.swift in Sources */,
+				F6026E7F2DA3F0740053560D /* SwiftDataManager.swift in Sources */,
 				F6D074142D33C9420086080F /* Mapper_ColorDreams.swift in Sources */,
 				F6D074152D33C9420086080F /* Interrupt.swift in Sources */,
 				F6D074162D33C9420086080F /* NoiseState.swift in Sources */,
@@ -852,7 +909,9 @@
 				F6D074292D33C9420086080F /* Mapper_78.swift in Sources */,
 				F6D0742A2D33C9420086080F /* PulseState.swift in Sources */,
 				F6D0742C2D33C9420086080F /* Mapper_MMC5.swift in Sources */,
+				F6AE93072D97114300ED6722 /* ProfileModel.swift in Sources */,
 				F6D0742D2D33C9420086080F /* PPUStepResults.swift in Sources */,
+				F6026E6D2DA1289D0053560D /* YandexAuthViewController.swift in Sources */,
 				F608103C2D3194E8007AB5C2 /* NesRomViewController.swift in Sources */,
 				F612F9DF2D6688460044284D /* Shader.metal in Sources */,
 				F6D073B32D32CDDD0086080F /* UIWindow+Current.swift in Sources */,
@@ -869,6 +928,7 @@
 				F6498A532C5E46E0006D371C /* LibraryItemModel.swift in Sources */,
 				F63D81C62D32AC990087107D /* Image+ImageDataInit.swift in Sources */,
 				F61501E72C440C43003B7574 /* HomeView.swift in Sources */,
+				F6026E712DA1320D0053560D /* YandexDiskService.swift in Sources */,
 				F6E4E52F2CABF4BA005D5165 /* GamesService.swift in Sources */,
 				F6E4E52B2CABF47A005D5165 /* EmulatorService.swift in Sources */,
 				F61501FA2C441076003B7574 /* ProfileView.swift in Sources */,
@@ -1252,6 +1312,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F6026E762DA149730053560D /* XCRemoteSwiftPackageReference "swift-google-drive-client" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/darrarski/swift-google-drive-client?tab=readme-ov-file";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F6026E772DA149730053560D /* GoogleDriveClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F6026E762DA149730053560D /* XCRemoteSwiftPackageReference "swift-google-drive-client" */;
+			productName = GoogleDriveClient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F668DDAD2BFD1A92007A3B60 /* Project object */;
 }

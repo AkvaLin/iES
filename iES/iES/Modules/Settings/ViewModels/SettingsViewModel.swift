@@ -27,6 +27,7 @@ class SettingsViewModel: ObservableObject {
     @Published var customBackgroundColor: Color = .black
     @Published var customAccentColor: Color = .accent
     @Published var isColorPickersShown = false
+    @Published var showYandexDiskAuth = false
     
     // MARK: - UserDefaults
     @AppStorage(Settings.Keys.metalFxEnabled)
@@ -43,6 +44,10 @@ class SettingsViewModel: ObservableObject {
     var sampleRate: Int = Settings.DefaultValues.defaultSampleRate.rawValue
     @AppStorage(Settings.Keys.scanlines)
     var scanlines: Int = Int(Settings.DefaultValues.defaultScanlines.rawValue)
+    @AppStorage(Settings.Keys.yandexDisk)
+    var yandexDisk: Bool = Settings.DefaultValues.yandexDisk
+    @AppStorage(Settings.Keys.googleDrive)
+    var googleDrive: Bool = Settings.DefaultValues.googleDrive
     
     func changeTheme() {
         AppService.setColorScheme(colorScheme: .device)

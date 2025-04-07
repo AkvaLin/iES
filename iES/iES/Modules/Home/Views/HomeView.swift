@@ -12,6 +12,8 @@ import SwiftData
 struct HomeView: View {
     
     @Query(GamesService.getDescriptor(limit: 3)) private var games: [GameModel]
+    @Environment(\.modelContext) var modelContext
+    @State private var profile: ProfileModel = ProfileModel(name: "")
     
     var body: some View {
         NavigationStack {
@@ -24,7 +26,7 @@ struct HomeView: View {
                             EmptyView()
                             ForEach(games, id: \.id) { game in
                                 NavigationLink {
-                                    ConsoleView(game: game)
+                                    ConsoleView(game: game, profile: profile)
                                         .ignoresSafeArea()
                                 } label: {
                                     HomeViewIcon(text: game.title, icon: UIElements.gameImage(imageData: game.imageData))
@@ -59,6 +61,18 @@ struct HomeView: View {
                 }
                 .contentMargins(40, for: .scrollContent)
                 .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
+                .onAppear {
+                    self.profile = ProfileService.getProfile(context: modelContext)
+                    Task {
+                        guard let data = await CloudService.load() else { return }
+                        do {
+                            let model = try CloudServiceConverter.getCodableStruct(data: data)
+                            CloudServiceConverter.saveFromCodableStruct(model, context: modelContext)
+                        } catch {
+                            print(error)
+                        }
+                    }
+                }
             }
         }
     }

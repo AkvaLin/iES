@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GoogleDriveClient
 
 struct SettingsView: View {
     
@@ -20,12 +21,12 @@ struct SettingsView: View {
                     appSettings
                     videoSettings
                     audioSettings
+                    cloudSettings
                 }
                 .listRowBackground(
                     Rectangle()
                         .fill(.ultraThinMaterial)
                 )
-                .clipShape(.rect(cornerRadius: Consts.buttonCornerRadius))
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
@@ -89,6 +90,49 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.segmented)
             }
+        }
+    }
+    
+    private var cloudSettings: some View {
+        Section("cloudSettings") {
+            Toggle("yandexDisk", isOn: $viewModel.yandexDisk)
+            Toggle("googleDrive", isOn: $viewModel.googleDrive)
+        }
+        .onChange(of: viewModel.yandexDisk) { oldValue, newValue in
+            if !oldValue, newValue {
+                viewModel.showYandexDiskAuth = true
+            } else if !newValue, oldValue {
+                do {
+                    try KeychainManager.instance.saveToken("", forKey: Settings.Keys.yandexToken)
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        .onChange(of: viewModel.googleDrive) { oldValue, newValue in
+            if !oldValue, newValue {
+                Task {
+                    await GoogleDriveService.signIn()
+                }
+            } else if !newValue, oldValue {
+                Task {
+                    await GoogleDriveService.signOut()
+                }
+            }
+        }
+        .onOpenURL { url in
+            Task {
+                await GoogleDriveService.handleRedirect(url: url)
+            }
+        }
+        .sheet(isPresented: $viewModel.showYandexDiskAuth) {
+            YandexAuthView()
+                .onDisappear {
+                    guard let token = KeychainManager.instance.getToken(forKey: Settings.Keys.yandexToken), !token.isEmpty else {
+                        viewModel.yandexDisk = false
+                        return
+                    }
+                }
         }
     }
 }

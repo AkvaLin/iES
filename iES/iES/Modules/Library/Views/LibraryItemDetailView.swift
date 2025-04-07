@@ -13,6 +13,7 @@ struct LibraryItemDetailView: View {
     @Environment(\.modelContext) var modelContext
     @State private var showDeleteAlert = false
     let model: GameModel?
+    let profile: ProfileModel?
     @Binding var playButtonWasPressed: Bool
     @State private var isViewFlipped = false
     @State private var isSettingsPresented = false
@@ -33,7 +34,7 @@ struct LibraryItemDetailView: View {
         .alert(Localization.deleteGameAlert, isPresented: $showDeleteAlert) {
             Button(Localization.delete, role: .destructive) {
                 if let model = model {
-                    modelContext.delete(model)
+                    SwiftDataManager.delete(model, context: modelContext)
                 }
                 dismiss()
             }
@@ -67,7 +68,7 @@ struct LibraryItemDetailView: View {
             Spacer()
             FlipView(
                 frontView: FrontView(model: model, flipAction: { isViewFlipped.toggle() }),
-                backView: BackView(isSettingsPresented: $isSettingsPresented, showDeleteAlert: $showDeleteAlert, showDeleteSaveDataAlert: $showDeleteSaveDataAlert, model: model, flipAction: { isViewFlipped.toggle() }),
+                backView: BackView(isSettingsPresented: $isSettingsPresented, showDeleteAlert: $showDeleteAlert, showDeleteSaveDataAlert: $showDeleteSaveDataAlert, model: model, profile: profile, flipAction: { isViewFlipped.toggle() }),
                 showBack: $isViewFlipped
             )
             .padding(.horizontal)
@@ -156,7 +157,9 @@ fileprivate struct BackView: View {
     @Binding var showDeleteAlert: Bool
     @Binding var showDeleteSaveDataAlert: Bool
     @State var isAutoSaveEnabled: Bool = false
+    @Environment(\.modelContext) var modelContext
     let model: GameModel?
+    let profile: ProfileModel?
     let flipAction: () -> Void
     
     var body: some View {
@@ -174,18 +177,22 @@ fileprivate struct BackView: View {
                         .font(.title3)
                         .padding(.vertical)
                     List {
-                        Section {
-                            Toggle(Localization.autoSaveEnabled, isOn: $isAutoSaveEnabled)
-                        }
-                        Section {
-                            Button(Localization.deleteSaveData, role: .destructive) {
-                                showDeleteSaveDataAlert = true
+                        Group {
+                            Section {
+                                Toggle(Localization.autoSaveEnabled, isOn: $isAutoSaveEnabled)
                             }
-                            Button(Localization.deleteGame, role: .destructive) {
-                                showDeleteAlert = true
+                            Section {
+                                Button(Localization.deleteSaveData, role: .destructive) {
+                                    showDeleteSaveDataAlert = true
+                                }
+                                Button(Localization.deleteGame, role: .destructive) {
+                                    showDeleteAlert = true
+                                }
                             }
                         }
+                        .listRowBackground(Rectangle().fill(.ultraThinMaterial))
                     }
+                    .scrollContentBackground(.hidden)
                     .scrollBounceBehavior(.basedOnSize)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .listStyle(.insetGrouped)
@@ -196,9 +203,35 @@ fileprivate struct BackView: View {
                 }
                 .onChange(of: isAutoSaveEnabled) { oldValue, newValue in
                     model?.isAutoSaveEnabled = newValue
+                    SwiftDataManager.performOnUpdate(context: modelContext)
                 }
             } else {
-                Text(Localization.stats)
+                VStack {
+                    Text(Localization.stats)
+                        .font(.title3)
+                        .padding(.vertical)
+                    List {
+                        if let profile, let model {
+                            Group {
+                                HStack {
+                                    Text("playingTime")
+                                    Spacer()
+                                    Text(Duration.seconds(profile.timePlayed[model.title] ?? 0).formatted(.time(pattern: .hourMinute)))
+                                }
+                                HStack {
+                                    Text("lastTimePlayed")
+                                    Spacer()
+                                    Text(model.lastTimePlayed.formatted())
+                                }
+                            }
+                            .listRowBackground(Rectangle().fill(.ultraThinMaterial))
+                        }
+                    }
+                    .scrollContentBackground(.hidden)
+                    .scrollBounceBehavior(.basedOnSize)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .listStyle(.insetGrouped)
+                }
             }
         }
     }

@@ -2,19 +2,87 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "shouldTranslate" : false
     },
     "12" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12"
+          }
+        }
+      }
     },
     "16" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "16"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "16"
+          }
+        }
+      }
     },
     "22" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "22"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "22"
+          }
+        }
+      }
     },
     "44" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "44"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "44"
+          }
+        }
+      }
+    },
+    "accountAge %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account created %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аккаунт создан %@"
+          }
+        }
+      }
     },
     "appSettings" : {
       "localizations" : {
@@ -50,7 +118,6 @@
       }
     },
     "autoSaveEnabled" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -68,7 +135,6 @@
       }
     },
     "cancel" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -84,6 +150,9 @@
           }
         }
       }
+    },
+    "cloudSettings" : {
+
     },
     "colorScheme" : {
       "extractionState" : "manual",
@@ -137,7 +206,6 @@
       }
     },
     "delete" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -172,37 +240,35 @@
       }
     },
     "deleteGameAlert" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The game and all data will be permanently deleted.\\nAre you sure?"
+            "value" : "The game and all data will be permanently deleted.\nAre you sure?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Игра и все данные будут удалены.\\nВы уверены?"
+            "value" : "Игра и все данные будут удалены.\nВы уверены?"
           }
         }
       }
     },
     "deleteGameSaveAlert" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You'll loose all ingame progress.\\nAre you sure?"
+            "value" : "You'll loose all ingame progress.\nAre you sure?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вы потеряете весь внутриигровой прогресс.\\nВы уверены?"
+            "value" : "Вы потеряете весь внутриигровой прогресс.\nВы уверены?"
           }
         }
       }
@@ -275,8 +341,21 @@
         }
       }
     },
-    "english" : {
-
+    "gamesPlayed %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games played: %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Игр сыграно: %lld"
+          }
+        }
+      }
     },
     "gameTextFieldPrompt" : {
       "extractionState" : "manual",
@@ -294,6 +373,9 @@
           }
         }
       }
+    },
+    "googleDrive" : {
+
     },
     "hi" : {
       "localizations" : {
@@ -362,8 +444,37 @@
         }
       }
     },
-    "language" : {
-
+    "lastActivity %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last activity: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последняя активность %@"
+          }
+        }
+      }
+    },
+    "lastTimePlayed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last time played:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последняя активность:"
+          }
+        }
+      }
     },
     "library" : {
       "localizations" : {
@@ -463,6 +574,38 @@
         }
       }
     },
+    "playingTime" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playing time:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Игрового времени:"
+          }
+        }
+      }
+    },
+    "playingTime %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playing time: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Игрового времени: %@"
+          }
+        }
+      }
+    },
     "profile" : {
       "localizations" : {
         "en" : {
@@ -478,9 +621,6 @@
           }
         }
       }
-    },
-    "russian" : {
-
     },
     "sampleRate" : {
       "extractionState" : "manual",
@@ -550,7 +690,6 @@
       }
     },
     "sortByName" : {
-      "comment" : "Library Module",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -633,6 +772,9 @@
           }
         }
       }
+    },
+    "yandexDisk" : {
+
     }
   },
   "version" : "1.0"

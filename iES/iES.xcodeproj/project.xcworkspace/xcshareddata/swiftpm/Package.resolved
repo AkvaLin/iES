@@ -1,0 +1,15 @@
+{
+  "originHash" : "b1cb705c25d7afc4355c659ab442f1468cef73a38e553e9adc1bf41af82d56e2",
+  "pins" : [
+    {
+      "identity" : "swift-google-drive-client?tab=readme-ov-file",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/darrarski/swift-google-drive-client?tab=readme-ov-file",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3ca48747bbc4d82fcf68a978c42a6f225d92ea03"
+      }
+    }
+  ],
+  "version" : 3
+}

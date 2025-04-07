@@ -31,6 +31,10 @@ enum Settings: SettingsProtocol {
         static let integerScaling = "integerScaling"
         static let scanlines = "scanlines"
         static let metalFxEnabled = "metalFxEnabled"
+        static let yandexDisk = "yandexDisk"
+        static let yandexToken = "yandexToken"
+        static let googleDrive = "googleDrive"
+        static let googleDrivePreviousId = "googleDrivePreviousId"
     }
     
     enum DefaultValues {
@@ -46,6 +50,9 @@ enum Settings: SettingsProtocol {
         static let defaultIntegerScaling: Bool = false
         static let defaultScanlines: Scanlines = Scanlines.off
         static let defaultMetalFxEnabled: Bool = false
+        static let yandexDisk: Bool = false
+        static let googleDrive: Bool = false
+        static let googleDrivePreviousId: String = ""
     }
 
     static func registerDefaultsIfNeeded() {
@@ -60,7 +67,10 @@ enum Settings: SettingsProtocol {
             Keys.nearestNeighborRendering: DefaultValues.defaultNearestNeighborRendering,
             Keys.checkForRedundantFrames: DefaultValues.defaultCheckForRedundantFrames,
             Keys.integerScaling: DefaultValues.defaultIntegerScaling,
-            Keys.scanlines: Int(DefaultValues.defaultScanlines.rawValue)
+            Keys.scanlines: Int(DefaultValues.defaultScanlines.rawValue),
+            Keys.yandexDisk: DefaultValues.yandexDisk,
+            Keys.googleDrive: DefaultValues.googleDrive,
+            Keys.googleDrivePreviousId: DefaultValues.googleDrivePreviousId
         ])
     }
 }

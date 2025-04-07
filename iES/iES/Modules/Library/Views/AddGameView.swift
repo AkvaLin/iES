@@ -89,7 +89,8 @@ struct AddGameView: View {
         Task {
             defer { selectedFile?.stopAccessingSecurityScopedResource() }
             guard
-                let imageData = try? await imageSelection?.loadTransferable(type: Data.self),
+                let imageData = try? await imageSelection?
+                    .loadTransferable(type: Data.self),
                 let selectedFile,
                 selectedFile.startAccessingSecurityScopedResource()
             else { return }
@@ -104,7 +105,7 @@ struct AddGameView: View {
                     gameData: gameData
                 )
                 
-                modelContext.insert(model)
+                SwiftDataManager.insert(model, context: modelContext)
             } catch {
                 
             }

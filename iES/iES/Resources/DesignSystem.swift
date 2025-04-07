@@ -61,4 +61,9 @@ enum UIElements {
     static func gameImage(imageData data: Data?) -> Image {
         Image(data: data) ?? Image(systemName: "gamecontroller")
     }
+    
+    @ViewBuilder
+    static func profileImage(imageData data: Data?) -> Image {
+        Image(data: data) ?? Image(systemName: "person")
+    }
 }

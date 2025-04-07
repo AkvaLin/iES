@@ -16,6 +16,7 @@ struct LibraryView: View {
     @State private var presentConsole = false
     @State private var playButtonWasPressed = false
     @State private var isBackgroundBlured = false
+    @State private var profile: ProfileModel = ProfileModel(name: "")
     
     var body: some View {
         ZStack {
@@ -61,7 +62,7 @@ struct LibraryView: View {
                 presentConsole = true
             }
         } content: {
-            LibraryItemDetailView(model: viewModel.modelToPresent, playButtonWasPressed: $playButtonWasPressed)
+            LibraryItemDetailView(model: viewModel.modelToPresent, profile: profile, playButtonWasPressed: $playButtonWasPressed)
                 .onDisappear {
                     withAnimation {
                         isBackgroundBlured = false
@@ -71,16 +72,19 @@ struct LibraryView: View {
         .alert(Localization.deleteGameAlert, isPresented: $viewModel.showDeleteAlert) {
             Button(Localization.delete, role: .destructive) {
                 if let model = viewModel.modelToDelete {
-                    modelContext.delete(model)
+                    SwiftDataManager.delete(model, context: modelContext)
                 }
             }
             Button(Localization.cancel, role: .cancel) {}
         }
         .navigationDestination(isPresented: $presentConsole) {
             if let model = viewModel.modelToPresent {
-                ConsoleView(game: model)
+                ConsoleView(game: model, profile: profile)
                     .ignoresSafeArea()
             }
+        }
+        .onAppear {
+            self.profile = ProfileService.getProfile(context: modelContext)
         }
     }
     

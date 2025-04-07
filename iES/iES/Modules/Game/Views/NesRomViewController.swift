@@ -26,6 +26,7 @@
 import UIKit
 import GameController
 import CoreData
+import SwiftData
 
 final class NesRomViewController: GCEventViewController
 {
@@ -207,7 +208,13 @@ final class NesRomViewController: GCEventViewController
             let audioEnabled: Bool = UserDefaults.standard.bool(forKey: Settings.Keys.audioEnabled)
             let audioFiltersEnabled: Bool = UserDefaults.standard.bool(forKey: Settings.Keys.audioFiltersEnabled)
             self.consoleQueue.async { [weak self] in
-                self?.console = Emulator(withCartridge: safeCartridge, sampleRate: sampleRate, audioFiltersEnabled: audioFiltersEnabled, state: self?.gameModel?.state)
+                let state: EmulatorState? =
+                if let stateDTO = self?.gameModel?.state {
+                    EmulatorState(from: stateDTO)
+                } else {
+                    nil
+                }
+                self?.console = Emulator(withCartridge: safeCartridge, sampleRate: sampleRate, audioFiltersEnabled: audioFiltersEnabled, state: state)
                 self?.console?.set(audioEngineDelegate: audioEnabled ? self?.audioEngine : nil)
                 if self?.gameModel?.state == nil {
                     self?.console?.reset()
@@ -222,10 +229,19 @@ final class NesRomViewController: GCEventViewController
     private var displayLink: CADisplayLink?
     private let audioEngine: AudioEngine = AudioEngine()
     private var gameModel: GameModel?
+    private var profile: ProfileModel?
+    private var timer: Timer?
+    private var modelContext: ModelContext?
     
-    func setup(cartridge: Cartridge?, gameModel: GameModel?) {
+    func setup(cartridge: Cartridge?, gameModel: GameModel?, profile: ProfileModel, modelContext: ModelContext) {
         self.gameModel = gameModel
         self.cartridge = cartridge
+        self.profile = profile
+        self.modelContext = modelContext
+        
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+            self.updateTimePlayed()
+        })
     }
     
     // MARK: - Appearance
@@ -254,9 +270,17 @@ final class NesRomViewController: GCEventViewController
         self.becomeFirstResponder()
         UIApplication.shared.isIdleTimerDisabled = true
         self.createDisplayLink()
-        if let gameModel {
-            GamesService.updateLastTimePlayed(for: gameModel)
+        if let gameModel, let modelContext {
+            GamesService.updateLastTimePlayed(for: gameModel, context: modelContext)
+            if let profile {
+                ProfileService.updateLastActivity(profile: profile, lastActivity: gameModel.title, context: modelContext)
+            }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        screen.stopUpdating = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -268,10 +292,14 @@ final class NesRomViewController: GCEventViewController
         UIApplication.shared.isIdleTimerDisabled = false
         if let gameModel, gameModel.isAutoSaveEnabled, let newState = console?.consoleState() {
             if let state = gameModel.state {
-                SavesService.saveState(state, newState: newState)
+                SavesService.saveState(state, state: newState)
             } else {
-                gameModel.state = newState
+                gameModel.setState(newState)
             }
+        }
+        timer?.invalidate()
+        if let modelContext {
+            SwiftDataManager.performOnUpdate(context: modelContext)
         }
     }
     
@@ -568,5 +596,11 @@ final class NesRomViewController: GCEventViewController
         self.displayLink?.isPaused = true
         self.displayLink?.invalidate()
         self.displayLink = nil
+    }
+    
+    /// Update each second
+    private func updateTimePlayed() {
+        guard let profile, let gameModel else { return }
+        profile.timePlayed[gameModel.title, default: 0] += TimeInterval(1)
     }
 }

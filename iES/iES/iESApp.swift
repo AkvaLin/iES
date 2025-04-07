@@ -20,6 +20,6 @@ struct iESApp: App {
                     csManager.applyColorScheme()
                 }
         }
-        .modelContainer(for: [GameModel.self])
+        .modelContainer(for: [GameModel.self, ProfileModel.self])
     }
 }

@@ -16,6 +16,7 @@ typealias NESScreenView = MTKView & MTKViewDelegate & MTKViewBuffered
 
 protocol MTKViewBuffered {
     var buffer: [UInt32] { get set }
+    var stopUpdating: Bool { get set }
 }
 
 #if !targetEnvironment(simulator)
@@ -33,6 +34,7 @@ final class NESScreenViewMetalFX: NESScreenView {
     private var vertexBuffer: MTLBuffer!
     private var nesTexture: MTLTexture!
     private var spatialScaler: MTLFXSpatialScaler?
+    var stopUpdating: Bool = false
     
     required init(frame: CGRect) {
         let dev = MTLCreateSystemDefaultDevice()!
@@ -142,7 +144,9 @@ final class NESScreenViewMetalFX: NESScreenView {
               let device = self.device else {
             return
         }
-        setupMetalFX()
+        if !stopUpdating {
+            setupMetalFX()
+        }
         
         let nativeWidth = PPU.screenWidth
         let nativeHeight = PPU.screenHeight
@@ -239,6 +243,7 @@ final class NESScreenViewTraditional: NESScreenView {
     static private let elementLength: Int = 4
     static private let bitsPerComponent: Int = 8
     static private let imageSize: CGSize = CGSize(width: PPU.screenWidth, height: PPU.screenHeight)
+    var stopUpdating: Bool = false
     
     required init(frame: CGRect)
     {
