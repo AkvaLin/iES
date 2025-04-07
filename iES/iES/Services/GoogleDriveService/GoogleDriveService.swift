@@ -1,17 +1,8 @@
-////
-////  GoogleDriveService.swift
-////  iES
-////
-////  Created by Никита Пивоваров on 05.04.2025.
-////
 //
-//import Foundation
+//  GoogleDriveService.swift
+//  iES
 //
-//struct Config {
-//    let clientID: String
-//    let authScope: String
-//    let redirectURI: String
-//}
+//  Created by Никита Пивоваров on 05.04.2025.
 //
 
 import Foundation
@@ -34,32 +25,24 @@ enum GoogleDriveService {
         guard await isSignedIn() else { return }
         
         do {
-            if let previousId = UserDefaults.standard.string(forKey: Settings.Keys.googleDrivePreviousId), !previousId.isEmpty {
+            if let previousId = try await getId() {
                 try await client.deleteFile.callAsFunction(fileId: previousId)
             }
-            let newFile = try await client.createFile.callAsFunction(
+            _ = try await client.createFile.callAsFunction(
                 name: fileName,
                 spaces: "drive",
                 mimeType: "application/json",
                 parents: [],
                 data: model
             )
-            UserDefaults.standard.set(newFile.id, forKey: Settings.Keys.googleDrivePreviousId)
         } catch {
             
         }
     }
     
-    static func getFile(fileId: String) async -> Data? {
+    static func getFile() async -> Data? {
         do {
-            var fileId = fileId
-            if fileId.isEmpty {
-                let files = try await client.listFiles.callAsFunction()
-                guard let iesFile = files.files.first(where: { file in
-                    file.name == "ies.json"
-                }) else { return nil }
-                fileId = iesFile.id
-            }
+            guard let fileId = try await getId() else { return nil }
             let fileData = try await client.getFileData.callAsFunction(fileId: fileId)
             return fileData
         } catch {
@@ -68,8 +51,9 @@ enum GoogleDriveService {
         }
     }
     
-    static func signIn() async {
+    static func signIn() async -> Bool {
         await client.auth.signIn()
+        return await client.auth.isSignedIn()
     }
     
     static func signOut() async {
@@ -82,5 +66,13 @@ enum GoogleDriveService {
         } catch {
             print(error)
         }
+    }
+    
+    private static func getId() async throws -> String? {
+        let files = try await client.listFiles.callAsFunction()
+        guard let iesFile = files.files.first(where: { file in
+            file.name == "ies.json"
+        }) else { return nil }
+        return iesFile.id
     }
 }

@@ -13,7 +13,7 @@
         <string></string>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.googleusercontent.apps.<token></string>
+          <string>com.googleusercontent.apps.token</string>
         </array>
       </dict>
     </array>

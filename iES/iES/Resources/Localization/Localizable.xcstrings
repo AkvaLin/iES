@@ -152,7 +152,20 @@
       }
     },
     "cloudSettings" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облачное хранилище"
+          }
+        }
+      }
     },
     "colorScheme" : {
       "extractionState" : "manual",
@@ -375,7 +388,20 @@
       }
     },
     "googleDrive" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Drive"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Диск"
+          }
+        }
+      }
     },
     "hi" : {
       "localizations" : {
@@ -570,6 +596,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "вкл"
+          }
+        }
+      }
+    },
+    "playerName" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Player name"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя игрока"
           }
         }
       }
@@ -774,7 +816,20 @@
       }
     },
     "yandexDisk" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yandex Disk"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Яндекс Диск"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

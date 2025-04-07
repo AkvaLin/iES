@@ -18,6 +18,7 @@ struct LibraryItemDetailView: View {
     @State private var isViewFlipped = false
     @State private var isSettingsPresented = false
     @State private var showDeleteSaveDataAlert = false
+    @State private var isLoading = false
     
     var body: some View {
         ZStack {
@@ -29,12 +30,19 @@ struct LibraryItemDetailView: View {
                 divier
                 rightMenuBar
             }
+            .allowsTightening(!isLoading)
             .padding()
+            if isLoading {
+                Thinking()
+            }
         }
         .alert(Localization.deleteGameAlert, isPresented: $showDeleteAlert) {
             Button(Localization.delete, role: .destructive) {
+                isLoading = true
                 if let model = model {
-                    SwiftDataManager.delete(model, context: modelContext)
+                    SwiftDataManager.delete(model, context: modelContext) { _ in
+                        isLoading = false
+                    }
                 }
                 dismiss()
             }
@@ -42,7 +50,11 @@ struct LibraryItemDetailView: View {
         }
         .alert(Localization.deleteGameSaveAlert, isPresented: $showDeleteSaveDataAlert) {
             Button(Localization.delete, role: .destructive) {
+                isLoading = true
                 model?.state = nil
+                SwiftDataManager.performOnUpdate(context: modelContext) { _ in
+                    isLoading = false
+                }
             }
             Button(Localization.cancel, role: .cancel) {}
         }
@@ -157,6 +169,7 @@ fileprivate struct BackView: View {
     @Binding var showDeleteAlert: Bool
     @Binding var showDeleteSaveDataAlert: Bool
     @State var isAutoSaveEnabled: Bool = false
+    @State private var isLoading: Bool = false
     @Environment(\.modelContext) var modelContext
     let model: GameModel?
     let profile: ProfileModel?
@@ -171,6 +184,7 @@ fileprivate struct BackView: View {
                             flipAction()
                       }
                 }
+                .allowsHitTesting(!isLoading)
             if isSettingsPresented {
                 VStack {
                     Text(Localization.settings)
@@ -202,9 +216,13 @@ fileprivate struct BackView: View {
                     isAutoSaveEnabled = model?.isAutoSaveEnabled ?? false
                 }
                 .onChange(of: isAutoSaveEnabled) { oldValue, newValue in
+                    isLoading = true
                     model?.isAutoSaveEnabled = newValue
-                    SwiftDataManager.performOnUpdate(context: modelContext)
+                    SwiftDataManager.performOnUpdate(context: modelContext) { _ in
+                        isLoading = false
+                    }
                 }
+                .allowsHitTesting(!isLoading)
             } else {
                 VStack {
                     Text(Localization.stats)
@@ -232,6 +250,10 @@ fileprivate struct BackView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .listStyle(.insetGrouped)
                 }
+                .allowsHitTesting(!isLoading)
+            }
+            if isLoading {
+                Thinking()
             }
         }
     }

@@ -17,20 +17,21 @@ actor GamesService {
     }
     
     static func updateLastTimePlayed(for game: GameModel, context: ModelContext) {
-        SwiftDataManager.updateLastTimePlayed(for: game, context: context)
+        SwiftDataManager.updateLastTimePlayed(for: game, context: context) { _ in }
     }
     
     static func updateGames(games: [CloudServiceSaveModel.CloudServiceGameModel], context: ModelContext) {
         do {
             let descriptor = FetchDescriptor<GameModel>(sortBy: [SortDescriptor(\.id, order: .forward)])
             var models = try context.fetch(descriptor)
-            var games = games.sorted { lhs, rhs in
+            let games = games.sorted { lhs, rhs in
                 lhs.id < rhs.id
             }
             games.forEach { game in
                 let searchedGame = models.first { $0.id == game.id }
                 if let searchedGame {
                     updateGame(model: searchedGame, game: game)
+                    models.removeAll { $0.id == game.id }
                 } else {
                     let newGame = GameModel(
                         title: game.title,
@@ -43,8 +44,11 @@ actor GamesService {
                     if let state = game.state {
                         newGame.setState(state)
                     }
-                    SwiftDataManager.insert(newGame, context: context)
+                    context.insert(newGame)
                 }
+            }
+            models.forEach { model in
+                context.delete(model)
             }
         } catch {
             print(error)
@@ -69,7 +73,7 @@ class GameModel {
     var title: String
     @Attribute(.externalStorage) var imageData: Data?
     var lastTimePlayed: Date
-    var gameData: Data
+    @Attribute(.externalStorage) var gameData: Data
     var isAutoSaveEnabled: Bool
     var state: EmulatorStateDTO?
     

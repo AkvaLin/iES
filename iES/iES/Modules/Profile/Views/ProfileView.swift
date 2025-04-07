@@ -20,28 +20,51 @@ struct ProfileView: View {
             UIElements.background()
             GeometryReader { proxy in
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    List {
-                        Section {
-                            mainStatistics(proxy: proxy)
-                                .listRowBackground(Color.clear)
-                                .padding(.vertical)
-                        } header: {
-                            profileInfoHorizontal
-                                .frame(height: proxy.size.height / 3)
-                                .padding(.bottom)
-                        }
-                        Section {
-                            ForEach(viewModel.statistics) { stat in
-                                HStack {
-                                    Text(stat.title)
-                                    Spacer()
-                                    Text(stat.value)
+                    if !viewModel.nameTextFieldEnabled {
+                        List {
+                            Section {
+                                mainStatistics(proxy: proxy)
+                                    .listRowBackground(Color.clear)
+                                    .padding(.vertical)
+                            } header: {
+                                profileInfoHorizontal
+                                    .frame(height: proxy.size.height / 3)
+                                    .padding(.bottom)
+                            }
+                            Section {
+                                ForEach(viewModel.statistics) { stat in
+                                    HStack {
+                                        Text(stat.title)
+                                        Spacer()
+                                        Text(stat.value)
+                                    }
+                                    .listRowBackground(backgroundView())
                                 }
-                                .listRowBackground(backgroundView())
                             }
                         }
+                        .scrollContentBackground(.hidden)
+                    } else {
+                        VStack {
+                            TextField(Localization.playerName, text: $viewModel.playerNameTextField)
+                                .textFieldStyle(.roundedBorder)
+                                .foregroundStyle(Colors.foregorundColor)
+                            Button(Localization.save) {
+                                viewModel.saveName(context: modelContext)
+                                withAnimation {
+                                    viewModel.nameTextFieldEnabled = false
+                                }
+                            }
+                            .disabled(viewModel.playerNameTextField.isEmpty)
+                            .padding(.vertical)
+                            .buttonStyle(.borderedProminent)
+                            Button(Localization.cancel, role: .cancel) {
+                                withAnimation {
+                                    viewModel.nameTextFieldEnabled = false
+                                }
+                            }
+                        }
+                        .padding()
                     }
-                    .scrollContentBackground(.hidden)
                 } else {
                     HStack {
                         VStack {
@@ -52,7 +75,7 @@ struct ProfileView: View {
                                 .padding(.vertical)
                             Spacer()
                         }
-                        .padding()
+                        .padding(.vertical)
                         List {
                             ForEach(viewModel.statistics) { stat in
                                 HStack {
@@ -68,6 +91,11 @@ struct ProfileView: View {
                     }
                 }
             }
+            .padding(.horizontal)
+            .allowsHitTesting(!viewModel.isLoading)
+            if viewModel.isLoading {
+                Thinking()
+            }
         }
         .navigationTitle(Localization.profile)
         .onAppear {
@@ -80,8 +108,19 @@ struct ProfileView: View {
                 return
             }
             Task {
-                guard let imageData = try? await selectedImage.loadTransferable(type: Data.self) else { return }
+                DispatchQueue.main.async {
+                    viewModel.isLoading = true
+                }
+                guard let imageData = try? await selectedImage.loadTransferable(type: Data.self) else {
+                    DispatchQueue.main.async {
+                        viewModel.isLoading = false
+                    }
+                    return
+                }
                 self.viewModel.imageData = imageData
+                DispatchQueue.main.async {
+                    viewModel.isLoading = false
+                }
             }
         }
     }
@@ -101,6 +140,11 @@ struct ProfileView: View {
         Text(viewModel.playerName)
             .font(.title)
             .foregroundStyle(Colors.foregorundColor)
+            .onTapGesture {
+                withAnimation {
+                    viewModel.nameTextFieldEnabled = true
+                }
+            }
     }
     
     private var profileInfoVertical: some View {

@@ -21,10 +21,9 @@ enum CloudService {
     }
     
     static func load() async -> Data? {
-        if UserDefaults.standard.bool(forKey: Settings.Keys.googleDrive),
-           let id = UserDefaults.standard.string(forKey: Settings.Keys.googleDrivePreviousId)
+        if UserDefaults.standard.bool(forKey: Settings.Keys.googleDrive)
         {
-            let data = await GoogleDriveService.getFile(fileId: id)
+            let data = await GoogleDriveService.getFile()
             if data != nil {
                 return data
             }

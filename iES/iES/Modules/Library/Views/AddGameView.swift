@@ -19,6 +19,7 @@ struct AddGameView: View {
     @State private var selectedFile: URL?
     @MainActor
     @State private var imageData: Data? = nil
+    @State private var isLoading = false
     
     var body: some View {
         ZStack {
@@ -47,7 +48,12 @@ struct AddGameView: View {
                                 Spacer()
                             }
                             HStack {
-                                HomeViewIcon(text: gameName, icon: UIElements.gameImage(imageData: imageData))
+                                if let imageData {
+                                    HomeViewIcon(text: gameName, icon: UIElements.gameImage(imageData: imageData))
+                                } else {
+                                    HomeViewIcon(libraryText: gameName,
+                                                 icon: UIElements.gameImage(imageData: imageData))
+                                }
                                 LibraryItemView(icon: Image(data: imageData), title: gameName)
                             }
                         }
@@ -57,7 +63,7 @@ struct AddGameView: View {
                         } label: {
                             Text(Localization.save)
                         }
-                        .disabled(gameName.isEmpty || imageSelection == nil || selectedFile == nil)
+                        .disabled(gameName.isEmpty || selectedFile == nil)
                         .buttonStyle(.borderedProminent)
                         .padding()
                     }
@@ -72,6 +78,10 @@ struct AddGameView: View {
                     print(failure)
                 }
             })
+            .allowsHitTesting(!isLoading)
+            if isLoading {
+                Thinking()
+            }
         }
         .onChange(of: imageSelection) {
             guard let imageSelection else {
@@ -79,24 +89,48 @@ struct AddGameView: View {
                 return
             }
             Task {
-                guard let imageData = try? await imageSelection.loadTransferable(type: Data.self) else { return }
+                DispatchQueue.main.async {
+                    isLoading = true
+                }
+                guard let imageData = try? await imageSelection.loadTransferable(type: Data.self) else {
+                    DispatchQueue.main.async {
+                        isLoading = false
+                    }
+                    return
+                }
                 self.imageData = imageData
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
             }
         }
     }
     
     private func addGame() {
         Task {
+            DispatchQueue.main.async {
+                isLoading = true
+            }
             defer { selectedFile?.stopAccessingSecurityScopedResource() }
             guard
-                let imageData = try? await imageSelection?
-                    .loadTransferable(type: Data.self),
                 let selectedFile,
                 selectedFile.startAccessingSecurityScopedResource()
-            else { return }
+            else {
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
             
             do {
                 let gameData = try Data(contentsOf: selectedFile)
+                
+                let imageData: Data? =
+                if let imageSelection {
+                    try? await imageSelection.loadTransferable(type: Data.self)
+                } else {
+                    nil
+                }
                 
                 let model = GameModel(
                     title: gameName,
@@ -105,11 +139,20 @@ struct AddGameView: View {
                     gameData: gameData
                 )
                 
-                SwiftDataManager.insert(model, context: modelContext)
+                SwiftDataManager.insert(model, context: modelContext) { _ in
+                    DispatchQueue.main.async {
+                        isLoading = false
+                    }
+                }
             } catch {
-                
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
             }
             
+            DispatchQueue.main.async {
+                isLoading = false
+            }
             dismiss()
         }
     }

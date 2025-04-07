@@ -9,6 +9,8 @@ import Foundation
 import SwiftData
 
 class ProfileViewModel: ObservableObject {
+    @Published var nameTextFieldEnabled = false
+    @Published var playerNameTextField: String = ""
     @Published var playerName: String = "" {
         didSet {
             model?.name = playerName
@@ -18,12 +20,16 @@ class ProfileViewModel: ObservableObject {
         didSet {
             model?.profileImageData = imageData
             if let modelContext {
-                SwiftDataManager.performOnUpdate(context: modelContext)
+                isLoading = true
+                SwiftDataManager.performOnUpdate(context: modelContext) { [weak self] _ in
+                    self?.isLoading = false
+                }
             }
         }
     }
     @Published var showProfileDataFetchError = false
     @Published var model: ProfileModel? = nil
+    @Published var isLoading = false
     private var modelContext: ModelContext?
     
     var playingTime: String {
@@ -56,6 +62,15 @@ class ProfileViewModel: ObservableObject {
         imageData = model.profileImageData
         self.model = model
         self.modelContext = context
+    }
+    
+    func saveName(context: ModelContext) {
+        isLoading = true
+        model?.name = playerNameTextField
+        playerName = playerNameTextField
+        SwiftDataManager.performOnUpdate(context: context) { [weak self] _ in
+            self?.isLoading = false
+        }
     }
     
     struct Statistic: Identifiable, Hashable {

@@ -12,6 +12,7 @@ struct SettingsView: View {
     
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var csManager: ColorSchemeManager
+    @State private var isLoading = false
     
     var body: some View {
         ZStack {
@@ -30,6 +31,10 @@ struct SettingsView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .allowsHitTesting(!isLoading)
+            if isLoading {
+                Thinking()
+            }
         }
         .navigationTitle(Localization.settings)
     }
@@ -94,9 +99,9 @@ struct SettingsView: View {
     }
     
     private var cloudSettings: some View {
-        Section("cloudSettings") {
-            Toggle("yandexDisk", isOn: $viewModel.yandexDisk)
-            Toggle("googleDrive", isOn: $viewModel.googleDrive)
+        Section(Localization.cloudSettings) {
+            Toggle(Localization.yandexDisk, isOn: $viewModel.yandexDisk)
+            Toggle(Localization.googleDrive, isOn: $viewModel.googleDrive)
         }
         .onChange(of: viewModel.yandexDisk) { oldValue, newValue in
             if !oldValue, newValue {
@@ -112,17 +117,36 @@ struct SettingsView: View {
         .onChange(of: viewModel.googleDrive) { oldValue, newValue in
             if !oldValue, newValue {
                 Task {
-                    await GoogleDriveService.signIn()
+                    DispatchQueue.main.async {
+                        isLoading = true
+                    }
+                    let result = await GoogleDriveService.signIn()
+                    if !result {
+                        DispatchQueue.main.async {
+                            viewModel.googleDrive = false
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        isLoading = false
+                    }
                 }
             } else if !newValue, oldValue {
                 Task {
+                    DispatchQueue.main.async {
+                        isLoading = true
+                    }
                     await GoogleDriveService.signOut()
+                    DispatchQueue.main.async {
+                        isLoading = false
+                    }
                 }
             }
         }
         .onOpenURL { url in
             Task {
+                isLoading = true
                 await GoogleDriveService.handleRedirect(url: url)
+                isLoading = false
             }
         }
         .sheet(isPresented: $viewModel.showYandexDiskAuth) {

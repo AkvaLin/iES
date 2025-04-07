@@ -299,7 +299,7 @@ final class NesRomViewController: GCEventViewController
         }
         timer?.invalidate()
         if let modelContext {
-            SwiftDataManager.performOnUpdate(context: modelContext)
+            SwiftDataManager.performOnUpdate(context: modelContext) { _ in }
         }
     }
     

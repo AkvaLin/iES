@@ -23,6 +23,14 @@ struct HomeViewIcon: View {
         self.isSystem = true
     }
     
+    public init(libraryText: String, icon: Image) {
+        self.text = libraryText
+        self.localizedText = ""
+        self.icon = icon
+        self.isEmpty = false
+        self.isSystem = true
+    }
+    
     public init(text: String, icon: Image) {
         self.text = text
         self.localizedText = ""

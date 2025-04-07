@@ -14,6 +14,10 @@ struct HomeView: View {
     @Query(GamesService.getDescriptor(limit: 3)) private var games: [GameModel]
     @Environment(\.modelContext) var modelContext
     @State private var profile: ProfileModel = ProfileModel(name: "")
+    @State private var isLoading = false
+    @State private var isFirstLaunch = true
+    @State private var timer: Timer?
+    @State private var needsUpdate: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -29,7 +33,11 @@ struct HomeView: View {
                                     ConsoleView(game: game, profile: profile)
                                         .ignoresSafeArea()
                                 } label: {
-                                    HomeViewIcon(text: game.title, icon: UIElements.gameImage(imageData: game.imageData))
+                                    if let imageData = game.imageData {
+                                        HomeViewIcon(text: game.title, icon: UIElements.gameImage(imageData: imageData))
+                                    } else {
+                                        HomeViewIcon(libraryText: game.title, icon: UIElements.gameImage(imageData: game.imageData))
+                                    }
                                 }
                             }
                             NavigationLink {
@@ -63,16 +71,52 @@ struct HomeView: View {
                 .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
                 .onAppear {
                     self.profile = ProfileService.getProfile(context: modelContext)
-                    Task {
-                        guard let data = await CloudService.load() else { return }
-                        do {
-                            let model = try CloudServiceConverter.getCodableStruct(data: data)
-                            CloudServiceConverter.saveFromCodableStruct(model, context: modelContext)
-                        } catch {
-                            print(error)
-                        }
+                    if isFirstLaunch {
+                        isFirstLaunch = false
+                        updateData()
+                        timer = Timer.scheduledTimer(withTimeInterval: 600, repeats: true, block: { _ in
+                            needsUpdate = true
+                        })
+                    }
+                    if needsUpdate {
+                        updateData()
+                        needsUpdate = false
+                        timer?.invalidate()
+                        timer = Timer.scheduledTimer(withTimeInterval: 600, repeats: true, block: { _ in
+                            needsUpdate = true
+                        })
                     }
                 }
+                .allowsHitTesting(!isLoading)
+                if isLoading {
+                    Thinking()
+                }
+            }
+        }
+    }
+    
+    private func updateData() {
+        Task {
+            DispatchQueue.main.async {
+                isLoading = true
+            }
+            guard let data = await CloudService.load() else {
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                return
+            }
+            do {
+                let model = try CloudServiceConverter.getCodableStruct(data: data)
+                CloudServiceConverter.saveFromCodableStruct(model, context: modelContext)
+            } catch {
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+                print(error)
+            }
+            DispatchQueue.main.async {
+                isLoading = false
             }
         }
     }

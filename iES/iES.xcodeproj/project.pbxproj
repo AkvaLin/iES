@@ -17,6 +17,7 @@
 		F6026E7B2DA149900053560D /* GoogleDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7A2DA1498B0053560D /* GoogleDriveService.swift */; };
 		F6026E7D2DA32F2E0053560D /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7C2DA32F2E0053560D /* KeychainManager.swift */; };
 		F6026E7F2DA3F0740053560D /* SwiftDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6026E7E2DA3F06E0053560D /* SwiftDataManager.swift */; };
+		F6026E812DA41FC20053560D /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6026E802DA41FC20053560D /* Launch Screen.storyboard */; };
 		F608103C2D3194E8007AB5C2 /* NesRomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608103B2D3194E8007AB5C2 /* NesRomViewController.swift */; };
 		F60810402D3195E1007AB5C2 /* NESScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608103F2D3195E1007AB5C2 /* NESScreenView.swift */; };
 		F60811D52D32529F007AB5C2 /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60811CE2D32529F007AB5C2 /* Collection+SafeIndex.swift */; };
@@ -140,6 +141,7 @@
 		F6026E7A2DA1498B0053560D /* GoogleDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveService.swift; sourceTree = "<group>"; };
 		F6026E7C2DA32F2E0053560D /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		F6026E7E2DA3F06E0053560D /* SwiftDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataManager.swift; sourceTree = "<group>"; };
+		F6026E802DA41FC20053560D /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		F608103B2D3194E8007AB5C2 /* NesRomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NesRomViewController.swift; sourceTree = "<group>"; };
 		F608103F2D3195E1007AB5C2 /* NESScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NESScreenView.swift; sourceTree = "<group>"; };
 		F60811CE2D32529F007AB5C2 /* Collection+SafeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeIndex.swift"; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				F6DC34582D44106500E75525 /* Resources */,
 				F668DDB82BFD1A92007A3B60 /* iESApp.swift */,
 				F668DDBE2BFD1A94007A3B60 /* Assets.xcassets */,
+				F6026E802DA41FC20053560D /* Launch Screen.storyboard */,
 				F668DDC02BFD1A94007A3B60 /* iES.entitlements */,
 				F6191F1D2D6F274F008CEF57 /* Info.plist */,
 				F668DDC12BFD1A94007A3B60 /* Preview Content */,
@@ -817,6 +820,7 @@
 			files = (
 				F668DDC32BFD1A94007A3B60 /* Preview Assets.xcassets in Resources */,
 				F668DDBF2BFD1A94007A3B60 /* Assets.xcassets in Resources */,
+				F6026E812DA41FC20053560D /* Launch Screen.storyboard in Resources */,
 				F6191F212D6F3E50008CEF57 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

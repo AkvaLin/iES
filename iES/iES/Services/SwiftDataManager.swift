@@ -9,39 +9,51 @@ import Foundation
 import SwiftData
 
 enum SwiftDataManager {
-    static func insert<T>(_ model: T, context: ModelContext) where T : PersistentModel {
+    static func insert<T>(_ model: T, context: ModelContext, completion: @escaping (Bool) -> Void) where T : PersistentModel {
         context.insert(model)
-        performOnUpdate(context: context)
-    }
-    
-    static func delete<T>(_ model: T, context: ModelContext) where T : PersistentModel {
-        context.delete(model)
-        performOnUpdate(context: context)
-    }
-    
-    static func updateLastActivity(profile: ProfileModel, lastActivity: String, context: ModelContext) {
-        profile.lastActivity = lastActivity
-        performOnUpdate(context: context)
-    }
-    
-    static func updateLastTimePlayed(for game: GameModel, context: ModelContext) {
-        game.lastTimePlayed = .now
-        performOnUpdate(context: context)
-    }
-    
-    static func performOnUpdate(context: ModelContext) {
-        do {
-            let models = try getModels(context: context)
-            try saveToCloud(profile: models.profile, games: models.games)
-        } catch {
-            print(error)
+        performOnUpdate(context: context) { result in
+            completion(result)
         }
     }
     
-    private static func saveToCloud(profile: ProfileModel, games: [GameModel]) throws {
+    static func delete<T>(_ model: T, context: ModelContext, completion: @escaping (Bool) -> Void) where T : PersistentModel {
+        context.delete(model)
+        performOnUpdate(context: context) { result in
+            completion(result)
+        }
+    }
+    
+    static func updateLastActivity(profile: ProfileModel, lastActivity: String, context: ModelContext, completion: @escaping (Bool) -> Void) {
+        profile.lastActivity = lastActivity
+        performOnUpdate(context: context) { result in
+            completion(result)
+        }
+    }
+    
+    static func updateLastTimePlayed(for game: GameModel, context: ModelContext, completion: @escaping (Bool) -> Void) {
+        game.lastTimePlayed = .now
+        performOnUpdate(context: context) { result in
+            completion(result)
+        }
+    }
+    
+    static func performOnUpdate(context: ModelContext, completion: @escaping (Bool) -> Void) {
+        do {
+            let models = try getModels(context: context)
+            try saveToCloud(profile: models.profile, games: models.games) { result in
+                completion(result)
+            }
+        } catch {
+            print(error)
+            completion(false)
+        }
+    }
+    
+    private static func saveToCloud(profile: ProfileModel, games: [GameModel], completion: @escaping (Bool) -> Void) throws {
         Task {
             let codableData = try CloudServiceConverter.getCodableData(profile: profile, games: games)
             await CloudService.save(model: codableData)
+            completion(true)
         }
     }
     

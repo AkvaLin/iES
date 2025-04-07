@@ -23,7 +23,7 @@ enum ProfileService {
     }
     
     static func updateLastActivity(profile: ProfileModel, lastActivity: String, context: ModelContext) {
-        SwiftDataManager.updateLastActivity(profile: profile, lastActivity: lastActivity, context: context)
+        SwiftDataManager.updateLastActivity(profile: profile, lastActivity: lastActivity, context: context) { _ in }
     }
     
     static func updateProfile(

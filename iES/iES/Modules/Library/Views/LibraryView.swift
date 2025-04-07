@@ -17,16 +17,21 @@ struct LibraryView: View {
     @State private var playButtonWasPressed = false
     @State private var isBackgroundBlured = false
     @State private var profile: ProfileModel = ProfileModel(name: "")
+    @State private var isLoading: Bool = false
     
     var body: some View {
         ZStack {
             UIElements.background()
             contentView
+                .allowsHitTesting(!isLoading)
             if isBackgroundBlured {
                 Rectangle()
                     .fill(.ultraThinMaterial)
                     .ignoresSafeArea()
                     .opacity(0.9)
+            }
+            if isLoading {
+                Thinking()
             }
         }
         .navigationTitle(Localization.library)
@@ -72,7 +77,10 @@ struct LibraryView: View {
         .alert(Localization.deleteGameAlert, isPresented: $viewModel.showDeleteAlert) {
             Button(Localization.delete, role: .destructive) {
                 if let model = viewModel.modelToDelete {
-                    SwiftDataManager.delete(model, context: modelContext)
+                    isLoading = true
+                    SwiftDataManager.delete(model, context: modelContext) { _ in
+                        isLoading = false
+                    }
                 }
             }
             Button(Localization.cancel, role: .cancel) {}
